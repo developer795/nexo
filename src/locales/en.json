@@ -1,0 +1,23 @@
+{
+  "login": {
+    "welcome": "Welcome back",
+    "subtitle": "Log in and continue your journey with NEXO",
+    "individual": "Individual",
+    "individualDescription": "Discover new opportunities in esports",
+    "entity": "Organization",
+    "entityDescription": "Discover the right talent for your needs",
+    "email": "Email",
+    "emailPlaceholder": "example@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Log in",
+    "loggingIn": "Logging in...",
+    "requiredFields": "Please enter your email and password",
+    "loginError": "Incorrect email or password",
+    "loginSuccess": "Logged in successfully",
+    "or": "OR",
+    "google": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account"
+  }
+}

@@ -1,0 +1,463 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap');
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.entity-register-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 35px 20px 60px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-family: 'Tajawal', Arial, sans-serif;
+  direction: rtl;
+}
+
+/* =========================
+   NEXO LOGO
+========================= */
+
+.entity-register-logo {
+  position: absolute;
+  top: 35px;
+  right: 5%;
+  z-index: 2;
+}
+
+.entity-register-logo img {
+  display: block;
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* =========================
+   REGISTER CARD
+========================= */
+
+.entity-register-card {
+  width: 100%;
+  max-width: 570px;
+
+  margin: 125px auto 0;
+  padding: 38px 36px;
+
+  background: #ffffff;
+  border: 1px solid #dfe2e7;
+  border-radius: 9px;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.entity-register-card h1 {
+  margin: 0 0 5px;
+
+  color: #111111;
+  text-align: center;
+
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.entity-register-subtitle {
+  margin: 0 0 30px;
+
+  color: #999999;
+  text-align: center;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.entity-register-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.entity-register-card form > label:not(.entity-terms) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  color: #111111;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.entity-register-card input:not([type="checkbox"]) {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+
+  background: #ffffff;
+  border: 1px solid #d9dce3;
+  border-radius: 8px;
+
+  color: #222222;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.entity-register-card input:not([type="checkbox"]):focus {
+  border-color: #211d4e;
+  box-shadow: 0 0 0 3px rgba(33, 29, 78, 0.07);
+}
+
+.entity-register-card input::placeholder {
+  color: #aaaaaa;
+}
+
+/* =========================
+   PASSWORD REQUIREMENTS
+========================= */
+
+.entity-password-rules {
+  margin-top: -8px;
+  padding: 12px 14px;
+
+  background: #f8f8fa;
+  border-radius: 7px;
+
+  color: #777777;
+}
+
+.entity-password-rules .entity-rules-title {
+  margin: 0 0 9px;
+
+  color: #777777;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.entity-password-rules ul {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 7px 18px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.entity-password-rules li {
+  position: relative;
+
+  padding-inline-start: 17px;
+
+  color: #777777;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.entity-password-rules li::before {
+  content: "○";
+
+  position: absolute;
+  inset-inline-start: 0;
+
+  color: #999999;
+  font-weight: 900;
+}
+
+.entity-password-rules li.valid {
+  color: #138a3d;
+}
+
+.entity-password-rules li.valid::before {
+  content: "✓";
+  color: #138a3d;
+}
+
+/* =========================
+   TERMS
+========================= */
+
+.entity-register-card form > label.entity-terms {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #666666;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+
+  cursor: pointer;
+}
+
+.entity-terms input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+
+  margin: 0;
+  flex-shrink: 0;
+
+  accent-color: #211d4e;
+  cursor: pointer;
+}
+
+.entity-terms span {
+  flex: 1;
+}
+
+/* =========================
+   VALIDATION ERRORS
+========================= */
+
+.entity-register-card input.input-error {
+  border-color: #d93025;
+}
+
+.entity-register-card input.input-error:focus {
+  border-color: #d93025;
+  box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.08);
+}
+
+.entity-field-error {
+  display: block;
+  margin-top: -10px;
+
+  color: #d93025;
+
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* =========================
+   SUPABASE ERROR
+========================= */
+
+.entity-server-error {
+  padding: 10px 12px;
+
+  background: #fff4f3;
+  border: 1px solid #ffd6d2;
+  border-radius: 7px;
+
+  color: #d93025;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+
+.entity-register-submit {
+  width: 100%;
+  height: 50px;
+
+  margin-top: 2px;
+
+  border: none;
+  border-radius: 30px;
+
+  background: #211d4e;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.entity-register-submit:hover:not(:disabled) {
+  background: #36316b;
+}
+
+.entity-register-submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.entity-register-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   LOGIN LINK
+========================= */
+
+.entity-login-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 20px;
+
+  font-size: 13px;
+}
+
+.entity-login-link span {
+  color: #999999;
+}
+
+.entity-login-link button {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #211d4e;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.entity-login-link button:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .entity-register-card {
+    margin-top: 125px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+  .entity-register-page {
+    padding: 20px 16px 40px;
+  }
+
+  .entity-register-logo {
+    top: 55px;
+    right: 16px;
+  }
+
+  .entity-register-logo img {
+    width: 150px;
+  }
+
+  .entity-register-card {
+    margin-top: 135px;
+    padding: 28px 20px;
+  }
+
+  .entity-register-card h1 {
+    font-size: 26px;
+  }
+
+  .entity-register-subtitle {
+    margin-bottom: 25px;
+    font-size: 12px;
+  }
+
+  .entity-register-card form {
+    gap: 16px;
+  }
+
+  .entity-register-card input:not([type="checkbox"]) {
+    height: 48px;
+  }
+
+  .entity-password-rules ul {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .entity-register-submit {
+    height: 49px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 360px) {
+  .entity-register-logo img {
+    width: 125px;
+  }
+
+  .entity-register-card {
+    padding: 24px 15px;
+  }
+
+  .entity-register-card h1 {
+    font-size: 24px;
+  }
+}
+
+/* Password rules final adjustment */
+
+.entity-password-rules ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+
+.entity-password-rules li {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.entity-password-rules .entity-rules-title {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 650px) {
+  .entity-password-rules ul {
+    grid-template-columns: 1fr;
+  }
+}

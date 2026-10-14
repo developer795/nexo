@@ -1,0 +1,346 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.signup-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px 5% 80px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-family: "Tajawal", "Cairo", Arial, sans-serif;
+  direction: rtl;
+}
+
+/* =========================
+   NEXO LOGO
+========================= */
+
+.signup-logo {
+  position: absolute;
+  top: 40px;
+  right: 5%;
+  z-index: 2;
+}
+
+.signup-logo img {
+  display: block;
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.signup-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 150px auto 0;
+}
+
+.signup-title {
+  margin: 0 0 45px;
+
+  color: #111111;
+  text-align: center;
+
+  font-family: inherit;
+  font-size: clamp(26px, 2.7vw, 36px);
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+/* =========================
+   ACCOUNT CARDS
+========================= */
+
+.signup-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.signup-option {
+  min-height: 340px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding: 30px 28px;
+
+  background: #fcfcfd;
+  border: 2px solid #e1e3e7;
+  border-radius: 12px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.signup-option:hover {
+  border-color: #c8c5dd;
+  box-shadow: 0 6px 22px rgba(33, 29, 78, 0.05);
+}
+
+/* =========================
+   GREEN TAGS
+========================= */
+
+.signup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.signup-tags span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e1f9e5;
+  color: #00a83b;
+
+  border-radius: 30px;
+  padding: 7px 15px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================
+   CARD TEXT
+========================= */
+
+.signup-option h2 {
+  margin: 0 0 12px;
+
+  color: #111111;
+  font-family: inherit;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.5;
+
+  text-align: right;
+}
+
+.signup-option p {
+  margin: 0 0 30px;
+  max-width: 100%;
+
+  color: #444444;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.9;
+
+  text-align: right;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.signup-action {
+  margin-top: auto;
+
+  min-width: 235px;
+  min-height: 54px;
+  padding: 12px 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: #211d4e;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 30px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.signup-action:hover {
+  background: #36316b;
+}
+
+.signup-action:active {
+  transform: scale(0.98);
+}
+
+.signup-action span {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .signup-content {
+    margin-top: 135px;
+  }
+
+  .signup-title {
+    font-size: 29px;
+  }
+
+  .signup-option {
+    min-height: 340px;
+    padding: 24px 20px;
+  }
+
+  .signup-option h2 {
+    font-size: 24px;
+  }
+
+  .signup-option p {
+    font-size: 14px;
+  }
+
+  .signup-action {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+  .signup-page {
+    padding: 20px 16px 45px;
+  }
+
+  .signup-logo {
+    top: 45px;
+    right: 16px;
+  }
+
+  .signup-logo img {
+    width: 145px;
+  }
+
+  .signup-content {
+    margin-top: 150px;
+  }
+
+  .signup-title {
+    font-size: 25px;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .signup-options {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .signup-option {
+    min-height: 290px;
+    padding: 22px 20px;
+  }
+
+  .signup-tags {
+    margin-bottom: 15px;
+  }
+
+  .signup-option h2 {
+    font-size: 24px;
+  }
+
+  .signup-option p {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+
+  .signup-action {
+    min-height: 52px;
+    font-size: 14px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 360px) {
+  .signup-logo img {
+    width: 125px;
+  }
+
+  .signup-title {
+    font-size: 22px;
+  }
+
+  .signup-option {
+    padding: 20px 15px;
+  }
+
+  .signup-tags span {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+.signup-page,
+.signup-page h1,
+.signup-page h2,
+.signup-page p,
+.signup-page span,
+.signup-page button {
+  font-family: 'Tajawal', Arial, sans-serif;
+}
+
+/* Final spacing adjustments */
+
+.signup-content {
+  margin-top: 125px;
+}
+
+.signup-title {
+  margin-bottom: 30px;
+}
+
+.signup-option {
+  min-height: 310px;
+}
+
+@media (max-width: 650px) {
+  .signup-content {
+    margin-top: 150px;
+  }
+
+  .signup-option {
+    min-height: 290px;
+  }
+}
+
