@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>الرئيسية | NEXO</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="home.css" />
+</head>
+
+<body>
+
+  <!-- =========================================
+       HEADER
+       ========================================= -->
+  <header class="header">
+
+    <div class="container navbar">
+
+      <!-- NEXO LOGO -->
+      <a
+        class="logo"
+        href="home.html"
+        aria-label="NEXO"
+      >
+        <img
+          src="../src/assets/avatars/nexo.png"
+          alt="NEXO"
+        />
+      </a>
+
+
+      <!-- MOBILE MENU -->
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="القائمة"
+        aria-controls="navLinks"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+
+      <!-- NAVIGATION -->
+      <nav
+        class="nav-links"
+        id="navLinks"
+        aria-label="التنقل الرئيسي"
+      >
+
+        <a
+          href="home.html"
+          class="active"
+        >
+          الرئيسية
+        </a>
+
+        <a href="../3-talents/talents.html">
+          المواهب
+        </a>
+
+        <a href="../4-teams/teams.html">
+          الفرق والجهات
+        </a>
+
+        <a href="../5-opportunities/opportunities.html">
+          الفرص
+        </a>
+
+        <a href="../2-about/about.html">
+          عن نيكسو
+        </a>
+
+      </nav>
+
+
+      <!-- LOGIN -->
+      <button
+        class="main-button login-button"
+        id="loginBtn"
+        type="button"
+      >
+        تسجيل دخول
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================
+       MAIN
+       ========================================= -->
+  <main>
+
+
+    <!-- =========================================
+         HERO
+         ========================================= -->
+    <section class="hero">
+
+      <div class="container hero-inner">
+
+        <div class="hero-text">
+
+          <h1>
+            مكانك في مجتمع الرياضات<br />
+            الإلكترونية يبدأ معنا
+          </h1>
+
+          <p>
+            اكتشف المواهب والفرص، وابدأ مسارك<br />
+            المهني في مجتمع الرياضات الإلكترونية.
+          </p>
+
+          <a
+            class="main-button hero-btn"
+            href="../2-about/about.html"
+          >
+            ابدأ الآن
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- HERO VISUAL -->
+      <div
+        class="hero-visual"
+        aria-hidden="true"
+      >
+
+        <!-- GREEN BAR -->
+        <div class="bar bar-green">
+
+          <img
+            class="ch ch-yellow"
+            src="../assets/avatar-yellow.png"
+            alt=""
+          />
+
+        </div>
+
+
+        <!-- BLUE BAR -->
+        <div class="bar bar-blue">
+
+          <img
+            class="ch ch-green"
+            src="../assets/avatar-green.png"
+            alt=""
+          />
+
+          <img
+            class="ch ch-orange"
+            src="../assets/avatar-orange.png"
+            alt=""
+          />
+
+        </div>
+
+
+        <!-- YELLOW BAR -->
+        <div class="bar bar-yellow"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STATS
+         ========================================= -->
+    <section class="container stats reveal">
+
+
+      <!-- TALENTS -->
+      <div class="stat">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+          />
+
+          <circle
+            cx="9"
+            cy="7"
+            r="4"
+          />
+
+          <path
+            d="M22 21v-2a4 4 0 0 0-3-3.87"
+          />
+
+          <path
+            d="M16 3.13a4 4 0 0 1 0 7.75"
+          />
+
+        </svg>
+
+        <strong data-count="0">
+          0
+        </strong>
+
+        <span>
+          موهبة
+        </span>
+
+      </div>
+
+
+      <!-- TEAMS -->
+      <div class="stat">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+
+          <rect
+            x="4"
+            y="2"
+            width="16"
+            height="20"
+            rx="2"
+          />
+
+          <path
+            d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"
+          />
+
+        </svg>
+
+        <strong data-count="0">
+          
+        </strong>
+
+        <span>
+          فريق وجهة
+        </span>
+
+      </div>
+
+
+      <!-- OPPORTUNITIES -->
+      <div class="stat">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+
+          <path
+            d="m22 7-8.5 8.5-5-5L2 17"
+          />
+
+          <path
+            d="M16 7h6v6"
+          />
+
+        </svg>
+
+        <strong data-count="0">
+          
+        </strong>
+
+        <span>
+          فرصة
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         CHOOSE PATH
+         ========================================= -->
+    <section class="container section reveal">
+
+      <h2 class="section-title">
+        اختر مسارك في عالم الرياضات الإلكترونية
+      </h2>
+
+
+      <div class="choice-grid">
+
+
+        <!-- FIND OPPORTUNITY -->
+        <article class="choice-card">
+
+          <div class="pills">
+
+            <span class="pill">
+              لاعب
+            </span>
+
+            <span class="pill">
+              صانع محتوى
+            </span>
+
+            <span class="pill">
+              ستريمر
+            </span>
+
+          </div>
+
+
+          <h3>
+            أبحث عن فرصة
+          </h3>
+
+
+          <p>
+            اكتشف الفرص، اعرض مهاراتك، وتواصل مع الجهات
+            في منظومة الرياضات الإلكترونية.
+          </p>
+
+
+          <a
+            class="dark-btn"
+            href="../5-opportunities/opportunities.html"
+          >
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+
+              <rect
+                width="20"
+                height="14"
+                x="2"
+                y="7"
+                rx="2"
+              />
+
+              <path
+                d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"
+              />
+
+            </svg>
+
+            إنشاء حسابك
+
+          </a>
+
+        </article>
+
+
+        <!-- FIND TALENT -->
+        <article class="choice-card">
+
+          <div class="pills">
+
+            <span class="pill">
+              الجهات
+            </span>
+
+          </div>
+
+
+          <h3>
+            أبحث عن موهبة
+          </h3>
+
+
+          <p>
+            اكتشف المواهب، اعرض الفرص، وابنِ علاقاتك
+            داخل منظومة الرياضات الإلكترونية.
+          </p>
+
+
+          <a
+            class="dark-btn"
+            href="../3-talents/talents.html"
+          >
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+
+              <rect
+                x="4"
+                y="2"
+                width="16"
+                height="20"
+                rx="2"
+              />
+
+              <path
+                d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01"
+              />
+
+            </svg>
+
+            إنشاء حساب جهة
+
+          </a>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TALENTS
+         ========================================= -->
+    <section class="container section reveal">
+
+      <div class="sec-head">
+
+        <div>
+
+          <h2 class="section-title">
+            المواهب المتنوعة
+          </h2>
+
+          <p class="sec-sub">
+            تعرف على مواهب مجتمع الرياضات الإلكترونية
+          </p>
+
+        </div>
+
+
+        <a
+          class="view-all"
+          href="../3-talents/talents.html"
+        >
+          عرض الكل
+          <span>‹</span>
+        </a>
+
+      </div>
+
+
+      <div
+        class="grid4"
+        id="talentsGrid"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================================
+         TEAMS
+         ========================================= -->
+    <section class="container section reveal">
+
+      <div class="sec-head">
+
+        <div>
+
+          <h2 class="section-title">
+            فرق وجهات
+          </h2>
+
+          <p class="sec-sub">
+            استكشف الفرق والأندية والجهات في مجتمع
+            الرياضات الإلكترونية
+          </p>
+
+        </div>
+
+
+        <a
+          class="view-all"
+          href="../4-teams/teams.html"
+        >
+          عرض الكل
+          <span>‹</span>
+        </a>
+
+      </div>
+
+
+      <div
+        class="grid4"
+        id="teamsGrid"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================================
+         OPPORTUNITIES
+         ========================================= -->
+    <section class="container section reveal">
+
+      <div class="sec-head">
+
+        <div>
+
+          <h2 class="section-title">
+            أحدث الفرص
+          </h2>
+
+          <p class="sec-sub">
+            فرص جديدة للانضمام والتعاون والنمو
+            في مجال الرياضات الإلكترونية
+          </p>
+
+        </div>
+
+
+        <a
+          class="view-all"
+          href="../5-opportunities/opportunities.html"
+        >
+          عرض الكل
+          <span>‹</span>
+        </a>
+
+      </div>
+
+
+      <div
+        class="opps-grid"
+        id="oppsGrid"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================================
+         NEXO PATHS
+         ========================================= -->
+    <section class="container section reveal">
+
+      <h2 class="section-title center">
+        مسارات نيكسو
+      </h2>
+
+
+      <div class="paths-wrap">
+
+
+        <button
+          class="arrow"
+          id="pathNext"
+          type="button"
+          aria-label="التالي"
+        >
+          ›
+        </button>
+
+
+        <div
+          class="paths-track"
+          id="pathsTrack"
+        ></div>
+
+
+        <button
+          class="arrow"
+          id="pathPrev"
+          type="button"
+          aria-label="السابق"
+        >
+          ‹
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =========================================
+       FOOTER
+       ========================================= -->
+  <footer class="footer">
+
+
+    <div class="container footer-content">
+
+
+      <!-- FOOTER LOGO -->
+      <div class="footer-main-logo">
+
+        <img
+          src="../assets/image copy 6.png"
+          alt="NEXO"
+        />
+
+      </div>
+
+
+      <!-- ABOUT -->
+      <div class="footer-column">
+
+        <h4>
+          عن المنصة
+        </h4>
+
+        <a href="../2-about/about.html">
+          عن نيكسو
+        </a>
+
+      </div>
+
+
+      <!-- SERVICES -->
+      <div class="footer-column">
+
+        <h4>
+          الخدمات
+        </h4>
+
+        <a href="../3-talents/talents.html">
+          استكشاف المواهب
+        </a>
+
+        <a href="../4-teams/teams.html">
+          الفرق والجهات
+        </a>
+
+        <a href="../5-opportunities/opportunities.html">
+          الفرص
+        </a>
+
+      </div>
+
+
+      <!-- SOCIAL -->
+      <div class="social-links">
+
+        <a
+          href="#"
+          aria-label="X"
+        >
+          𝕏
+        </a>
+
+        <a
+          href="#"
+          aria-label="TikTok"
+        >
+          ♪
+        </a>
+
+        <a
+          href="#"
+          aria-label="Instagram"
+        >
+          ◎
+        </a>
+
+        <a
+          href="#"
+          aria-label="LinkedIn"
+        >
+          in
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER BOTTOM -->
+    <div class="container footer-bottom">
+
+      <span>
+        © 2026 NEXO. جميع الحقوق محفوظة
+      </span>
+
+      <a href="mailto:Nexo.team5@gmail.com">
+        Nexo.team5@gmail.com
+      </a>
+
+    </div>
+
+
+  </footer>
+
+
+  <script src="../assets/js/site-header.js"></script>
+  <script src="home.js"></script>
+
+</body>
+
+</html>

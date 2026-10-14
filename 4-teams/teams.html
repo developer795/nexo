@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفرق والجهات | NEXO</title>
+  <link rel="icon" type="image/svg+xml" href="../public/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="teams.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container navbar">
+      <a class="logo" href="../1-home/home.html" aria-label="NEXO"><img src="../src/assets/avatars/nexo.png" alt="NEXO" /></a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة" aria-controls="navLinks" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="navLinks" aria-label="التنقل الرئيسي">
+        <a href="../1-home/home.html">الرئيسية</a>
+        <a href="../3-talents/talents.html">المواهب</a>
+        <a href="teams.html" class="active">الفرق والجهات</a>
+        <a href="../5-opportunities/opportunities.html">الفرص</a>
+        <a href="../2-about/about.html">عن نيكسو</a>
+      </nav>
+      <button class="main-button login-button" id="loginBtn">تسجيل دخول</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="container">
+      <div class="page-head">
+        <h1>الفرق والجهات</h1>
+        <p>استكشف مختلف الفرق والجهات في الرياضات الإلكترونية</p>
+      </div>
+
+      <div class="filters">
+        <div class="tabs" id="tabs"></div>
+        <div class="selects">
+          <select class="select" id="cityFilter" aria-label="المدينة"></select>
+        </div>
+      </div>
+
+      <div class="cards-grid" id="grid"></div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-main-logo"><img src="../assets/image copy 6.png" alt="NEXO" /></div>
+      <div class="footer-column">
+        <h4>عن المنصة</h4>
+        <a href="../2-about/about.html">عن نيكسو</a>
+      </div>
+      <div class="footer-column">
+        <h4>الخدمات</h4>
+        <a href="../3-talents/talents.html">استكشاف المواهب</a>
+        <a href="../4-teams/teams.html">الفرق والجهات</a>
+        <a href="../5-opportunities/opportunities.html">الفرص</a>
+      </div>
+      <div class="social-links">
+        <a href="#" aria-label="X">𝕏</a>
+        <a href="#" aria-label="TikTok">♪</a>
+        <a href="#" aria-label="Instagram">◎</a>
+        <a href="#" aria-label="LinkedIn">in</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 NEXO. جميع الحقوق محفوظة</span>
+      <a href="mailto:Nexo.team5@gmail.com">Nexo.team5@gmail.com</a>
+    </div>
+  </footer>
+
+  <script src="../assets/js/saudi-cities.js"></script>
+  <script src="../assets/js/site-header.js"></script>
+  <script src="teams.js"></script>
+</body>
+</html>
