@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEXO – ملف الموهبة (صاحب الحساب)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="top">
+ <a class="logo" href="talent-owner.html" aria-label="NEXO"><img src="assets/nexo-logo.png" alt="NEXO"></a>
+ <div class="search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="البحث" aria-label="البحث"></div>
+ <div class="links"><a href="talent-owner.html">الرئيسية</a><a href="talent-visitor.html">المواهب</a><a href="entity-visitor.html">الفرق والجهات</a><a href="create-opportunity.html">الفرص</a></div>
+ <div class="nav-av" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+</nav>
+<main>
+
+<div class="card"><button class="pen" aria-label="تعديل الملف"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+ <div class="banner" style="background-image:linear-gradient(120deg,var(--primary-100),var(--primary-80))"></div>
+ <div class="head"><div class="av-lg"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <div class="info"><h1></h1></div></div>
+ <div class="stats"><div><div class="ring"><i>0%</i></div>اكتمال الملف</div><div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><b>0</b>المشاهدات</div><div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><b>0</b>شبكة التواصل</div></div>
+</div>
+<section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">نبذة</h2><p class="bio"></p></section>
+<section class="card pad"><div class="sec-head"><div><h2 class="sec">منشورات</h2><div class="sub">0 منشورات</div></div><span class="post-btn-holder"><button class="btn o" onclick="openM()"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg> إنشاء منشور</button></span></div>
+ <div class="grid3" id="postGrid"></div></section>
+<section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">أبرز البثوث</h2></section>
+<section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">المنصات</h2></section>
+</main>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+ <div class="box"><header><h3 id="mt">إنشاء منشور</h3><button class="x" aria-label="إغلاق" onclick="closeM()">✕</button></header>
+  <textarea id="ptxt" placeholder="شارك أفكارك مع مجتمع نيكسو"></textarea>
+  <button class="btn" id="pubBtn" onclick="publishPost()" disabled>نشر</button></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="common.js"></script>
+
+</body>
+</html>
