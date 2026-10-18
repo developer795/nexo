@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
+    "i18next": "^26.4.6",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.18",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
