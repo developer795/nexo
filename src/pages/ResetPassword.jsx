@@ -34,7 +34,7 @@ function ResetPassword() {
           // وجود جلسة وحده لا يكفي لإثبات أن الرابط رابط استعادة
           const isRecoveryLink =
   sessionStorage.getItem('nexo_password_recovery') === 'true' &&
-  window.location.pathname === '/recovery.html'
+  ['/recovery.html', '/recovery'].includes(window.location.pathname)
 
           if (isRecoveryLink) {
             setCanReset(true)
