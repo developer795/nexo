@@ -242,3 +242,13 @@ if (tabs) {
 setupFilters();
 
 renderTeams();
+
+/* زر تسجيل الدخول: يفتح صفحة الدخول (المسار الوحيد، ثم MFA) */
+(function () {
+  var login = document.getElementById("loginBtn");
+  if (login) {
+    login.addEventListener("click", function () {
+      window.location.href = "/auth.html#/login";
+    });
+  }
+})();
