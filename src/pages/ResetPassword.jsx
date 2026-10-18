@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, recoveryLinkInfo } from '../lib/supabase'
 import nexoLogo from '../assets/nexo-logo.png'
 import './Login.css'
 
@@ -30,17 +30,12 @@ function ResetPassword() {
 
         if (sessionError) {
           setError('تعذر التحقق من رابط الاستعادة')
-        } else if (data.session) {
-          // وجود جلسة وحده لا يكفي لإثبات أن الرابط رابط استعادة
-          const isRecoveryLink =
-  sessionStorage.getItem('nexo_password_recovery') === 'true' &&
-  ['/recovery.html', '/recovery'].includes(window.location.pathname)
-
-          if (isRecoveryLink) {
-            setCanReset(true)
-          } else {
-            setError('رابط الاستعادة غير صالح أو انتهت صلاحيته')
-          }
+        } else if (
+          data.session &&
+          recoveryLinkInfo.isRecovery &&
+          !recoveryLinkInfo.hasError
+        ) {
+          setCanReset(true)
         } else {
           setError('رابط الاستعادة غير صالح أو انتهت صلاحيته')
         }
@@ -108,7 +103,6 @@ function ResetPassword() {
 
       setCompleted(true)
       setCanReset(false)
-      sessionStorage.removeItem('nexo_password_recovery')
       setSuccess('تم تغيير كلمة المرور بنجاح!')
 
       await supabase.auth.signOut()
