@@ -1,0 +1,360 @@
+
+* {
+  box-sizing: border-box;
+}
+
+.register-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding: 35px 20px 60px;
+  background: #ffffff;
+  color: #111111;
+  font-family: Arial, sans-serif;
+  direction: rtl;
+}
+
+/* Logo */
+
+.register-logo {
+  position: absolute;
+  top: 35px;
+  right: 5%;
+  z-index: 2;
+}
+
+.register-logo img {
+  display: block;
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Card */
+
+.register-card {
+  width: 100%;
+  max-width: 570px;
+  margin: 125px auto 0;
+  padding: 38px 36px;
+  background: #ffffff;
+  border: 1px solid #dfe2e7;
+  border-radius: 9px;
+}
+
+.register-card h1 {
+  margin: 0 0 5px;
+  color: #111111;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.register-subtitle {
+  margin: 0 0 30px;
+  color: #999999;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Form */
+
+.register-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.register-card form > label,
+.register-birth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #111111;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Inputs and selects */
+
+.register-card input:not([type="checkbox"]),
+.register-card select {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  background: #ffffff;
+  border: 1px solid #d9dce3;
+  border-radius: 8px;
+  color: #222222;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register-card input:not([type="checkbox"]):focus,
+.register-card select:focus {
+  border-color: #211d4e;
+  box-shadow: 0 0 0 3px rgba(33, 29, 78, 0.07);
+}
+
+.register-card input::placeholder {
+  color: #aaaaaa;
+}
+
+/* Birth date */
+
+.register-birth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: 10px;
+}
+
+.register-birth-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+}
+
+.register-birth-grid select {
+  cursor: pointer;
+  direction: rtl;
+  padding: 0 9px;
+}
+
+.register-field-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Password rules */
+
+.password-requirements {
+  margin-top: -8px;
+  padding: 12px 14px;
+  background: #f8f8fa;
+  border-radius: 7px;
+  color: #777777;
+}
+
+.password-requirements p {
+  margin: 0 0 9px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.password-requirements ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.password-requirements li {
+  position: relative;
+  padding-inline-start: 17px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.password-requirements li::before {
+  content: "○";
+  position: absolute;
+  inset-inline-start: 0;
+  color: #999999;
+  font-weight: 900;
+}
+
+.password-requirements li.valid {
+  color: #138a3d;
+}
+
+.password-requirements li.valid::before {
+  content: "✓";
+  color: #138a3d;
+}
+
+/* Terms */
+
+.register-card form > label.register-terms {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  color: #666666;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.register-terms input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #211d4e;
+  cursor: pointer;
+}
+
+/* Errors */
+
+.register-field-error {
+  display: block;
+  margin-top: -10px;
+  color: #d93025;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.register-card input.input-error {
+  border-color: #d93025;
+}
+
+.register-server-error {
+  padding: 10px 12px;
+  background: #fff4f3;
+  color: #d93025;
+  border: 1px solid #ffd6d2;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Submit */
+
+.register-submit {
+  width: 100%;
+  height: 50px;
+  margin-top: 2px;
+  border: none;
+  border-radius: 30px;
+  background: #211d4e;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.register-submit:hover {
+  background: #36316b;
+}
+
+.register-submit:active {
+  transform: scale(0.99);
+}
+
+.register-submit:disabled,
+.register-login button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Login link */
+
+.register-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.register-login span {
+  color: #999999;
+}
+
+.register-login button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #211d4e;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.register-login button:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+
+@media (max-width: 650px) {
+  .register-page {
+    padding: 20px 16px 40px;
+  }
+
+  .register-logo {
+    top: 55px;
+    right: 16px;
+  }
+
+  .register-logo img {
+    width: 150px;
+  }
+
+  .register-card {
+    margin-top: 135px;
+    padding: 28px 20px;
+  }
+
+  .register-card h1 {
+    font-size: 26px;
+  }
+
+  .register-subtitle {
+    margin-bottom: 25px;
+    font-size: 12px;
+  }
+
+  .register-card form {
+    gap: 16px;
+  }
+
+  .register-card input:not([type="checkbox"]),
+  .register-card select {
+    height: 48px;
+  }
+
+  .register-birth-grid {
+    gap: 6px;
+  }
+
+  .register-birth-grid select {
+    padding: 0 5px;
+    font-size: 12px;
+  }
+
+  .password-requirements ul {
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-logo img {
+    width: 125px;
+  }
+
+  .register-card {
+    padding: 24px 15px;
+  }
+
+  .register-card h1 {
+    font-size: 24px;
+  }
+}
