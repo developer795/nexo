@@ -1,0 +1,430 @@
+* {
+  box-sizing: border-box;
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.verify-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 35px 20px 60px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-family: Arial, sans-serif;
+}
+
+/* =========================
+   NEXO LOGO
+========================= */
+
+.verify-logo {
+  position: absolute;
+  top: 35px;
+  right: 5%;
+
+  z-index: 2;
+}
+
+.verify-logo img {
+  display: block;
+
+  width: 220px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+/* =========================
+   LANGUAGE
+========================= */
+
+.verify-language {
+  position: absolute;
+  top: 40px;
+  left: 5%;
+  right: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 6px 12px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e1e7;
+  border-radius: 24px;
+
+  z-index: 3;
+}
+
+.verify-language button {
+  padding: 3px 5px;
+
+  border: none;
+  background: transparent;
+
+  color: #999999;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.verify-language button:hover {
+  color: #211d4e;
+}
+
+.verify-language button.selected {
+  color: #211d4e;
+  font-weight: 800;
+}
+
+.verify-language span {
+  color: #d1d1d8;
+}
+
+/* =========================
+   VERIFICATION CARD
+========================= */
+
+.verify-card {
+  width: 100%;
+  max-width: 570px;
+
+  margin: 180px auto 0;
+  padding: 42px 36px;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe2e7;
+  border-radius: 9px;
+
+  text-align: center;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.verify-card h1 {
+  margin: 0 0 8px;
+
+  color: #111111;
+
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+.verify-subtitle {
+  max-width: 430px;
+
+  margin: 0 auto 8px;
+
+  color: #999999;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+
+  text-align: center;
+}
+
+.verify-email {
+  margin: 0 0 30px;
+
+  color: #211d4e;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+
+  direction: ltr;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.verify-card form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.verify-card form label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  color: #111111;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: start;
+}
+
+/* =========================
+   CODE INPUT
+========================= */
+
+.verify-card input {
+  width: 100%;
+  height: 54px;
+
+  padding: 0 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #d9dce3;
+  border-radius: 8px;
+
+  color: #211d4e;
+
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+
+  letter-spacing: 10px;
+
+  text-align: center;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.verify-card input::placeholder {
+  color: #aaaaaa;
+
+  font-size: 14px;
+  font-weight: 400;
+
+  letter-spacing: normal;
+}
+
+.verify-card input:focus {
+  border-color: #211d4e;
+
+  box-shadow:
+    0 0 0 3px rgba(33, 29, 78, 0.07);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.verify-card input.input-error {
+  border-color: #d93025;
+}
+
+.verify-card input.input-error:focus {
+  border-color: #d93025;
+
+  box-shadow:
+    0 0 0 3px rgba(217, 48, 37, 0.08);
+}
+
+.verify-error {
+  display: block;
+
+  color: #d93025;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  text-align: start;
+}
+
+/* =========================
+   RESEND CODE
+========================= */
+
+.verify-resend {
+  align-self: flex-start;
+
+  padding: 3px 0;
+
+  border: none;
+  background: transparent;
+
+  color: #211d4e;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.verify-resend:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   CONTINUE BUTTON
+========================= */
+
+.verify-submit {
+  width: 100%;
+  height: 50px;
+
+  margin-top: 18px;
+
+  border: none;
+  border-radius: 30px;
+
+  background: #211d4e;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.verify-submit:hover:not(:disabled) {
+  background: #36316b;
+}
+
+/* نفس تصميم فيقما:
+   الزر يكون رمادي لين المستخدم يدخل 6 أرقام */
+
+.verify-submit:disabled {
+  background: #dfe2e7;
+  color: #999999;
+
+  opacity: 1;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.verify-back {
+  margin-top: 20px;
+
+  padding: 3px;
+
+  border: none;
+  background: transparent;
+
+  color: #999999;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.verify-back:hover {
+  color: #211d4e;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .verify-card {
+    margin-top: 160px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+  .verify-page {
+    padding: 20px 16px 40px;
+  }
+
+  .verify-logo {
+    top: 65px;
+    right: 16px;
+  }
+
+  .verify-logo img {
+    width: 150px;
+  }
+
+  .verify-language {
+    top: 18px;
+    left: 16px;
+    right: auto;
+  }
+
+  .verify-card {
+    margin-top: 155px;
+
+    padding: 30px 20px;
+  }
+
+  .verify-card h1 {
+    font-size: 26px;
+  }
+
+  .verify-subtitle {
+    font-size: 12px;
+  }
+
+  .verify-card input {
+    height: 52px;
+
+    font-size: 19px;
+    letter-spacing: 8px;
+  }
+
+  .verify-submit {
+    height: 49px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 360px) {
+  .verify-logo img {
+    width: 125px;
+  }
+
+  .verify-card {
+    padding: 26px 16px;
+  }
+
+  .verify-card h1 {
+    font-size: 24px;
+  }
+
+  .verify-card input {
+    letter-spacing: 6px;
+  }
+}
