@@ -399,25 +399,25 @@ img {
 .ch {
   position: absolute;
 
-  width: 52px;
+  width: 96px;
 
   animation: floaty 5s ease-in-out infinite;
 }
 
 .ch-yellow {
-  right: 24%;
+  right: 36%;
   bottom: 8px;
 }
 
 .ch-green {
-  right: 45%;
+  right: 68%;
   bottom: 7px;
 
   animation-delay: -2s;
 }
 
 .ch-orange {
-  right: 10%;
+  right: -17%;
   bottom: 7px;
 
   animation-delay: -3.5s;
@@ -1406,7 +1406,7 @@ img {
 
 
   .ch {
-    width: 44px;
+    width: 60px;
   }
 
 
