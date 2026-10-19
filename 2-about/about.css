@@ -343,3 +343,52 @@ body { font-size: 14px; }
   .nav-links a { height: auto; padding: 14px 0; border-bottom: 1px solid #f0f0f3; font-size: 14px; }
   .nav-links a.active::after { display: none; }
 }
+
+/* About hero character layout */
+.about-hero {
+  min-height: 455px;
+  padding: 40px 20px;
+}
+
+.about-hero-title {
+  max-width: 520px;
+  font-size: clamp(24px, 3.4vw, 32px);
+  line-height: 1.5;
+}
+
+.float-av {
+  display: block !important;
+  height: auto !important;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  animation: floaty 6s ease-in-out infinite;
+}
+
+.about-hero .fa-1 { width: 90px !important; top: 12%; left: 7.7%; }
+.about-hero .fa-2 { width: 70px !important; top: 6.5%; left: 39.2%; }
+.about-hero .fa-3 { width: 96px !important; top: 10.5%; right: 11%; }
+.about-hero .fa-4 { width: 84px !important; bottom: 16%; left: 15.5%; }
+.about-hero .fa-5 { width: 84px !important; bottom: 9%; left: 47%; }
+.about-hero .fa-6 { width: 84px !important; bottom: 22%; right: 7%; }
+
+@media (max-width: 900px) {
+  .about-hero { min-height: 400px; }
+  .about-hero .fa-1 { width: 72px !important; }
+  .about-hero .fa-2 { width: 58px !important; }
+  .about-hero .fa-3 { width: 76px !important; }
+  .about-hero .fa-4,
+  .about-hero .fa-5,
+  .about-hero .fa-6 { width: 68px !important; }
+}
+
+@media (max-width: 560px) {
+  .about-hero { min-height: 360px; padding: 40px 16px; }
+  .about-hero-title { font-size: 24px; }
+  .about-hero .fa-1 { width: 58px !important; top: 8%; left: 7%; }
+  .about-hero .fa-2 { width: 48px !important; top: 5%; left: 43%; }
+  .about-hero .fa-3 { width: 62px !important; top: 8%; right: 7%; }
+  .about-hero .fa-4 { width: 56px !important; bottom: 10%; left: 8%; }
+  .about-hero .fa-5 { width: 56px !important; bottom: 5%; left: 43%; }
+  .about-hero .fa-6 { width: 56px !important; bottom: 10%; right: 7%; }
+}
