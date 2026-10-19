@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXO | الملف الشخصي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <img class="logo" src="images/logo.png" alt="NEXO">
+  <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>البحث</span></div>
+  <nav><a href="#">الرئيسية</a><a href="#" id="tabTalents" class="on">المواهب</a><a href="#">الفرق والجهات</a><a href="#">الفرص</a></nav>
+  <img class="me" id="me" alt="">
+</header>
+
+<main id="app" class="wrap"></main>
+
+<details class="pages"><summary>الصفحات · v2</summary>
+  <a href="#twis-own">21 · ملف لاعب (ملفي)</a>
+  <a href="#twis-own-modal">22 · انشاء منشور</a>
+  <a href="#the10s">23 · ملف لاعب (زائر)</a>
+  <a href="#khaled-own">24 · صانع محتوى (ملفي)</a>
+  <a href="#khaled">25 · صانع محتوى (زائر)</a>
+</details>
+
+<div id="modal" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-label="انشاء منشور">
+    <button id="close" aria-label="إغلاق">✕</button><h3>انشاء منشور</h3>
+    <textarea id="postText" maxlength="500" placeholder="شارك أفكارك مع مجتمع نيكسو"></textarea>
+    <button id="publish" class="btn" disabled>نشر</button>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
