@@ -11,12 +11,7 @@
 
     login.addEventListener("click", function () {
 
-      /*
-        لاحقاً نربط هذا الزر
-        بصفحة تسجيل الدخول الحقيقية.
-      */
-
-      alert("سيتم ربط صفحة تسجيل الدخول لاحقاً.");
+      window.location.href = "/auth.html#/login";
 
     });
 

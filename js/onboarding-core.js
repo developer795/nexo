@@ -1,5 +1,5 @@
-// after account creation: opens the site. Change this path if you move the folders
-const DONE_URL='../nexo-pages-16-20/page-16-home.html';
+// بعد إنهاء الأونبوردنق: صفحة الدخول (ثم MFA ثم الـ Dashboard)
+const DONE_URL='/auth.html#/login';
 const $=s=>document.querySelector(s);
 const CITIES=['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','تبوك','أبها','خميس مشيط','بريدة','عنيزة','حائل','جازان','نجران','ينبع','الباحة','عرعر','سكاكا'];
 const SEL={k:'city',l:'الموقع',ph:'المدينة',sel:1};
