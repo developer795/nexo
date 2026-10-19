@@ -1,0 +1,5 @@
+v='home';
+V.home=function(){const m=D.me,has=m.n;return`<div class="hm"><aside class="side">${has?`<div class="card pf"><div class="cv" ${cv(m.cv)}></div>${ph(m.ph,m.n)}<h3>${E(m.n)}</h3><p class="r">${E(m.role)}</p>${m.g?`<span class="tg">${E(m.g)}</span>`:''}<div class="ft"><span>${PIN} ${E(m.city)}</span><span class="bd ${m.s===STS[0]?'gr':'nu'}">${E(m.s)}</span></div></div>`:''}
+ <div class="card" style="padding:14px 12px;margin-top:${has?12:0}px;display:grid;gap:10px">${has?'':`<button class="nb" onclick="F_('me')">أنشئ ملفك</button>`}<button class="nb" onclick="${has?"F_('posts')":"F_('me')"}">ابدا منشورك ${PEN}</button>${has?`<button class="nb" style="background:#fff;color:#201F49;border:1px solid #201F49" onclick="F_('me')">تعديل الملف</button>`:''}</div></aside>
+ <section class="feed">${D.posts.filter(hit).map(p=>`<article class="card post"><div class="ph2">${pic(p.a,p.n)}<div><h4>${E(p.n)}</h4><p>${E(p.r)}</p></div></div><p>${E(p.t)}</p>${p.im?`<img src="${p.im}" alt="" style="display:block;max-width:260px;width:100%;border-radius:8px;margin:14px 0 0 auto">`:''}</article>`).join('')||em('لا توجد منشورات بعد')}</section></div>`};
+R();

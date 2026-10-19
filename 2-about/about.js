@@ -3,7 +3,7 @@
   var login = document.getElementById("loginBtn");
   if (login) {
     login.addEventListener("click", function () {
-      alert("صفحة تسجيل الدخول غير مضمّنة في هذا التسليم.");
+      window.location.href = "/auth.html#/login";
     });
   }
 

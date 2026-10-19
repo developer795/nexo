@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEXO – ملف الموهبة (زائر)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dash-profile.css">
+
+<!-- إخفاء الصفحة حتى يتم التحقق من تسجيل الدخول -->
+<style>html{visibility:hidden}</style>
+
+<!-- حماية الصفحة: تسجيل الدخول + MFA -->
+<script type="module" src="js/auth-guard.js"></script>
+</head>
+<body>
+<nav class="top">
+ <a class="logo" href="dash-home.html" aria-label="NEXO"><img src="assets/logo.png" alt="NEXO"></a>
+ <div class="search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="البحث" aria-label="البحث"></div>
+ <div class="links"><a href="dash-home.html">الرئيسية</a><a href="dash-talents.html">المواهب</a><a href="dash-teams.html">الفرق والجهات</a><a href="dash-opportunities.html">الفرص</a></div>
+ <div class="nav-av" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+</nav>
+<main>
+<div class="crumb">المواهب <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 18-6-6 6-6"/></svg></div>
+<div class="card">
+ <div class="banner" style="background-image:linear-gradient(120deg,var(--primary-100),var(--primary-80))"></div>
+ <div class="head"><div class="av-lg"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <div class="info"><h1></h1></div></div>
+ <div class="stats"><div><button class="btn" onclick="toast('تم إرسال طلب التواصل')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg> تواصل</button></div><div><button class="btn o" onclick="toast('فتح المراسلة')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> مراسلة</button></div><div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><b>0</b>شبكة التواصل</div></div>
+</div>
+<section class="card pad"><h2 class="sec">نبذة</h2><p class="bio"></p></section>
+<section class="card pad"><div class="sec-head"><div><h2 class="sec">منشورات</h2><div class="sub">0 منشورات</div></div></div>
+ <div class="grid3" id="postGrid"></div></section>
+<section class="card pad"><h2 class="sec">أبرز البثوث</h2></section>
+<section class="card pad"><h2 class="sec">المنصات</h2></section>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="js/profile-common.js"></script>
+
+</body>
+</html>
