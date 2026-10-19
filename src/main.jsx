@@ -18,6 +18,21 @@ import VerifyEmail from './pages/VerifyEmail.jsx'
 import MFA from './pages/MFA.jsx'
 
 
+// رجوع المستخدم من Google: نقرأ الرابط قبل ما Supabase يمسحه
+const isOAuthReturn =
+  window.location.hash.includes('access_token=') ||
+  new URLSearchParams(window.location.search).has('code')
+
+// getSession ينتظر Supabase يخلص معالجة التوكن من الرابط، وبعدها
+// نحوّل مباشرة لصفحة MFA (نفس مسار الدخول بكلمة المرور)
+if (isOAuthReturn) {
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      window.location.replace('/auth.html#/mfa')
+    }
+  })
+}
+
 function RecoveryRedirect() {
   const navigate = useNavigate()
 
