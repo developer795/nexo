@@ -76,7 +76,7 @@ function Login() {
         await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${window.location.origin}/recovery.html`
+            redirectTo: `${window.location.origin}/auth.html`
           }
         })
 
