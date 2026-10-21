@@ -34,6 +34,19 @@ async function checkAuthentication() {
       return
     }
 
+    // 3.5 رابط "ملفي" يعتمد على نوع الحساب (فرد أو جهة)
+    const profileUrl =
+      data.user.user_metadata?.account_type === 'entity'
+        ? 'dash-entity-profile.html'
+        : 'dash-talent-profile.html'
+
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('[data-profile]')
+      if (!a) return
+      e.preventDefault()
+      window.location.href = profileUrl
+    })
+
     // 4. إظهار Dashboard بعد نجاح جميع الفحوصات
     document.documentElement.style.visibility = 'visible'
 
