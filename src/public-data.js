@@ -72,7 +72,7 @@ async function load() {
   const [t, tm, o] = await Promise.all([
     supabase.from('talents').select('id,name,role,game,city,status,avatar_url').order('created_at', { ascending: false }),
     supabase.from('teams').select('id,name,type,description,city,logo_url').order('created_at', { ascending: false }),
-    supabase.from('opportunities').select('id,team_id,title,org,logo_url,type,audience,game,city,deadline,applicants_count').order('created_at', { ascending: false }),
+    supabase.from('nexo_opportunities').select('id,team_id,title,org,logo_url,type,audience,game,city,deadline,applicants_count').order('created_at', { ascending: false }),
   ])
   for (const r of [t, tm, o]) if (r.error) throw r.error
 

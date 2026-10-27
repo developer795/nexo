@@ -6,7 +6,7 @@
 // =====================================================================
 import { supabase } from '../../src/lib/supabase.js'
 
-const BUCKET = 'media'
+const BUCKET = 'nexo-media'
 const OT = ['عقد عمل', 'تدريب تعاوني', 'تدريب مهني', 'حملة اعلانية', 'مشاركة في البطولة']
 
 // ---------- تحويل الصفوف إلى شكل البيانات اللي تستخدمه الواجهة ----------
@@ -109,7 +109,7 @@ export function createDB(user) {
     return data.map(postFromRow)
   }
   async function listOpps(filter = {}) {
-    let q = supabase.from('opportunities').select('*').order('created_at', { ascending: false })
+    let q = supabase.from('nexo_opportunities').select('*').order('created_at', { ascending: false })
     if (filter.created_by) q = q.eq('created_by', filter.created_by)
     if (filter.team_id) q = q.eq('team_id', filter.team_id)
     const [{ data, error }, { data: mine }] = await Promise.all([
@@ -152,7 +152,7 @@ export function createDB(user) {
       type: OT.includes(o.type) ? o.type : OT[0], audience: o.aud, game: o.g || null,
       city: o.city || null, deadline: o.due || null, details: o.d,
     }
-    const { data, error } = await supabase.from('opportunities').insert(row).select('id').single()
+    const { data, error } = await supabase.from('nexo_opportunities').insert(row).select('id').single()
     fail(error, 'تعذر نشر الفرصة')
     return data.id
   }
