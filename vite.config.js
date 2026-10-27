@@ -33,6 +33,7 @@ export default defineConfig({
         dashEntityProfile: r('nexo-dashboard/dash-entity-profile.html'),
         dashEntityVisitor: r('nexo-dashboard/dash-entity-visitor.html'),
         dashCreateOpportunity: r('nexo-dashboard/dash-create-opportunity.html'),
+        dashPayment: r('nexo-dashboard/dash-payment.html'),
       },
     },
   },

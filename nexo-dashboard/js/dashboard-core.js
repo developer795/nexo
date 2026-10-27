@@ -14,15 +14,27 @@ const pic=(s,n)=>U(s)?`<img src="${E(U(s))}" alt="">`:`<b class="ini">${ini(n)}<
 const ph=(s,n)=>U(s)?`<img class="ph" src="${E(U(s))}" alt="">`:`<div class="ph" style="background:#201F49">${ini(n)}</div>`;
 const cv=s=>`style="background:${U(s)?`#000 url(&quot;${E(U(s))}&quot;) center/cover`:'#000'}"`;
 let v='',cur=0,Q='';const F={talents:'',teams:'',opps:''},X={talents:{},teams:{},opps:{}};
-const hit=o=>!Q||JSON.stringify(o).includes(Q);
+const txt=o=>[o.n,o.role,o.g,o.city,o.s,o.title,o.org,o.type,o.aud,o.d,o.t,o.r,o.sub,o.bio].filter(Boolean).join(' ').toLowerCase();
+const hit=o=>!Q||txt(o).includes(Q.toLowerCase());
 const CITIES=['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','بريدة','عنيزة','الرس','حائل','تبوك','أبها','خميس مشيط','بيشة','نجران','جازان','صبيا','أبو عريش','ينبع','رابغ','الليث','القنفذة','الباحة','سكاكا','دومة الجندل','عرعر','رفحاء','طريف','القريات','حفر الباطن','الخرج','الدرعية','الزلفي','المجمعة','شقراء','الدوادمي','وادي الدواسر','الأفلاج','العلا','الوجه','ضباء','تيماء','خيبر','شرورة','محايل عسير','بقيق','رأس تنورة','النعيرية'];
 const CL=c=>c&&!CITIES.includes(c)?[...CITIES,c]:CITIES;
 const cities=k=>[...new Set([...CITIES,...D[k].map(x=>x.city).filter(Boolean)])];
-const sel=(k,n,p,ops)=>`<select aria-label="${p}" onchange="X.${k}.${n}=this.value;R()"><option value="">${p}</option>${ops.map(o=>`<option ${X[k][n]===o?'selected':''}>${E(o)}</option>`).join('')}</select>`;
+const CHEV='<svg width="12" height="12" fill="none" stroke="#797992" stroke-width="1.6" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>';
+/* قائمة منسدلة بنفس تصميم فيجما: الكلمة تلميح وما تطلع ضمن الخيارات، واختيار نفس الخيار مرة ثانية يلغيه */
+const sel=(k,n,p,ops,lab)=>{const val=X[k][n]||'',L=x=>(lab&&lab[x])||x;return`<div class="dsel${val?' on':''}"><button type="button" class="dsb" aria-haspopup="listbox" aria-expanded="false" aria-label="${p}" onclick="DS(this)"><span>${E(val?L(val):p)}</span>${CHEV}</button><div class="dsl" role="listbox" hidden>${ops.map(o=>`<button type="button" role="option" aria-selected="${val===o}" class="dso${val===o?' on':''}" data-v="${E(o)}" onclick="DSS('${k}','${n}',this.dataset.v)">${E(L(o))}</button>`).join('')}</div></div>`};
+function DS(b){const l=b.nextElementSibling,open=l.hidden;document.querySelectorAll('.dsl').forEach(x=>{x.hidden=true;x.previousElementSibling.setAttribute('aria-expanded','false')});if(open){l.hidden=false;b.setAttribute('aria-expanded','true')}}
+function DSS(k,n,v){X[k][n]=X[k][n]===v?'':v;R()}
+document.addEventListener('click',e=>{if(!e.target.closest('.dsel'))document.querySelectorAll('.dsl').forEach(x=>x.hidden=true)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.dsl').forEach(x=>x.hidden=true)});
+const SL={'يبحث عن فريق':'يبحث عن فرصة'};
+/* أسماء أنواع الفرص كما تظهر للمستخدم (القيم المحفوظة في Supabase ما تتغير) */
+const OTL={'حملة اعلانية':'حملة إعلانية','مشاركة في البطولة':'مشاركة في بطولة'},otl=x=>OTL[x]||x;
+/* الاشتراك في الباقة العليا (واجهة فقط، يتحفظ في المتصفح) */
+const SUB=()=>{try{return JSON.parse(localStorage.getItem('nexo_sub'))}catch(e){return null}};
 const bar=(k,ch,key,dd)=>`<div class="fl">${ch.map(([l,x])=>`<button class="ch ${F[k]===x?'on':''}" onclick="F.${k}='${x}';R()">${l} (${x?D[k].filter(i=>i[key]===x).length:D[k].length})</button>`).join('')}<div class="dd">${dd}</div></div>`;
 const head=(t,s)=>`<h1>${t}</h1><p class="sb">${s}</p>`;
-const em=m=>`<p class="empty">${m}<br>اضغط على زر + لإضافة أول عنصر</p>`;
-const STS=['يبحث عن فريق','منضم لفريق'],ROLES=['لاعب','صانع محتوى','ستريمر'],OT=['عقد عمل','تدريب تعاوني','تدريب مهني','حملة اعلانية','مشاركة في البطولة'];
+const em=m=>`<p class="empty">${m}</p>`;
+const STS=['يبحث عن فريق','منضم لفريق'],ROLES=['لاعب','صانع محتوى','ستريمر'],OT=['عقد عمل','تدريب تعاوني','حملة اعلانية','مشاركة في البطولة','تدريب مهني'];
 const V={};
 async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap)return;o.ap=1;o.n++;R();
  try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;alert(e.message)}R()}
@@ -36,14 +48,26 @@ const FM={
 // تصغير الصورة قبل الرفع (يرجع Blob)
 const rz=(f,w)=>new Promise(r=>{if(!f||!f.size)return r(null);const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const s=Math.min(1,w/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>r(b),f.type==='image/png'&&w<=300?'image/png':'image/jpeg',.78)};i.onerror=()=>r(null);i.src=u});
 function F_(k){if(!LOADED)return;if(k==='posts'&&!D.me.n)k='me';if(k==='me'&&nexoDB.kind==='team')k='meTeam';const[t,ok,f,add]=FM[k],m=k.startsWith('me')?D.me:{};
- $('#fm').innerHTML=`<h2>${t}</h2>`+f.map(([n,ty,l,op,opt])=>`<label for="f${n}">${l}</label>`+(ty==='textarea'?`<textarea id="f${n}" name="${n}" ${opt?'':'required'} placeholder="${l}">${E(m[n]||'')}</textarea>`:ty==='city'?`<select id="f${n}" name="${n}" required><option value="" disabled ${m[n]?'':'selected'}>اختر المدينة</option>${CL(m[n]).map(x=>`<option ${m[n]===x?'selected':''}>${E(x)}</option>`).join('')}</select>`:ty==='select'?`<select id="f${n}" name="${n}">${op.map(x=>`<option ${m[n]===x?'selected':''}>${x}</option>`).join('')}</select>`:ty==='file'?`<input id="f${n}" name="${n}" type="file" accept="image/*">`:`<input id="f${n}" name="${n}" type="${ty}" value="${E(m[n]||'')}" ${opt?'':'required'} placeholder="${l}">`)).join('')+`<div class="ac"><button class="ok">${ok}</button><button type="button" onclick="$('#dlg').close()">إلغاء</button></div>`;
+ $('#fm').innerHTML=`<h2>${t}</h2>`+f.map(([n,ty,l,op,opt])=>`<label for="f${n}">${l}</label>`+(ty==='textarea'?`<textarea id="f${n}" name="${n}" ${opt?'':'required'} placeholder="${l}">${E(m[n]||'')}</textarea>`:ty==='city'?`<select id="f${n}" name="${n}" required><option value="" disabled hidden ${m[n]?'':'selected'}>المدينة</option>${CL(m[n]).map(x=>`<option ${m[n]===x?'selected':''}>${E(x)}</option>`).join('')}</select>`:ty==='select'?`<select id="f${n}" name="${n}">${op.map(x=>`<option ${m[n]===x?'selected':''}>${x}</option>`).join('')}</select>`:ty==='file'?`<input id="f${n}" name="${n}" type="file" accept="image/*">`:`<input id="f${n}" name="${n}" type="${ty}" value="${E(m[n]||'')}" ${opt?'':'required'} placeholder="${l}">`)).join('')+`<div class="ac"><button class="ok">${ok}</button><button type="button" onclick="$('#dlg').close()">إلغاء</button></div>`;
  $('#fm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('.ok');if(b.disabled)return;b.disabled=true;const lbl=b.textContent;b.textContent='جاري الحفظ...';
   try{const o={};for(const[n,x]of new FormData(e.target).entries())o[n]=x instanceof File?await nexoDB.upload(await rz(x,n==='ph'?300:900)):String(x).trim();
    await add(o);await load();$('#dlg').close();R()}
   catch(err){console.error(err);alert(err.message||'حدث خطأ، حاول مرة ثانية')}
   finally{b.disabled=false;b.textContent=lbl}};$('#dlg').showModal()}
-function R(){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===(v==='detail'?'opps':v)));
+function R(){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===({detail:'opps',pay:'opps'}[v]||v)));
  $('#mew').innerHTML=U(D.me.ph)?`<img class="me" src="${E(U(D.me.ph))}" alt="ملفي">`:`<b class="ini me">${ini(D.me.n)}</b>`;
- if(!LOADED){$('#m').innerHTML='<p class="empty">جاري التحميل...</p>';$('#fab').style.display='none';return}
- $('#m').innerHTML=V[v]();$('#fab').style.display=v==='home'||v==='detail'?'none':'block'}
-$('#q').oninput=e=>{Q=e.target.value.trim();R()};$('#fab').onclick=()=>F_(v);
+ if(!LOADED){$('#m').innerHTML='<p class="empty">جاري التحميل...</p>';return}
+ $('#m').innerHTML=Q?SR():V[v]()}
+$('#q').oninput=e=>{Q=e.target.value.trim();R()};
+/* صورتك فوق تفتح ملفك (auth-guard يحدد ملف اللاعب أو الجهة حسب نوع الحساب) */
+(function(){const w=$('#mew');if(w){w.onclick=null;w.setAttribute('data-profile','');w.title='ملفي'}const f=document.getElementById('fab');if(f)f.remove()})();
+/* البحث الشامل: المواهب والفرق والجهات والفرص والمنشورات */
+function SR(){const T=D.talents.filter(hit),TM=D.teams.filter(hit),O=D.opps.filter(hit),P=D.posts.filter(hit),all=T.length+TM.length+O.length+P.length,sub=SUB();
+ const g=(t,list)=>list.length?`<h2 class="srh">${t} <span>${list.length}</span></h2><div class="srl">${list.join('')}</div>`:'';
+ const row=(href,img,nm,s,tag='')=>`<a class="card sri" href="${href}">${img}<div><b>${E(nm)}</b><span>${E(s)}</span></div>${tag}</a>`;
+ return`<h1>نتائج البحث</h1><p class="sb">عن "${E(Q)}" · ${all} نتيجة</p>`+(all?
+  g('المواهب',T.map(t=>row('dash-talent-visitor.html?id='+encodeURIComponent(t.id),pic(t.ph,t.n),t.n,[t.role,t.g,t.city].filter(Boolean).join(' · '))))+
+  g('الفرق والجهات',TM.map(t=>row('dash-entity-visitor.html?id='+encodeURIComponent(t.id),pic(t.ph,t.n),t.n,[t.sub||t.type,t.city].filter(Boolean).join(' · '))))+
+  g('الفرص',O.map(o=>row(sub?'dash-opportunity-details.html?id='+encodeURIComponent(o.id):'dash-opportunities.html',pic(o.ph,o.org),o.title+' · '+o.org,[otl(o.type),o.city].filter(Boolean).join(' · '),sub?'':'<span class="lk">للمشتركين</span>')))+
+  g('المنشورات',P.map(p=>row('dash-home.html',pic(p.a,p.n),p.n,String(p.t||'').length>90?String(p.t).slice(0,90)+'…':p.t)))
+  :`<p class="empty">ما لقينا نتائج تطابق بحثك. جرّب كلمة ثانية.</p>`)}

@@ -16,9 +16,9 @@ function sum(){const p=PLANS[PL],vat=p.base*VAT,tot=p.base+vat,end=day(trialEnd(
  <h4>ما تحصل عليه بالباقة العليا</h4><ul class="ben"><li>${CHK}وصول كامل للفرص الحصرية والموجهة</li><li>${CHK}استقطاب مباشر من الأندية والجهات</li><li>${CHK}فعاليات وبطولات خاصة بالمشتركين</li></ul>`}
 function setPL(x){PL=x;$('#sum').innerHTML=sum();$('#agt').textContent=agree()}
 const agree=()=>{const p=PLANS[PL];return`أوافق على بدء التجربة المجانية لمدة 7 أيام، وعلى خصم ${ar(p.base*(1+VAT))} ر.س ${p.per} ابتداءً من ${day(trialEnd())} ما لم ألغِ قبل ذلك.`};
-function done(){const s=D.sub;return`<div class="big okp"><div class="crn">👑</div><h2>تم تفعيل تجربتك المجانية</h2><p>استمتع بالباقة العليا (${PLANS[s.plan].n}) حتى ${day(new Date(s.trialEnd))}. تقدر تلغي في أي وقت قبل هذا التاريخ.</p><button class="ap" onclick="location.href='dash-opportunities.html'">تصفّح الفرص</button></div>`}
+function done(){const s=SUB();return`<div class="big okp"><div class="crn">👑</div><h2>تم تفعيل تجربتك المجانية</h2><p>استمتع بالباقة العليا (${PLANS[s.plan].n}) حتى ${day(new Date(s.trialEnd))}. تقدر تلغي في أي وقت قبل هذا التاريخ.</p><button class="ap" onclick="location.href='dash-opportunities.html'">تصفّح الفرص</button></div>`}
 V.pay=function(){const bc=`<div class="bc"><a href="dash-opportunities.html">الفرص</a><svg width="8" height="10" fill="none" stroke="#CACFD5"><path d="M6 1L2 5l4 4"/></svg><b>الدفع</b></div>`;
- if(D.sub)return bc+done();
+ if(SUB())return bc+done();
  return bc+`<div class="pay"><form class="card pf2" id="pfm" novalidate><h2>بيانات الدفع والفوترة</h2><p class="msub">أدخل بياناتك لإتمام تفعيل التجربة</p>
  <div class="pm"><b>طرق الدفع المدعومة</b><span class="mada"><i></i><i></i> مدى · Visa · Mastercard</span></div>
  <div class="cbox"><label for="cn">رقم البطاقة</label><div class="fi">${ICO.card}<input id="cn" inputmode="numeric" autocomplete="cc-number" dir="ltr" placeholder="0000  0000  0000  0000" maxlength="23"></div>
@@ -40,6 +40,6 @@ function bind(){const f=$('#pfm');if(!f)return;
   if(!/^\d{3,4}$/.test($('#cc').value))return bad('#cc','رمز الأمان غير صحيح');
   if(!$('#ch').value.trim())return bad('#ch','اكتب اسم حامل البطاقة');
   if(!$('#ag').checked)return er('لازم توافق على شروط التجربة المجانية');
-  D.sub={plan:PL,start:Date.now(),trialEnd:trialEnd().getTime()};sv();R()}}
+  try{localStorage.setItem('nexo_sub',JSON.stringify({plan:PL,start:Date.now(),trialEnd:trialEnd().getTime()}))}catch(e){}R()}}
 const _R=R;R=function(){_R();bind()};
-R();
+start();

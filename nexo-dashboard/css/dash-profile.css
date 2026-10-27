@@ -190,3 +190,4 @@ img,svg{max-width:100%}
   main{max-width:1320px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+select:invalid{color:#9A9AAE}select option{color:#000}
