@@ -10,9 +10,12 @@
 --   talents        المواهب (لاعب / صانع محتوى / ستريمر)
 --   teams          الأندية والجهات ومقدمي الخدمة
 --   posts          منشورات الصفحة الرئيسية والملفات الشخصية
---   opportunities  الفرص
+--   nexo_opportunities  الفرص
 --   applications   التقديمات على الفرص
---   storage: media الصور (الصور الشخصية، الأغلفة، الشعارات، صور المنشورات)
+--   storage: nexo-media الصور (الصور الشخصية، الأغلفة، الشعارات، صور المنشورات)
+--
+-- ملاحظة: كل الأسماء هنا ما تتعارض مع الجداول الموجودة من قبل
+-- (opportunities, organizations, profiles) — هذا الملف ما يلمسها أبد.
 --
 -- ملاحظة: بيانات التسجيل الحساسة (الجوال، تاريخ الميلاد) تبقى في
 -- auth.users → user_metadata ولا تُنسخ لأي جدول عام.
@@ -26,14 +29,14 @@
 -- هل المستخدم أكمل التحقق الثنائي (MFA)؟
 -- الـ Dashboard يشترط aal2، فنفس الشرط مطبق على الكتابة في قاعدة البيانات
 -- حتى ما يقدر أحد يتجاوز MFA ويكتب مباشرة عبر الـ API.
-create or replace function public.is_aal2()
+create or replace function public.nexo_is_aal2()
 returns boolean
 language sql stable
 as $$
   select coalesce(auth.jwt() ->> 'aal', '') = 'aal2'
 $$;
 
-create or replace function public.set_updated_at()
+create or replace function public.nexo_set_updated_at()
 returns trigger
 language plpgsql
 as $$
@@ -71,7 +74,7 @@ create index if not exists talents_city_idx on public.talents (city);
 
 drop trigger if exists talents_updated_at on public.talents;
 create trigger talents_updated_at before update on public.talents
-  for each row execute function public.set_updated_at();
+  for each row execute function public.nexo_set_updated_at();
 
 
 -- ---------------------------------------------------------------------
@@ -97,7 +100,7 @@ create index if not exists teams_type_idx on public.teams (type);
 
 drop trigger if exists teams_updated_at on public.teams;
 create trigger teams_updated_at before update on public.teams
-  for each row execute function public.set_updated_at();
+  for each row execute function public.nexo_set_updated_at();
 
 
 -- ---------------------------------------------------------------------
@@ -119,7 +122,7 @@ create index if not exists posts_author_idx on public.posts (author_id);
 -- الفرص
 -- applicants_count يتحدث تلقائيًا من جدول applications (ما ينكتب يدويًا)
 -- ---------------------------------------------------------------------
-create table if not exists public.opportunities (
+create table if not exists public.nexo_opportunities (
   id               bigint generated always as identity primary key,
   created_by       uuid not null default auth.uid() references auth.users (id) on delete cascade,
   team_id          uuid references public.teams (id) on delete set null,
@@ -137,17 +140,17 @@ create table if not exists public.opportunities (
   updated_at       timestamptz not null default now()
 );
 
-create index if not exists opportunities_created_at_idx on public.opportunities (created_at desc);
-create index if not exists opportunities_audience_idx on public.opportunities (audience);
-create index if not exists opportunities_team_idx on public.opportunities (team_id);
-create index if not exists opportunities_created_by_idx on public.opportunities (created_by);
+create index if not exists nexo_opportunities_created_at_idx on public.nexo_opportunities (created_at desc);
+create index if not exists nexo_opportunities_audience_idx on public.nexo_opportunities (audience);
+create index if not exists nexo_opportunities_team_idx on public.nexo_opportunities (team_id);
+create index if not exists nexo_opportunities_created_by_idx on public.nexo_opportunities (created_by);
 
-drop trigger if exists opportunities_updated_at on public.opportunities;
-create trigger opportunities_updated_at before update on public.opportunities
-  for each row execute function public.set_updated_at();
+drop trigger if exists nexo_opportunities_updated_at on public.nexo_opportunities;
+create trigger nexo_opportunities_updated_at before update on public.nexo_opportunities
+  for each row execute function public.nexo_set_updated_at();
 
 -- يمنع صاحب الفرصة من تعديل عدد المتقدمين يدويًا
-create or replace function public.protect_applicants_count()
+create or replace function public.nexo_protect_applicants_count()
 returns trigger
 language plpgsql
 as $$
@@ -159,16 +162,16 @@ begin
 end;
 $$;
 
-drop trigger if exists opportunities_protect_count on public.opportunities;
-create trigger opportunities_protect_count before update on public.opportunities
-  for each row execute function public.protect_applicants_count();
+drop trigger if exists nexo_opportunities_protect_count on public.nexo_opportunities;
+create trigger nexo_opportunities_protect_count before update on public.nexo_opportunities
+  for each row execute function public.nexo_protect_applicants_count();
 
 
 -- ---------------------------------------------------------------------
 -- التقديمات
 -- ---------------------------------------------------------------------
 create table if not exists public.applications (
-  opportunity_id bigint not null references public.opportunities (id) on delete cascade,
+  opportunity_id bigint not null references public.nexo_opportunities (id) on delete cascade,
   user_id        uuid not null default auth.uid() references auth.users (id) on delete cascade,
   created_at     timestamptz not null default now(),
   primary key (opportunity_id, user_id)
@@ -176,7 +179,7 @@ create table if not exists public.applications (
 
 create index if not exists applications_user_idx on public.applications (user_id);
 
-create or replace function public.sync_applicants_count()
+create or replace function public.nexo_sync_applicants_count()
 returns trigger
 language plpgsql
 security definer
@@ -184,12 +187,12 @@ set search_path = public
 as $$
 begin
   if tg_op = 'INSERT' then
-    update public.opportunities
+    update public.nexo_opportunities
        set applicants_count = applicants_count + 1
      where id = new.opportunity_id;
     return new;
   else
-    update public.opportunities
+    update public.nexo_opportunities
        set applicants_count = greatest(applicants_count - 1, 0)
      where id = old.opportunity_id;
     return old;
@@ -199,7 +202,7 @@ $$;
 
 drop trigger if exists applications_count on public.applications;
 create trigger applications_count after insert or delete on public.applications
-  for each row execute function public.sync_applicants_count();
+  for each row execute function public.nexo_sync_applicants_count();
 
 
 -- ---------------------------------------------------------------------
@@ -235,7 +238,7 @@ left join public.teams tm on tm.user_id = p.author_id;
 alter table public.talents       enable row level security;
 alter table public.teams         enable row level security;
 alter table public.posts         enable row level security;
-alter table public.opportunities enable row level security;
+alter table public.nexo_opportunities enable row level security;
 alter table public.applications  enable row level security;
 
 -- talents -------------------------------------------------------------
@@ -250,19 +253,19 @@ create policy "talents: public read" on public.talents
 create policy "talents: insert" on public.talents
   for insert to authenticated
   with check (
-    public.is_aal2()
+    public.nexo_is_aal2()
     and created_by = auth.uid()
     and (user_id is null or user_id = auth.uid())
   );
 
 create policy "talents: update own" on public.talents
   for update to authenticated
-  using (public.is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())))
+  using (public.nexo_is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())))
   with check (user_id = auth.uid() or (user_id is null and created_by = auth.uid()));
 
 create policy "talents: delete own" on public.talents
   for delete to authenticated
-  using (public.is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())));
+  using (public.nexo_is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())));
 
 -- teams ---------------------------------------------------------------
 drop policy if exists "teams: public read" on public.teams;
@@ -276,19 +279,19 @@ create policy "teams: public read" on public.teams
 create policy "teams: insert" on public.teams
   for insert to authenticated
   with check (
-    public.is_aal2()
+    public.nexo_is_aal2()
     and created_by = auth.uid()
     and (user_id is null or user_id = auth.uid())
   );
 
 create policy "teams: update own" on public.teams
   for update to authenticated
-  using (public.is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())))
+  using (public.nexo_is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())))
   with check (user_id = auth.uid() or (user_id is null and created_by = auth.uid()));
 
 create policy "teams: delete own" on public.teams
   for delete to authenticated
-  using (public.is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())));
+  using (public.nexo_is_aal2() and (user_id = auth.uid() or (user_id is null and created_by = auth.uid())));
 
 -- posts ---------------------------------------------------------------
 drop policy if exists "posts: members read" on public.posts;
@@ -301,30 +304,30 @@ create policy "posts: members read" on public.posts
 
 create policy "posts: insert own" on public.posts
   for insert to authenticated
-  with check (public.is_aal2() and author_id = auth.uid());
+  with check (public.nexo_is_aal2() and author_id = auth.uid());
 
 create policy "posts: update own" on public.posts
   for update to authenticated
-  using (public.is_aal2() and author_id = auth.uid())
+  using (public.nexo_is_aal2() and author_id = auth.uid())
   with check (author_id = auth.uid());
 
 create policy "posts: delete own" on public.posts
   for delete to authenticated
-  using (public.is_aal2() and author_id = auth.uid());
+  using (public.nexo_is_aal2() and author_id = auth.uid());
 
 -- opportunities -------------------------------------------------------
-drop policy if exists "opps: public read" on public.opportunities;
-drop policy if exists "opps: insert"      on public.opportunities;
-drop policy if exists "opps: update own"  on public.opportunities;
-drop policy if exists "opps: delete own"  on public.opportunities;
+drop policy if exists "opps: public read" on public.nexo_opportunities;
+drop policy if exists "opps: insert"      on public.nexo_opportunities;
+drop policy if exists "opps: update own"  on public.nexo_opportunities;
+drop policy if exists "opps: delete own"  on public.nexo_opportunities;
 
-create policy "opps: public read" on public.opportunities
+create policy "opps: public read" on public.nexo_opportunities
   for select to anon, authenticated using (true);
 
-create policy "opps: insert" on public.opportunities
+create policy "opps: insert" on public.nexo_opportunities
   for insert to authenticated
   with check (
-    public.is_aal2()
+    public.nexo_is_aal2()
     and created_by = auth.uid()
     and applicants_count = 0
     -- لو الفرصة مربوطة بنادي/جهة لازم تكون أنت صاحبها
@@ -334,14 +337,14 @@ create policy "opps: insert" on public.opportunities
     ))
   );
 
-create policy "opps: update own" on public.opportunities
+create policy "opps: update own" on public.nexo_opportunities
   for update to authenticated
-  using (public.is_aal2() and created_by = auth.uid())
+  using (public.nexo_is_aal2() and created_by = auth.uid())
   with check (created_by = auth.uid());
 
-create policy "opps: delete own" on public.opportunities
+create policy "opps: delete own" on public.nexo_opportunities
   for delete to authenticated
-  using (public.is_aal2() and created_by = auth.uid());
+  using (public.nexo_is_aal2() and created_by = auth.uid());
 
 -- applications --------------------------------------------------------
 drop policy if exists "apps: read own or as owner" on public.applications;
@@ -353,69 +356,69 @@ create policy "apps: read own or as owner" on public.applications
   for select to authenticated
   using (
     user_id = auth.uid()
-    or exists (select 1 from public.opportunities o
+    or exists (select 1 from public.nexo_opportunities o
                 where o.id = opportunity_id and o.created_by = auth.uid())
   );
 
 create policy "apps: apply" on public.applications
   for insert to authenticated
-  with check (public.is_aal2() and user_id = auth.uid());
+  with check (public.nexo_is_aal2() and user_id = auth.uid());
 
 create policy "apps: withdraw" on public.applications
   for delete to authenticated
-  using (public.is_aal2() and user_id = auth.uid());
+  using (public.nexo_is_aal2() and user_id = auth.uid());
 
 
 -- صلاحيات الجداول للأدوار (RLS فوقها يحدد الصفوف)
-grant select on public.talents, public.teams, public.opportunities to anon;
+grant select on public.talents, public.teams, public.nexo_opportunities to anon;
 grant select, insert, update, delete on
-  public.talents, public.teams, public.posts, public.opportunities, public.applications
+  public.talents, public.teams, public.posts, public.nexo_opportunities, public.applications
   to authenticated;
 grant select on public.post_feed to authenticated;
 revoke all on public.post_feed from anon;
 
 
 -- =====================================================================
--- تخزين الصور: bucket اسمه media
+-- تخزين الصور: bucket اسمه nexo-media
 --   القراءة عامة (روابط الصور تظهر في الموقع)
---   كل مستخدم يرفع داخل مجلد باسم الـ id حقه فقط: media/<user_id>/...
+--   كل مستخدم يرفع داخل مجلد باسم الـ id حقه فقط: nexo-media/<user_id>/...
 -- =====================================================================
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('media', 'media', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+values ('nexo-media', 'nexo-media', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
       allowed_mime_types = excluded.allowed_mime_types;
 
-drop policy if exists "media: public read"  on storage.objects;
-drop policy if exists "media: upload own"   on storage.objects;
-drop policy if exists "media: update own"   on storage.objects;
-drop policy if exists "media: delete own"   on storage.objects;
+drop policy if exists "nexo-media: public read"  on storage.objects;
+drop policy if exists "nexo-media: upload own"   on storage.objects;
+drop policy if exists "nexo-media: update own"   on storage.objects;
+drop policy if exists "nexo-media: delete own"   on storage.objects;
 
-create policy "media: public read" on storage.objects
+create policy "nexo-media: public read" on storage.objects
   for select to anon, authenticated
-  using (bucket_id = 'media');
+  using (bucket_id = 'nexo-media');
 
-create policy "media: upload own" on storage.objects
+create policy "nexo-media: upload own" on storage.objects
   for insert to authenticated
   with check (
-    bucket_id = 'media'
-    and public.is_aal2()
+    bucket_id = 'nexo-media'
+    and public.nexo_is_aal2()
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
-create policy "media: update own" on storage.objects
+create policy "nexo-media: update own" on storage.objects
   for update to authenticated
   using (
-    bucket_id = 'media'
-    and public.is_aal2()
+    bucket_id = 'nexo-media'
+    and public.nexo_is_aal2()
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
-create policy "media: delete own" on storage.objects
+create policy "nexo-media: delete own" on storage.objects
   for delete to authenticated
   using (
-    bucket_id = 'media'
-    and public.is_aal2()
+    bucket_id = 'nexo-media'
+    and public.nexo_is_aal2()
     and (storage.foldername(name))[1] = auth.uid()::text
   );
