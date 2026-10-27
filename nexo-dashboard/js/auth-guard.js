@@ -1,5 +1,6 @@
 
 import { supabase } from '../../src/lib/supabase.js'
+import { createDB } from './db.js'
 
 const LOGIN_URL = '/auth.html#/login'
 const MFA_URL = '/auth.html#/mfa'
@@ -47,7 +48,17 @@ async function checkAuthentication() {
       window.location.href = profileUrl
     })
 
-    // 4. إظهار Dashboard بعد نجاح جميع الفحوصات
+    // 4. تجهيز قاعدة البيانات للصفحة (السكربتات العادية تستخدم window.nexoDB)
+    const db = createDB(data.user)
+    try {
+      await db.syncOnboarding()
+    } catch (e) {
+      console.error('Onboarding sync failed:', e)
+    }
+    window.nexoDB = db
+    window.dispatchEvent(new Event('nexo:ready'))
+
+    // 5. إظهار Dashboard بعد نجاح جميع الفحوصات
     document.documentElement.style.visibility = 'visible'
 
   } catch (error) {
