@@ -1,10 +1,10 @@
 /* ---- Opportunities page ---- */
 
 /*
-  جلب الفرص التي أنشأها المستخدمون من localStorage
+  الفرص تجي من Supabase عبر src/public-data.js
   إذا لم توجد فرص، ستكون الصفحة فارغة.
 */
-var OPPS = JSON.parse(localStorage.getItem("nexoOpportunities")) || [];
+var OPPS = [];
 
 
 /* ---- Tabs ---- */
@@ -276,6 +276,7 @@ kindEl.addEventListener("change", function () {
 
 /* تشغيل الصفحة */
 
+function initPage() {
 renderTabs();
 
 fillSelect(
@@ -295,6 +296,20 @@ fillSelect(
 );
 
 render();
+}
+
+initPage();
+
+/* بيانات Supabase: تجي من src/public-data.js (حدث nexo:public) */
+function onPublic(f) {
+  if (window.NEXO_DATA) f(window.NEXO_DATA);
+  else window.addEventListener("nexo:public", function () { f(window.NEXO_DATA); }, { once: true });
+}
+
+onPublic(function (d) {
+  OPPS = d.opps;
+  initPage();
+});
 
 /* زر تسجيل الدخول: يفتح صفحة الدخول (المسار الوحيد، ثم MFA) */
 (function () {

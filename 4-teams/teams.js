@@ -11,7 +11,7 @@ const cityFilter = document.getElementById("cityFilter");
 // ==========================================
 
 function getTeams() {
-  return JSON.parse(localStorage.getItem("nexoTeams")) || [];
+  return (window.NEXO_DATA && window.NEXO_DATA.teams) || [];
 }
 
 // ==========================================
@@ -242,6 +242,17 @@ if (tabs) {
 setupFilters();
 
 renderTeams();
+
+/* بيانات Supabase: تجي من src/public-data.js (حدث nexo:public) */
+function onPublic(f) {
+  if (window.NEXO_DATA) f(window.NEXO_DATA);
+  else window.addEventListener("nexo:public", function () { f(window.NEXO_DATA); }, { once: true });
+}
+
+onPublic(function () {
+  setupFilters();
+  renderTeams();
+});
 
 /* زر تسجيل الدخول: يفتح صفحة الدخول (المسار الوحيد، ثم MFA) */
 (function () {
