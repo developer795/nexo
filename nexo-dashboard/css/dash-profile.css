@@ -191,3 +191,53 @@ img,svg{max-width:100%}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 select:invalid{color:#9A9AAE}select option{color:#000}
+
+/* ===== توحيد الحجم مع باقي صفحات الـ Dashboard (الرئيسية، المواهب، الفرق، الفرص) ===== */
+:root{--h1:28px;--h2:24px;--h3:20px;--h4:18px;--h5:15px;--h6:14px;--body:13.5px;--small:12px;--xsmall:10px}
+.card{border-radius:10px}
+.pad{padding:20px}
+.pen{font-size:18px;inset-block-start:16px;inset-inline-end:16px}
+.banner{height:140px}
+.head{padding:58px 20px 20px}
+.av-lg{inset-block-start:-46px;inset-inline-end:18px;width:96px;height:92px;font-size:34px;border:3px solid var(--bg)}
+.stats>div{min-height:92px}
+.stats .ic{font-size:18px}
+.ring{width:54px;height:54px}.ring i{width:47px;height:47px;font-size:13px}
+.btn{height:36px;padding:0 18px;font-size:13px}.btn .ic{font-size:14px}
+.post{min-height:200px;padding:14px}
+.post .h{margin-bottom:14px;gap:12px}
+.post .a{width:62px;height:59px;font-size:22px}
+.post b{font-size:16px}.post small{font-size:12px}
+.ph{height:140px;font-size:32px}
+.sq{width:62px;height:59px;font-size:22px}
+.item{padding:12px}
+.opp{grid-template-columns:64px 1fr;padding:14px}.opp img{width:64px;height:64px}
+.more{font-size:14px;padding:16px;margin:20px -20px -20px;width:calc(100% + 40px)}
+.crumb{margin-bottom:20px}
+.f textarea{height:200px}
+@media(min-width:901px){
+  .top{min-height:88px;gap:18px;padding:0 max(14px,calc((100% - 842px) / 2));position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  .top .logo img{height:18px}
+  .search{flex:0 0 252px;height:42px}
+  .search input{background:#EAECEE;border-radius:21px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-size:14px;font-weight:600;padding:0 40px 0 16px}
+  .search .ic{inset-inline-start:16px;font-size:16px;color:var(--primary-60)}
+  .links{flex:1;gap:30px;margin-inline-start:0;font-size:16px}
+  .links a{font-weight:500;padding:6px 0}
+  .links a.on{font-weight:600}
+  .nav-av{width:52px;height:48px;border-radius:8px;font-size:22px}
+  main{max-width:812px;padding:40px 14px 90px}
+}
+@media(min-width:1200px){
+  .top{padding:0 max(14px,calc((100% - 1012px) / 2))}
+  main{max-width:1000px}
+}
+@media(min-width:1600px){main{max-width:1000px}}
+@media(max-width:900px){
+  .top{padding:8px 12px 0;gap:4px 12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  .top .logo img{height:16px}
+  .search{height:38px}
+  .search input{background:#EAECEE;font-size:14px;font-weight:600}
+  .nav-av{width:52px;height:48px;border-radius:8px;margin-inline-start:auto}
+  .links{gap:22px;font-size:15px;padding-bottom:0}
+  .links a{padding-bottom:8px}
+}
