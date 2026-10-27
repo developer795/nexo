@@ -180,6 +180,8 @@ function initials(name) {
 }
 
 
+function renderHomeData() {
+
 /* =========================================
    TALENTS
    ========================================= */
@@ -346,9 +348,7 @@ if (teamsGrid) {
               (team.city || "") +
               '</span>' +
 
-              '<span class="chip chip-yellow">' +
-              'لديه فرص للتقديم' +
-              '</span>' +
+              (team.hasOpportunity ? '<span class="chip chip-yellow">لديه فرص للتقديم</span>' : '') +
 
             '</div>' +
 
@@ -466,6 +466,32 @@ if (oppsGrid) {
   }
 
 }
+
+}
+
+renderHomeData();
+
+/* بيانات Supabase: تجي من src/public-data.js (حدث nexo:public) */
+function onPublic(f) {
+  if (window.NEXO_DATA) f(window.NEXO_DATA);
+  else window.addEventListener("nexo:public", function () { f(window.NEXO_DATA); }, { once: true });
+}
+
+onPublic(function (d) {
+  TALENTS = d.talents.slice(0, 4);
+  TEAMS = d.teams
+    .slice()
+    .sort(function (x, y) { return (y.hasOpportunity ? 1 : 0) - (x.hasOpportunity ? 1 : 0); })
+    .slice(0, 4)
+    .map(function (t) { return Object.assign({}, t, { logo: t.logoText }); });
+  OPPS = d.opps.slice(0, 4).map(function (o) {
+    return Object.assign({}, o, {
+      deadline: o.deadline ? "آخر موعد: " + o.deadline : "",
+      applicants: o.applicants + " متقدم"
+    });
+  });
+  renderHomeData();
+});
 
 
 /* =========================================

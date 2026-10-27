@@ -30,10 +30,11 @@ const DIRS = [
   'nexo-dashboard/js',
 ]
 
-// ملفات لا تُنسخ كما هي: auth-guard.js يُبنى عبر Vite، وlogout.js غير مستخدم
+// ملفات لا تُنسخ كما هي: auth-guard.js وdb.js يُبنيان عبر Vite، وlogout.js غير مستخدم
 const EXCLUDE = new Set([
   path.join('nexo-dashboard', 'js', 'auth-guard.js'),
   path.join('nexo-dashboard', 'js', 'logout.js'),
+  path.join('nexo-dashboard', 'js', 'db.js'),
 ])
 
 export function copyStatic({ files = FILES, dirs = DIRS } = {}) {

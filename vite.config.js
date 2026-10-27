@@ -14,6 +14,11 @@ export default defineConfig({
     assetsDir: 'bundle',
     rollupOptions: {
       input: {
+        // الصفحات العامة (تقرأ البيانات من Supabase عبر src/public-data.js)
+        home: r('1-home/home.html'),
+        talents: r('3-talents/talents.html'),
+        teams: r('4-teams/teams.html'),
+        opportunities: r('5-opportunities/opportunities.html'),
         // صفحات React (الدخول، التسجيل، MFA، استعادة كلمة المرور)
         auth: r('auth.html'),
         recovery: r('recovery.html'),

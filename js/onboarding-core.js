@@ -11,12 +11,8 @@ const ok=c=>c.r?!!A[c.r[1]]:c.f.every(f=>(A[f.k]||'').trim());
 function finish(c){
  A.type=c.type;
  try{
+  // تُنقل لقاعدة البيانات تلقائيًا أول ما يدخل المستخدم الـ Dashboard (auth-guard → db.syncOnboarding)
   localStorage.setItem('nexo_onboarding',JSON.stringify(A));localStorage.removeItem(DK);
-  let D;try{D=JSON.parse(localStorage.getItem('nexo_p16_20_v3'))}catch(e){}
-  if(!D||!D.opps)D={me:{},posts:[],talents:[],teams:[],opps:[]};
-  if(A.type==='org')D.teams.unshift({n:A.org.trim(),type:{'فريق':'نادي','راعِ':'جهة','مقدم خدمة':'مقدم خدمة'}[A.orgPath],city:A.city});
-  else Object.assign(D.me,{n:((A.fn||'')+' '+(A.ln||'')).trim()||D.me.n,role:A.path,city:A.city,s:A.status==='منضم لفريق'?'منضم لفريق':'يبحث عن فريق'});
-  localStorage.setItem('nexo_p16_20_v3',JSON.stringify(D));
  }catch(e){}
  location.href=DONE_URL;
 }

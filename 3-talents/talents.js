@@ -283,7 +283,7 @@ function card(talent, index) {
         (talent.color || "#1f1b55") +
         '">' +
 
-          initials(talent.name) +
+          (talent.avatar ? '<img src="' + talent.avatar + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">' : initials(talent.name)) +
 
         "</div>" +
 
@@ -471,3 +471,16 @@ renderTabs();
 renderCities();
 
 render();
+
+/* بيانات Supabase: تجي من src/public-data.js (حدث nexo:public) */
+function onPublic(f) {
+  if (window.NEXO_DATA) f(window.NEXO_DATA);
+  else window.addEventListener("nexo:public", function () { f(window.NEXO_DATA); }, { once: true });
+}
+
+onPublic(function (d) {
+  TALENTS = d.talents;
+  renderTabs();
+  renderCities();
+  render();
+});
