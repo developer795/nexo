@@ -17,7 +17,6 @@ function finish(c){
  location.href=c.type==='org'?'/16-plans/plans.html':DONE_URL;
 }
 const Onboarding={start(c){
- if(c.r&&!A[c.r[1]]){A[c.r[1]]=c.r[2][0];save()}
  function render(){
  const narrow=innerWidth<=720,L=document.getElementById('lg');
  L.style.top=(narrow?24:c.lg[0])+'px';L.style[narrow?'right':'right']=(narrow?16:c.lg[1])+'px';
@@ -25,7 +24,7 @@ const Onboarding={start(c){
  const ab=(t,x)=>`style="top:${t}px;${x||''}"`;
  let h=`<div class="bar" aria-hidden="true">${Array.from({length:c.bar[1]},(_,i)=>`<i class="${i<c.bar[0]?'on':''}"></i>`).join('')}</div><h1 class="t" ${ab(c.t[0]+(narrow?0:0))}>${c.t[1]}</h1>`;
  if(c.s)h+=`<p class="s" ${ab(c.s[0])}>${c.s[1]}</p>`;
- if(c.r)h+=c.r[2].map((o,i)=>`<label class="rd" ${ab(c.r[0][i])}><input type="radio" name="r" value="${o}" ${A[c.r[1]]?(A[c.r[1]]===o?'checked':''):(i===0?'checked':'')}><b></b>${o}</label>`).join('');
+ if(c.r)h+=c.r[2].map((o,i)=>`<label class="rd" ${ab(c.r[0][i])}><input type="radio" name="r" value="${o}" ${A[c.r[1]]===o?'checked':''}><b></b>${o}</label>`).join('');
  if(c.f)h+=c.f.map(f=>`<label class="lb" for="x${f.k}" ${ab(f.lt,`right:${f.lr}px`)}>${f.l}</label>`+(f.sel?`<div class="dd" ${ab(f.top,`right:${f.r}px;width:${f.w}px;height:66px`)}><button type="button" id="x${f.k}" class="fd ${A[f.k]?'v':''}" aria-haspopup="listbox">${A[f.k]||f.ph}</button><ul class="dl" role="listbox" hidden>${CITIES.map(x=>`<li role="option" data-v="${x}" class="${A[f.k]===x?'on':''}">${x}</li>`).join('')}</ul></div>`:`<input id="x${f.k}" class="fd" placeholder="${f.ph}" value="${E(A[f.k]||'')}" ${ab(f.top,`right:${f.r}px;width:${f.w}px`)}>`)).join('');
  h+=`<button class="bt" id="go" ${ab(c.b[0],`left:${c.b[3]}px;width:${c.b[1]}px`)}>${c.b[2]}</button>`;
  m.innerHTML=h;

@@ -31,3 +31,6 @@ select.fd.v{color:#000}.fd::placeholder{color:#797992}
 .bt:disabled{background:#EAECEE;color:#797992;cursor:default}
 :focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 @media(max-width:720px){.col{width:calc(100% - 24px);left:0}.logo{width:130px;height:auto}.t{font-size:28px}.s{white-space:normal;max-width:100%;font-size:15px}}
+/* زر العودة */
+.back{position:absolute;display:inline-flex;align-items:center;gap:12px;color:var(--navy);font-size:18px;font-weight:600;text-decoration:none}
+@media(max-width:720px){.back{top:64px!important;right:16px!important;font-size:16px}}
