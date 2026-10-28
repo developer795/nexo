@@ -68,10 +68,15 @@
     return grid && grid.closest('section') && grid.closest('section').querySelector('.sub');
   }
 
+  var POSTS = [];
   function renderPosts(posts) {
+    POSTS = posts;
     var grid = q('#postGrid');
     if (!grid) return;
-    grid.innerHTML = posts.map(function (p) {
+    var sec = grid.closest('section'), old = sec && sec.querySelector('.xall');
+    if (old) old.remove();
+    if (sec && posts.length) sec.insertAdjacentHTML('beforeend', '<button type="button" class="xall" data-all="posts">عرض الكل ' + CHV + '</button>');
+    grid.innerHTML = posts.slice(0, 3).map(function (p) {
       return '<div class="post"><div class="h"><div class="a">' + img(p.a, p.n) + '</div><div><b>' + E(p.n) +
         '</b><small>' + E(p.r) + '</small></div></div><p>' + E(p.t) + '</p>' +
         (U(p.im) ? '<img src="' + E(U(p.im)) + '" alt="" style="width:100%;border-radius:8px;margin-top:12px">' : '') + '</div>';
@@ -125,7 +130,196 @@
     var posts = PROFILE.user_id ? await nexoDB.listPosts(PROFILE.user_id) : [];
     renderPosts(posts);
     if (q('.grid2')) renderOpps(await oppsFor(PROFILE));
+    await loadItems();
   }
+
+
+  // ===================================================================
+  // أقسام الملف + نوافذ "عرض الكل"
+  //   الألعاب، المباريات والبطولات، أبرز البثوث، إبراز المحتوى،
+  //   المنصات، حسابات التواصل، المنشورات
+  // ===================================================================
+  var CHV = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
+  var ITEMS = null; // null = جدول profile_items لسا ما انضاف
+  var SEC = {
+    match:    { t: 'المباريات والبطولات', add: 'إضافة مباراة أو بطولة', n: 2 },
+    game:     { t: 'الألعاب', add: 'إضافة لعبة', n: 2 },
+    stream:   { t: 'أبرز البثوث', add: 'إضافة بث', n: 2 },
+    content:  { t: 'إبراز المحتوى', add: 'إضافة محتوى', n: 2 },
+    platform: { t: 'المنصات', add: 'إضافة منصة', n: 3 },
+    social:   { t: 'حسابات التواصل', add: 'إضافة حساب', n: 3 },
+  };
+  // الأقسام حسب نوع الحساب
+  function kindsFor(p) {
+    if (p.kind === 'team') return ['social'];
+    if (p.role === 'ستريمر') return ['stream', 'platform', 'social'];
+    if (p.role === 'صانع محتوى') return ['content', 'platform', 'social'];
+    return ['match', 'game', 'social'];
+  }
+  var ICO = {
+    'يوتيوب': '<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="4" fill="#FF0000"/><path d="M10 8.5v7l6-3.5z" fill="#fff"/></svg>',
+    'كيك': '<span class="kick">KICK</span>',
+    'تويتش': '<svg viewBox="0 0 24 24"><path fill="#9146FF" d="M4 2 2.5 6v14h5v3h3l3-3h4l5-5V2zm16 12-3 3h-4l-3 3v-3H6V4h14z"/><path fill="#9146FF" d="M15 7h2v5h-2zm-5 0h2v5h-2z"/></svg>',
+    'تيك توك': '<svg viewBox="0 0 24 24"><path fill="#25F4EE" d="M15.5 2c.3 2.4 1.7 4 4.1 4.2v3.3c-1.5.1-2.9-.4-4.1-1.2v6.3c0 4-3.3 6.4-6.4 6.4A6.4 6.4 0 0 1 7 8.6v3.5a3 3 0 1 0 3 3V2z" transform="translate(-.6 .4)"/><path fill="#FE2C55" d="M15.5 2c.3 2.4 1.7 4 4.1 4.2v3.3c-1.5.1-2.9-.4-4.1-1.2v6.3c0 4-3.3 6.4-6.4 6.4A6.4 6.4 0 0 1 7 8.6v3.5a3 3 0 1 0 3 3V2z" transform="translate(.6 -.4)"/><path fill="#000" d="M15.5 2c.3 2.4 1.7 4 4.1 4.2v3.3c-1.5.1-2.9-.4-4.1-1.2v6.3c0 4-3.3 6.4-6.4 6.4A6.4 6.4 0 0 1 7 8.6v3.5a3 3 0 1 0 3 3V2z"/></svg>',
+    'سناب شات': '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.4" stroke-linejoin="round" d="M12 2.5c3 0 5 2.3 5 5.2v2.6l1.6-.5c.6-.1 1 .6.5 1-.6.5-1.6.8-2.3 1.1.6 1.7 2 3 3.7 3.6.4.2.3.8-.1.9-1 .3-1.6.4-1.9.8-.2.4-.1 1-.6 1.1-.8.1-1.6-.3-2.6.1-1 .5-1.7 1.6-3.3 1.6s-2.3-1.1-3.3-1.6c-1-.4-1.8 0-2.6-.1-.5-.1-.4-.7-.6-1.1-.3-.4-.9-.5-1.9-.8-.4-.1-.5-.7-.1-.9 1.7-.6 3.1-1.9 3.7-3.6-.7-.3-1.7-.6-2.3-1.1-.5-.4-.1-1.1.5-1l1.6.5V7.7c0-2.9 2-5.2 5-5.2z"/></svg>',
+    'إكس': '<svg viewBox="0 0 24 24"><path fill="#000" d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.9-6.4L6.3 22H3.2l7.3-8.3L1 2h6.3l4.4 5.8zm-1.1 18h1.7L6.3 3.9H4.5z"/></svg>',
+    'لينكدإن': '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="3" fill="#0A66C2"/><path fill="#fff" d="M7 9.5h2.6V18H7zM8.3 5.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11 9.5h2.5v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V18h-2.6v-4c0-1 0-2.2-1.4-2.2s-1.6 1-1.6 2.1V18H11z"/></svg>',
+    'إنستقرام': '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="none" stroke="#E1306C" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#E1306C" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="#E1306C"/></svg>',
+    'رقم الجوال': '<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="1.6"><path d="M8 3l2 4.5-2 1.7a11 11 0 0 0 5.8 5.8l1.7-2L20 15v3c0 1-.7 2-2 2C10.3 20 4 13.7 4 6c0-1.3 1-2 2-2z"/></svg>',
+    'البريد الإلكتروني': '<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>',
+  };
+  var PLATFORMS = ['يوتيوب', 'تويتش', 'كيك', 'تيك توك', 'سناب شات', 'إكس', 'إنستقرام'];
+  var SOCIALS = ['إكس', 'تيك توك', 'لينكدإن', 'إنستقرام', 'سناب شات', 'رقم الجوال', 'البريد الإلكتروني'];
+  var PLAY = '<span class="xplay"><svg viewBox="0 0 24 24"><path d="M9 7v10l8-5z" fill="#fff"/></svg></span>';
+  var DEL = function (it) { return OWN ? '<button type="button" class="xdel" data-del="' + E(it.id) + '" aria-label="حذف">حذف</button>' : ''; };
+  var pill = function (t) { return t ? '<span class="xpill">' + E(t) + '</span>' : ''; };
+  var lines = function (arr) { return arr.filter(Boolean).map(function (x) { return '<p>' + E(x) + '</p>'; }).join(''); };
+  var visit = function (u) { return U(u) ? '<a class="xvisit" href="' + E(U(u)) + '" target="_blank" rel="noopener">زيارة الحساب</a>' : ''; };
+  var thumb = function (it) {
+    return '<span class="xthumb">' + (U(it.img) ? '<img src="' + E(U(it.img)) + '" alt="">' : '') + PLAY + '</span>';
+  };
+  var ROW = {
+    game: function (it) { return '<div class="xit xgame">' + DEL(it) + '<div class="xt"><h3>' + E(it.name) + '</h3>' + lines([it.level, it.role]) + '</div>' + pill(it.device) + '</div>'; },
+    match: function (it) { return '<div class="xit">' + DEL(it) + '<div class="xt"><h3>' + E(it.title) + '</h3>' + lines([it.team, it.game, it.place]) + '</div>' + pill(it.device) + '</div>'; },
+    stream: function (it) {
+      var inner = thumb(it) + '<div class="xt"><h3>' + E(it.title) + '</h3>' + lines([it.views ? 'مشاهدة ' + it.views : '', it.duration ? 'مدة البث ' + it.duration : '']) + '</div>' + pill(it.platform);
+      return U(it.url) ? '<div class="xit xmedia">' + DEL(it) + '<a class="xlink" href="' + E(U(it.url)) + '" target="_blank" rel="noopener">' + inner + '</a></div>' : '<div class="xit xmedia">' + DEL(it) + inner + '</div>';
+    },
+    content: function (it) {
+      var inner = thumb(it) + '<div class="xt"><h3>' + E(it.title) + '</h3>' + lines([it.views ? 'مشاهدة ' + it.views : '']) + '</div>' + pill(it.platform);
+      return U(it.url) ? '<div class="xit xmedia">' + DEL(it) + '<a class="xlink" href="' + E(U(it.url)) + '" target="_blank" rel="noopener">' + inner + '</a></div>' : '<div class="xit xmedia">' + DEL(it) + inner + '</div>';
+    },
+    platform: function (it) { return '<div class="xit xplat">' + DEL(it) + '<div class="xname"><span class="xico">' + (ICO[it.platform] || '') + '</span><b>' + E(it.platform) + '</b></div><span class="xpill xf">' + (it.followers ? 'متابع ' + E(it.followers) : '—') + '</span><span class="xv">' + visit(it.url) + '</span></div>'; },
+    social: function (it) {
+      var plain = it.type === 'رقم الجوال' || it.type === 'البريد الإلكتروني';
+      return '<div class="xit xsoc">' + DEL(it) + '<div class="xname"><span class="xsbox">' + (ICO[it.type] || '') + '</span><div><b>' + E(it.type) + '</b>' + (plain ? '<small dir="ltr">' + E(it.value) + '</small>' : '') + '</div></div>' + (plain ? '' : visit(it.value)) + '</div>';
+    },
+  };
+  function itemsOf(kind) { return (ITEMS || []).filter(function (x) { return x.kind === kind; }); }
+  function listHTML(kind, list) {
+    var head = kind === 'platform' && list.length ? '<div class="xhead"><span>المنصة</span><span>عدد المتابعين</span><span>زيارة الحساب</span></div>' : '';
+    return head + '<div class="xlist' + (kind === 'game' ? ' xgrid' : '') + '">' + list.map(ROW[kind]).join('') + '</div>';
+  }
+  function renderItems() {
+    var box = q('#xsecs');
+    if (!box || !PROFILE) return;
+    box.innerHTML = kindsFor(PROFILE).map(function (k) {
+      var S = SEC[k], all = itemsOf(k);
+      var add = OWN ? '<button type="button" class="btn o xadd" data-add="' + k + '"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg> ' + S.add + '</button>' : '';
+      var body = all.length ? listHTML(k, all.slice(0, S.n))
+        : (OWN && ITEMS === null ? '<p class="xempty">هذا القسم يحتاج تحديث قاعدة البيانات</p>' : '');
+      return '<section class="card pad xsec"><div class="sec-head"><div><h2 class="sec">' + S.t + '</h2>' + (all.length ? '<div class="sub">' + all.length + '</div>' : '') + '</div>' + add + '</div>' + body +
+        (all.length ? '<button type="button" class="xall" data-all="' + k + '">عرض الكل ' + CHV + '</button>' : '') + '</section>';
+    }).join('');
+  }
+  async function loadItems() {
+    if (!q('#xsecs')) return;
+    ITEMS = PROFILE.user_id ? await nexoDB.listItems(PROFILE.user_id) : [];
+    renderItems();
+  }
+
+  // ---------- النافذة ----------
+  function modal(title, html, wide) {
+    var m = q('#xmodal');
+    if (!m) {
+      m = document.createElement('div'); m.id = 'xmodal'; m.className = 'xm'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+      document.body.appendChild(m);
+      m.addEventListener('click', function (e) { if (e.target === m || e.target.closest('.xclose')) closeX(); });
+    }
+    m.innerHTML = '<div class="xbox' + (wide ? ' wide' : '') + '"><header><h3>' + E(title) + '</h3><button type="button" class="xclose" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></header><div class="xbody">' + html + '</div></div>';
+    m.classList.add('on'); document.body.style.overflow = 'hidden';
+    var f = m.querySelector('input,select,textarea,button.xclose'); if (f) f.focus();
+    return m;
+  }
+  function closeX() { var m = q('#xmodal'); if (m) m.classList.remove('on'); document.body.style.overflow = ''; }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeX(); });
+
+  function ago(t) {
+    var d = (Date.now() - new Date(t)) / 1000; if (!(d >= 0)) return '';
+    if (d < 3600) return 'منذ ' + Math.max(1, Math.round(d / 60)) + ' دقيقة';
+    if (d < 86400) return 'منذ ' + Math.round(d / 3600) + ' ساعات';
+    var n = Math.round(d / 86400);
+    return n === 1 ? 'أمس' : n < 7 ? 'منذ ' + n + ' أيام' : n < 14 ? 'منذ أسبوع' : new Date(t).toLocaleDateString('ar-SA-u-ca-gregory-nu-latn');
+  }
+  function openAll(k) {
+    if (k === 'posts') {
+      modal('منشورات', '<div class="xlist">' + POSTS.map(function (p) {
+        return '<article class="xpost"><div class="xph"><span class="a">' + img(p.a, p.n) + '</span><div><b>' + E(p.n) + '</b><small>' + E(p.r) + '</small></div><time>' + E(ago(p.at)) + '</time></div><p>' + E(p.t) + '</p>' +
+          (U(p.im) ? '<img src="' + E(U(p.im)) + '" alt="">' : '') + '</article>';
+      }).join('') + '</div>', true);
+      return;
+    }
+    modal(SEC[k].t, listHTML(k, itemsOf(k)), k === 'game' || k === 'platform');
+  }
+
+  // ---------- نماذج الإضافة (لصاحب الملف) ----------
+  var opts = function (a) { return a.map(function (x) { return '<option>' + E(x) + '</option>'; }).join(''); };
+  var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" placeholder="' + E(ph || '') + '" ' + (extra || '') + '></label>'; };
+  var FORMS = {
+    game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: F('x_name', 'اسم اللعبة', 'EA SPORTS FC', 'required') + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
+    match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + F('x_game', 'اسم اللعبة', 'EA SPORTS FC') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
+    stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['Twitch', 'Kick', 'YouTube', 'TikTok']) + '</select></label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
+    content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['YouTube', 'TikTok', 'Instagram', 'Snapchat', 'X']) + '</select></label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
+    platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(PLATFORMS) + '</select></label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
+    social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
+  };
+  var CROPPED = null;
+  function openAdd(k) {
+    CROPPED = null;
+    var m = modal(SEC[k].add, '<form class="xform" novalidate><p class="xsub">' + FORMS[k].sub + '</p><div class="xfields' + (k === 'social' || k === 'platform' ? '' : ' two') + '">' + FORMS[k].html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+    var form = m.querySelector('form'), file = m.querySelector('#x_img');
+    if (file) file.onchange = async function () {
+      var f = file.files[0]; if (!f) return;
+      CROPPED = window.CROP ? await CROP(f, { ar: 16 / 9, w: 640, t: 'صورة ' + (k === 'stream' ? 'البث' : 'المحتوى') }) : f;
+      if (!CROPPED) file.value = '';
+      if (window.CPV) CPV(file, CROPPED, function () { file.onchange(); });
+    };
+    var ty = m.querySelector('#x_type');
+    if (ty) ty.onchange = function () {
+      var v = m.querySelector('#x_value');
+      v.placeholder = ty.value === 'رقم الجوال' ? '+966 5XXXXXXXX' : ty.value === 'البريد الإلكتروني' ? 'username@example.com' : 'https://example.com/username';
+    };
+    form.onsubmit = async function (e) {
+      e.preventDefault();
+      var err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]');
+      var val = function (id) { var x = form.querySelector('#' + id); return x ? x.value.trim() : ''; };
+      var data = {};
+      form.querySelectorAll('input:not([type=file]),select').forEach(function (x) { if (x.value.trim()) data[x.id.replace('x_', '')] = x.value.trim(); });
+      var req = form.querySelector('[required]');
+      if (req && !req.value.trim()) { err.textContent = 'اكتب ' + req.closest('label').querySelector('span').textContent; req.focus(); return; }
+      if (data.url && !/^https:\/\//.test(data.url)) { err.textContent = 'الرابط لازم يبدأ بـ https://'; return; }
+      if (k === 'social') {
+        var t = val('x_type'), v = val('x_value');
+        if (t === 'البريد الإلكتروني' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { err.textContent = 'البريد الإلكتروني غير صحيح'; return; }
+        if (t === 'رقم الجوال' && !/^\+?[\d\s-]{8,16}$/.test(v)) { err.textContent = 'رقم الجوال غير صحيح'; return; }
+        if (t !== 'رقم الجوال' && t !== 'البريد الإلكتروني' && !/^https:\/\//.test(v)) { err.textContent = 'رابط الحساب لازم يبدأ بـ https://'; return; }
+      }
+      btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+      try {
+        if (CROPPED) data.img = await nexoDB.upload(CROPPED);
+        await nexoDB.addItem(k, data);
+        closeX(); toast('تمت الإضافة');
+        await loadItems();
+      } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'إضافة'; }
+    };
+  }
+
+  document.addEventListener('click', async function (e) {
+    var a = e.target.closest('[data-all]'), ad = e.target.closest('[data-add]'), d = e.target.closest('[data-del]');
+    if (a) { e.preventDefault(); openAll(a.dataset.all); }
+    else if (ad) { e.preventDefault(); openAdd(ad.dataset.add); }
+    else if (d) {
+      e.preventDefault(); e.stopPropagation();
+      if (d.dataset.sure !== '1') { d.dataset.sure = '1'; d.textContent = 'تأكيد الحذف'; setTimeout(function () { d.dataset.sure = ''; d.textContent = 'حذف'; }, 3000); return; }
+      d.disabled = true;
+      try {
+        await nexoDB.deleteItem(d.dataset.del);
+        await loadItems(); toast('تم الحذف');
+        var open = q('#xmodal.on h3');
+        if (open) { var k = Object.keys(SEC).find(function (x) { return SEC[x].t === open.textContent; }); if (k) openAll(k); }
+      } catch (ex) { toast(ex.message || 'تعذر الحذف'); d.disabled = false; }
+    }
+  });
 
   // نشر منشور من صفحة ملفي (بدل النسخة المحلية في profile-common.js)
   window.publishPost = async function () {

@@ -32,8 +32,7 @@
 <section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">نبذة</h2><p class="bio"></p></section>
 <section class="card pad"><div class="sec-head"><div><h2 class="sec">منشورات</h2><div class="sub">0 منشورات</div></div><span class="post-btn-holder"><button class="btn o" onclick="openM()"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg> إنشاء منشور</button></span></div>
  <div class="grid3" id="postGrid"></div></section>
-<section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">أبرز البثوث</h2></section>
-<section class="card pad"><button class="pen" aria-label="تعديل"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button><h2 class="sec">المنصات</h2></section>
+<div id="xsecs"></div>
 </main>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
  <div class="box"><header><h3 id="mt">إنشاء منشور</h3><button class="x" aria-label="إغلاق" onclick="closeM()">✕</button></header>
@@ -42,6 +41,7 @@
 </div>
 <div class="toast" id="toast" role="status"></div>
 <script src="js/profile-common.js"></script>
+<script src="js/image-crop.js"></script>
 <script src="js/profile-data.js"></script>
 
 </body>

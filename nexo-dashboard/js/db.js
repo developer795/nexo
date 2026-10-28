@@ -161,6 +161,26 @@ export function createDB(user) {
     if (error && error.code !== '23505') fail(error, 'تعذر التقديم على الفرصة') // 23505 = سبق التقديم
   }
 
+  // ---------- عناصر الملف (ألعاب، مباريات، بثوث، محتوى، منصات، حسابات تواصل) ----------
+  // لو جدول profile_items لسا ما انضاف في Supabase نرجع null بدل ما تخرب الصفحة
+  const tableMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /profile_items/.test(e.message || ''))
+  async function listItems(userId) {
+    const { data, error } = await supabase.from('profile_items').select('*')
+      .eq('user_id', userId).order('position').order('created_at')
+    if (tableMissing(error)) return null
+    fail(error, 'تعذر تحميل بيانات الملف')
+    return data.map((r) => ({ ...r.data, id: r.id, kind: r.kind }))
+  }
+  async function addItem(kind, data) {
+    const { error } = await supabase.from('profile_items').insert({ user_id: uid, kind, data })
+    if (tableMissing(error)) throw new Error('قسم الملف يحتاج تحديث قاعدة البيانات (profile_items)')
+    fail(error, 'تعذر الحفظ')
+  }
+  async function deleteItem(id) {
+    const { error } = await supabase.from('profile_items').delete().eq('id', id).eq('user_id', uid)
+    fail(error, 'تعذر الحذف')
+  }
+
   // ---------- ملف شخص آخر (صفحات الزائر) ----------
   async function getProfile(type, id) {
     const table = type === 'team' ? 'teams' : 'talents'
@@ -206,5 +226,6 @@ export function createDB(user) {
   return {
     uid, kind, user, upload, getMe, saveMe, loadAll, listTalents, listTeams, listPosts,
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
+    listItems, addItem, deleteItem,
   }
 }
