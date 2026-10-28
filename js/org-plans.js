@@ -1,14 +1,15 @@
 // =====================================================================
 // باقات الجهات + صفحة الدفع (بعد إنهاء أونبوردنق الجهة، قبل تسجيل الدخول)
 // الأسعار كلها هنا في مكان واحد — عدّلها من ORG_PLANS
+// price: null = تظهر أصفار (000) مثل التصميم. حط رقم (مثل 249) وكل الحسابات تشتغل لحالها.
 // =====================================================================
 var ORG_PLANS = {
-  m: { key: 'm', name: 'الشهرية', short: 'شهري', price: 249, per: 'شهرياً', perMonth: 249 },
-  y: { key: 'y', name: 'السنوية', short: 'سنوي', price: 2400, per: 'سنوياً', perMonth: 200 }
+  m: { key: 'm', name: 'الشهرية', price: null, ph: '000', per: 'شهرياً', months: 1 },
+  y: { key: 'y', name: 'السنوية', price: null, ph: '0,000', per: 'سنوياً', months: 12 }
 };
 var ORG_VAT = 0.15;
 var ORG_TRIAL_DAYS = 7;
-var ORG_SAVE = Math.round((1 - ORG_PLANS.y.price / (ORG_PLANS.m.price * 12)) * 100); // 20%
+var ORG_SAVE = 20; // نسبة التوفير في الباقة السنوية
 var ORG_FEATURES = [
   'إنشاء حساب جهة رسمي موثق',
   'نشر الفرص الوظيفية والتدريبية',
@@ -21,6 +22,10 @@ var CHK = '<svg width="22" height="22" aria-hidden="true"><circle cx="11" cy="11
 function money(n) {
   return (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
+// يعرض الرقم، أو الأصفار لو السعر ما تحدد
+function amt(n, ph) { return n == null || isNaN(n) ? ph : money(n); }
+function priceOf(p) { return amt(p.price, p.ph); }
+function perMonth(p) { return amt(p.price == null ? null : p.price / p.months, '000'); }
 function arDate(d) {
   return d.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
 }
@@ -39,12 +44,12 @@ function renderPlans(el) {
       '<div class="in">' +
         '<h2>الباقة ' + p.name + '</h2>' +
         '<p class="sub">' + (best ? 'وفّر ما يعادل شهرين مجاناً مع الدفع السنوي' : 'اشترك شهرياً بدون التزام طويل المدى') + '</p>' +
-        '<div class="price"><b>' + money(p.price) + '</b><span class="cur">ر.س</span><span class="per">/ ' + p.per + '</span></div>' +
-        (best ? '<span class="save">' + p.perMonth + ' ر.س / شهرياً — بدلاً من ' + ORG_PLANS.m.price + ' ر.س</span>' : '') +
+        '<div class="price"><b>' + priceOf(p) + '</b><span class="cur">ر.س</span><span class="per">/ ' + p.per + '</span></div>' +
+        (best ? '<span class="save">' + perMonth(p) + ' ر.س / شهرياً — بدلاً من ' + priceOf(ORG_PLANS.m) + ' ر.س</span>' : '') +
         '<ul class="feats">' + ORG_FEATURES.map(function (f) { return '<li>' + CHK + f + '</li>'; }).join('') + '</ul>' +
         '<div class="acts">' +
-          '<a class="btn' + (best ? ' g' : '') + '" href="page-17-org-payment.html?plan=' + p.key + '&mode=pay">اشترك الآن' + (best ? ' ووفّر ' + ORG_SAVE + '%' : '') + '</a>' +
-          '<a class="btn o" href="page-17-org-payment.html?plan=' + p.key + '&mode=trial">جرّب مجانًا</a>' +
+          '<a class="bt' + (best ? ' g' : '') + '" href="page-17-org-payment.html?plan=' + p.key + '&mode=pay">اشترك الآن' + (best ? ' ووفّر ' + ORG_SAVE + '%' : '') + '</a>' +
+          '<a class="bt o" href="page-17-org-payment.html?plan=' + p.key + '&mode=trial">جرّب مجانًا</a>' +
         '</div>' +
       '</div></article>';
   }
@@ -68,8 +73,12 @@ function renderPayment(el) {
   };
 
   function totals() {
-    var p = ORG_PLANS[PL], vat = p.price * ORG_VAT;
-    return { p: p, vat: vat, total: p.price + vat };
+    var p = ORG_PLANS[PL], has = p.price != null;
+    return {
+      p: p,
+      vat: has ? money(p.price * ORG_VAT) : '00',
+      total: has ? money(p.price * (1 + ORG_VAT)) : p.ph
+    };
   }
 
   function summary() {
@@ -77,29 +86,29 @@ function renderPayment(el) {
     return '<h2>ملخص الطلب</h2>' +
       '<div class="plt" role="group" aria-label="مدة الاشتراك">' +
         '<button type="button" data-pl="y" class="' + (PL === 'y' ? 'on' : '') + '">سنوي · وفّر ' + ORG_SAVE + '%</button>' +
-        '<button type="button" data-pl="m" class="' + (PL === 'm' ? 'on' : '') + '">شهري · ' + ORG_PLANS.m.price + ' ر.س</button>' +
+        '<button type="button" data-pl="m" class="' + (PL === 'm' ? 'on' : '') + '">شهري · ' + priceOf(ORG_PLANS.m) + ' ر.س</button>' +
       '</div>' +
-      '<div class="plc"><div><span>باقة الجهات ' + p.name + '</span><span class="amt">' + money(p.price) + ' ر.س</span></div>' +
-        '<p>' + (PL === 'y' ? 'ما يعادل ' + p.perMonth + ' ر.س شهريًا · ' : '') + 'مستخدمون غير محدودين</p></div>' +
+      '<div class="plc"><div><span>باقة الجهات ' + p.name + '</span><span class="amt">' + priceOf(p) + ' ر.س</span></div>' +
+        '<p>' + (PL === 'y' ? 'ما يعادل ' + perMonth(p) + ' ر.س شهريًا · ' : '') + 'مستخدمون غير محدودين</p></div>' +
       (TRIAL
-        ? '<div class="tl"><div class="ln"><i class="on"></i><b></b><i></i></div><div class="tlr">' +
+        ? '<div class="tl"><div class="ln"><i class="on"></i><i></i></div><div class="tlr">' +
             '<div><b class="g">اليوم</b><span>بدء التجربة</span></div>' +
             '<div><b>' + arDate(trialEnd()) + '</b><span>أول دفعة</span></div></div></div>'
         : '<div style="height:22px"></div>') +
-      '<div class="rows"><div><span>سعر الاشتراك ' + (PL === 'y' ? 'السنوي' : 'الشهري') + '</span><span class="n">' + money(p.price) + ' ر.س</span></div>' +
-        '<div><span>ضريبة القيمة المضافة (15%)</span><span class="n">' + money(t.vat) + ' ر.س</span></div></div>' +
-      '<div class="rows tot"><div><b>' + (TRIAL ? 'الإجمالي بعد التجربة' : 'الإجمالي') + '</b><span class="n"><b>' + money(t.total) + ' ر.س</b></span></div>' +
-        '<div><span>المستحق اليوم</span><span class="n ' + (TRIAL ? 'g' : '') + '">' + (TRIAL ? '0' : money(t.total)) + ' ر.س</span></div></div>';
+      '<div class="rows"><div><span>سعر الاشتراك ' + (PL === 'y' ? 'السنوي' : 'الشهري') + '</span><span class="n">' + priceOf(p) + ' ر.س</span></div>' +
+        '<div><span>ضريبة القيمة المضافة (15%)</span><span class="n">' + t.vat + ' ر.س</span></div></div>' +
+      '<div class="rows tot"><div><b>' + (TRIAL ? 'الإجمالي بعد التجربة' : 'الإجمالي') + '</b><span class="n"><b>' + t.total + ' ر.س</b></span></div>' +
+        '<div><span>المستحق اليوم</span><span class="n ' + (TRIAL ? 'g' : '') + '">' + (TRIAL ? '0' : t.total) + ' ر.س</span></div></div>';
   }
 
   function agreeText() {
     var t = totals();
     return TRIAL
-      ? 'أوافق على بدء التجربة المجانية، وعلى خصم ' + money(t.total) + ' ر.س في ' + arDate(trialEnd()) + ' ما لم ألغِ قبل ذلك.'
-      : 'أوافق على خصم ' + money(t.total) + ' ر.س الآن، وتجديد الاشتراك ' + t.p.per + ' ما لم ألغِ قبل ذلك.';
+      ? 'أوافق على بدء التجربة المجانية، وعلى خصم ' + t.total + ' ر.س في ' + arDate(trialEnd()) + ' ما لم ألغِ قبل ذلك.'
+      : 'أوافق على خصم ' + t.total + ' ر.س الآن، وتجديد الاشتراك ' + t.p.per + ' ما لم ألغِ قبل ذلك.';
   }
   function btnText() {
-    return TRIAL ? 'ابدأ التجربة المجانية لمدة ' + ORG_TRIAL_DAYS + ' أيام' : 'ادفع ' + money(totals().total) + ' ر.س واشترك';
+    return TRIAL ? 'ابدأ التجربة المجانية لمدة ' + ORG_TRIAL_DAYS + ' أيام' : 'ادفع ' + totals().total + ' ر.س واشترك';
   }
 
   el.innerHTML =
@@ -117,7 +126,7 @@ function renderPayment(el) {
       '</div>' +
       '<label class="agr"><input type="checkbox" id="ag" checked><span id="agt">' + agreeText() + '</span></label>' +
       '<p class="err" id="er" role="alert"></p>' +
-      '<button class="btn" id="go">' + btnText() + '</button>' +
+      '<button class="bt" id="go">' + btnText() + '</button>' +
     '</form>' +
     '<aside class="box sum" id="sum">' + summary() + '</aside>' +
     '</div>';
@@ -170,12 +179,12 @@ function renderPayment(el) {
 
     var p = ORG_PLANS[PL];
     el.innerHTML = '<div class="box done">' +
-      '<div class="ic">' + CHK.replace('width="22" height="22"', 'width="44" height="44" viewBox="0 0 22 22"') + '</div>' +
+      '<div class="ic">' + CHK.replace('width="22" height="22"', 'width="56" height="56" viewBox="0 0 22 22"') + '</div>' +
       '<h2>' + (TRIAL ? 'تم تفعيل تجربتك المجانية' : 'تم الاشتراك بنجاح') + '</h2>' +
       '<p>' + (TRIAL
         ? 'استمتع بباقة الجهات ' + p.name + ' مجانًا حتى ' + arDate(trialEnd()) + '. تقدر تلغي في أي وقت قبل هذا التاريخ.'
         : 'تم تفعيل باقة الجهات ' + p.name + '. أهلاً بك في نيكسو.') + '</p>' +
-      '<a class="btn" href="/auth.html#/login">تسجيل الدخول</a></div>';
+      '<a class="bt" href="/auth.html#/login">تسجيل الدخول</a></div>';
   };
 }
 
