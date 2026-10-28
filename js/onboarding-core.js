@@ -14,7 +14,8 @@ function finish(c){
   // تُنقل لقاعدة البيانات تلقائيًا أول ما يدخل المستخدم الـ Dashboard (auth-guard → db.syncOnboarding)
   localStorage.setItem('nexo_onboarding',JSON.stringify(A));localStorage.removeItem(DK);
  }catch(e){}
- location.href=DONE_URL;
+ // الجهات: بعد إنشاء الحساب تختار الباقة وتدفع، وبعدها تسجيل الدخول
+ location.href=c.type==='org'?'/page-16-org-plans.html':DONE_URL;
 }
 const Onboarding={start(c){
  if(c.r&&!A[c.r[1]]){A[c.r[1]]=c.r[2][0];save()}
