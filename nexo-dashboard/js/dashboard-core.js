@@ -3,7 +3,7 @@ const PIN='<svg width="9" height="10" fill="none" stroke="#797992" stroke-width=
 const USR='<svg width="10" height="10" fill="none" stroke="#797992" stroke-width="1.1"><circle cx="3.5" cy="3" r="1.6"/><circle cx="7.3" cy="3.6" r="1.2"/><path d="M1 8.5c0-2 5-2 5 0M6.5 6.5c2-.3 2.8 1 2.8 2"/></svg>';
 const PEN='<svg width="12" height="12" fill="none" stroke="#fff" stroke-width="1.3"><path d="M5 2H3a1.500 1.500 0 00-1.500 1.500v5.500A1.500 1.500 0 003 10.500h5.500A1.500 1.500 0 0010 9V7M9 1.500l1.500 1.500-4.500 4.500H4.500V6z"/></svg>';
 // البيانات تجي من Supabase (window.nexoDB من auth-guard.js → db.js)
-let D={me:{},posts:[],talents:[],teams:[],opps:[]},LOADED=false;
+let D={me:{},posts:[],talents:[],teams:[],opps:[],sub:null},LOADED=false;
 const onReady=f=>window.nexoDB?f():addEventListener('nexo:ready',f,{once:true});
 async function load(){D=await nexoDB.loadAll();LOADED=true}
 function start(){onReady(async()=>{R();try{await load()}catch(e){console.error(e);$('#m').innerHTML='<p class="empty">تعذر تحميل البيانات، حدّث الصفحة وحاول مرة ثانية</p>';return}R()})}
@@ -30,7 +30,8 @@ const SL={'يبحث عن فريق':'يبحث عن فرصة'};
 /* أسماء أنواع الفرص كما تظهر للمستخدم (القيم المحفوظة في Supabase ما تتغير) */
 const OTL={'حملة اعلانية':'حملة إعلانية','مشاركة في البطولة':'مشاركة في بطولة'},otl=x=>OTL[x]||x;
 /* الاشتراك في الباقة العليا (واجهة فقط، يتحفظ في المتصفح) */
-const SUB=()=>{try{return JSON.parse(localStorage.getItem('nexo_sub'))}catch(e){return null}};
+/* الاشتراك من جدول nexo_subscriptions (يتحمّل مع باقي البيانات في D.sub) — ساري لو مدفوع أو التجربة ما انتهت */
+const SUB=()=>{const s=D.sub;return s&&(s.status==='active'||(s.status==='trialing'&&s.trialEnd>Date.now()))?s:null};
 const bar=(k,ch,key,dd)=>`<div class="fl">${ch.map(([l,x])=>`<button class="ch ${F[k]===x?'on':''}" onclick="F.${k}='${x}';R()">${l} (${x?D[k].filter(i=>i[key]===x).length:D[k].length})</button>`).join('')}<div class="dd">${dd}</div></div>`;
 const head=(t,s)=>`<h1>${t}</h1><p class="sb">${s}</p>`;
 const em=m=>`<p class="empty">${m}</p>`;

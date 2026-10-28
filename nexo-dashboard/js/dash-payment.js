@@ -33,13 +33,14 @@ function bind(){const f=$('#pfm');if(!f)return;
  $('#cn').oninput=e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,19).replace(/(\d{4})(?=\d)/g,'$1  ')};
  $('#ce').oninput=e=>{let x=e.target.value.replace(/\D/g,'').slice(0,4);e.target.value=x.length>2?x.slice(0,2)+' / '+x.slice(2):x};
  $('#cc').oninput=e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,4)};
- f.onsubmit=e=>{e.preventDefault();const n=$('#cn').value.replace(/\D/g,''),[mm,yy]=$('#ce').value.split('/').map(x=>+x.trim()),now=new Date(),er=m=>{$('#er').textContent=m};
+ f.onsubmit=async e=>{e.preventDefault();const n=$('#cn').value.replace(/\D/g,''),[mm,yy]=$('#ce').value.split('/').map(x=>+x.trim()),now=new Date(),er=m=>{$('#er').textContent=m};
   f.querySelectorAll('.bad').forEach(x=>x.classList.remove('bad'));const bad=(id,m)=>{$(id).closest('.fi').classList.add('bad');$(id).focus();er(m)};
   if(n.length<13||!luhn(n))return bad('#cn','رقم البطاقة غير صحيح');
   if(!(mm>=1&&mm<=12)||isNaN(yy)||new Date(2000+yy,mm)<=now)return bad('#ce','تاريخ الانتهاء غير صحيح');
   if(!/^\d{3,4}$/.test($('#cc').value))return bad('#cc','رمز الأمان غير صحيح');
   if(!$('#ch').value.trim())return bad('#ch','اكتب اسم حامل البطاقة');
   if(!$('#ag').checked)return er('لازم توافق على شروط التجربة المجانية');
-  try{localStorage.setItem('nexo_sub',JSON.stringify({plan:PL,start:Date.now(),trialEnd:trialEnd().getTime()}))}catch(e){}R()}}
+  const b=f.querySelector('.ap');b.disabled=true;
+  try{await nexoDB.subscribe({plan:PL,trial:true});await load()}catch(x){b.disabled=false;return er(x.message||'تعذر حفظ الاشتراك')}R()}}
 const _R=R;R=function(){_R();bind()};
 start();

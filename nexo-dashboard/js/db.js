@@ -122,10 +122,37 @@ export function createDB(user) {
   }
 
   async function loadAll() {
-    const [me, posts, talents, teams, opps] = await Promise.all([
-      getMe(), listPosts(), listTalents(), listTeams(), listOpps(),
+    const [me, posts, talents, teams, opps, sub] = await Promise.all([
+      getMe(), listPosts(), listTalents(), listTeams(), listOpps(), getSubscription(),
     ])
-    return { me, posts, talents, teams, opps }
+    return { me, posts, talents, teams, opps, sub }
+  }
+
+  // ---------- الاشتراك (جدول nexo_subscriptions) ----------
+  // يرجع { plan, status, trialEnd } أو null
+  async function getSubscription() {
+    const { data, error } = await supabase.from('nexo_subscriptions').select('*').eq('user_id', uid).maybeSingle()
+    if (error) { console.error('تعذر تحميل الاشتراك', error); return null }
+    if (!data) return null
+    return {
+      plan: data.plan,
+      status: data.status,
+      start: new Date(data.started_at).getTime(),
+      trialEnd: data.trial_ends_at ? new Date(data.trial_ends_at).getTime() : null,
+    }
+  }
+
+  // trial: true = تجربة مجانية، false = اشتراك مدفوع
+  async function subscribe({ plan, trial }) {
+    const row = {
+      user_id: uid,
+      audience: kind === 'team' ? 'org' : 'individual',
+      plan: plan === 'm' ? 'm' : 'y',
+      status: trial ? 'trialing' : 'active',
+    }
+    const { error } = await supabase.from('nexo_subscriptions').upsert(row, { onConflict: 'user_id' })
+    fail(error, 'تعذر حفظ الاشتراك')
+    return getSubscription()
   }
 
   // ---------- الإضافة ----------
@@ -193,7 +220,21 @@ export function createDB(user) {
   // ---------- مزامنة الأونبوردنق ----------
   // صفحات الأونبوردنق تشتغل قبل تسجيل الدخول، فتحفظ الإجابات مؤقتًا في
   // localStorage. أول ما يدخل المستخدم الـ Dashboard ننقلها لقاعدة البيانات.
+  // اشتراك محفوظ مؤقتًا في المتصفح (صفحة 17-payment قبل تسجيل الدخول) → الجدول
+  async function syncSubscription() {
+    let saved = null
+    try { saved = JSON.parse(localStorage.getItem('nexo_org_sub') || localStorage.getItem('nexo_sub')) } catch { /* empty */ }
+    if (!saved) return
+    const current = await getSubscription()
+    if (!current) await subscribe({ plan: saved.plan, trial: saved.mode !== 'paid' })
+    try {
+      localStorage.removeItem('nexo_org_sub')
+      localStorage.removeItem('nexo_sub')
+    } catch { /* empty */ }
+  }
+
   async function syncOnboarding() {
+    try { await syncSubscription() } catch (e) { console.error('Subscription sync failed:', e) }
     let A = null, old = null
     try { A = JSON.parse(localStorage.getItem('nexo_onboarding')) } catch { /* empty */ }
     try { old = JSON.parse(localStorage.getItem('nexo_p16_20_v3'))?.me } catch { /* empty */ }
@@ -227,5 +268,6 @@ export function createDB(user) {
     uid, kind, user, upload, getMe, saveMe, loadAll, listTalents, listTeams, listPosts,
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
     listItems, addItem, deleteItem,
+    getSubscription, subscribe,
   }
 }
