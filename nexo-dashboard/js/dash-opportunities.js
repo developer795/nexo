@@ -12,6 +12,6 @@ function PW(){if(SUB())return;const old=document.querySelector('dialog.pw');if(o
  <div class="pwb"><h2>الفرصة الخاصة ليست للجميع</h2><p>اشترك في الباقة العليا للوصول إلى فرص موجهة ومحدودة لا تظهر في القائمة العامة.</p>
  <div class="ft3"><div>${ic('<path d="M3 9.5l3.5-4 2.5 2 2.5-2 3.5 4-6 5z"/>')}<span>تعاونات مختارة</span></div><div>${ic('<circle cx="9" cy="6" r="3"/><path d="M3 16c0-3.5 2.7-5 6-5s6 1.5 6 5"/>')}<span>استقطاب مباشر</span></div><div>${ic('<rect x="2" y="3.5" width="14" height="12" rx="2"/><path d="M2 7.5h14M6 1.5v3M12 1.5v3M7 11.5l1.5 1.5 3-3"/>')}<span>فعاليات خاصة</span></div></div>
  <button class="ap" onclick="location.href='dash-payment.html'">جرّب مجانًا</button></div>`;
- document.body.append(d);const cl=()=>d.close();d.querySelector('.x2').onclick=cl;d.addEventListener('cancel',cl);d.showModal()}
+ document.body.append(d);/* غير المشترك: الإغلاق يرجعه للرئيسية بدل ما تنكشف الفرص */const cl=e=>{if(e)e.preventDefault();if(SUB()){d.close();return}location.href='dash-home.html'};d.querySelector('.x2').onclick=cl;d.addEventListener('cancel',cl);d.showModal()}
 /* نافذة الباقة تطلع بعد ما يتحمّل الاشتراك من قاعدة البيانات */
 onReady(()=>{const t=setInterval(()=>{if(LOADED){clearInterval(t);PW()}},50)});
