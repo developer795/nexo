@@ -1,7 +1,5 @@
 // بعد إنهاء الأونبوردنق: صفحة الدخول (ثم MFA ثم الـ Dashboard)
 const DONE_URL='/auth.html#/login';
-// الجهات: بعد صفحة 15 تروح لاختيار الباقة (16-plans) ثم الدفع (17-payment)
-const ORG_PLANS_URL='/16-plans/plans.html';
 const $=s=>document.querySelector(s);
 const CITIES=['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','تبوك','أبها','خميس مشيط','بريدة','عنيزة','حائل','جازان','نجران','ينبع','الباحة','عرعر','سكاكا'];
 const SEL={k:'city',l:'الموقع',ph:'المدينة',sel:1};
@@ -16,30 +14,14 @@ function finish(c){
   // تُنقل لقاعدة البيانات تلقائيًا أول ما يدخل المستخدم الـ Dashboard (auth-guard → db.syncOnboarding)
   localStorage.setItem('nexo_onboarding',JSON.stringify(A));localStorage.removeItem(DK);
  }catch(e){}
- // الجهات: بعد إنشاء الحساب تختار الباقة وتدفع، وبعدها تسجيل الدخول
- location.href=c.type==='org'?ORG_PLANS_URL:DONE_URL;
-}
-// زر العودة: back = اسم الصفحة السابقة، أو -1 = يرجع للصفحة اللي قبلها في المتصفح
-const BACK_SVG='<svg width="10" height="18" fill="none" stroke="#201F49" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2l6 7-6 7"/></svg>';
-function backLink(back){
- if(!back)return null;
- let a=document.getElementById('bk');
- if(!a){a=document.createElement('a');a.id='bk';a.className='back';a.innerHTML=BACK_SVG+'العودة';document.body.insertBefore(a,document.getElementById('m'))}
- if(back===-1){a.href='/1-home/home.html';a.onclick=e=>{if(history.length>1){e.preventDefault();history.back()}}}else a.href=back;
- return a;
-}
-function placeTop(lg){
- const narrow=innerWidth<=720,L=document.getElementById('lg'),B=document.getElementById('bk');
- L.style.top=(narrow?24:lg[0])+'px';L.style.right=(narrow?16:lg[1])+'px';
- if(B){B.style.top=(narrow?64:lg[0]+140)+'px';B.style.right=(narrow?16:lg[1])+'px'}
- return narrow;
+ location.href=c.type==='org'?'/16-plans/plans.html':DONE_URL;
 }
 const Onboarding={start(c){
- backLink(c.back);
  if(c.r&&!A[c.r[1]]){A[c.r[1]]=c.r[2][0];save()}
  function render(){
- const narrow=placeTop(c.lg);
- const m=$('#m');m.style.marginTop=(narrow?124:260)+'px';
+ const narrow=innerWidth<=720,L=document.getElementById('lg');
+ L.style.top=(narrow?24:c.lg[0])+'px';L.style[narrow?'right':'right']=(narrow?16:c.lg[1])+'px';
+ const m=$('#m');m.style.marginTop=(narrow?110:260)+'px';
  const ab=(t,x)=>`style="top:${t}px;${x||''}"`;
  let h=`<div class="bar" aria-hidden="true">${Array.from({length:c.bar[1]},(_,i)=>`<i class="${i<c.bar[0]?'on':''}"></i>`).join('')}</div><h1 class="t" ${ab(c.t[0]+(narrow?0:0))}>${c.t[1]}</h1>`;
  if(c.s)h+=`<p class="s" ${ab(c.s[0])}>${c.s[1]}</p>`;
