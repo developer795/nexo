@@ -1,0 +1,6 @@
+IBM Plex Sans Arabic — Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
+Inter — Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+
+These fonts are licensed under the SIL Open Font License, Version 1.1.
+Full license text: https://openfontlicense.org/open-font-license-official-text/
+The files in this folder are subsets of the original fonts (converted to WOFF).
