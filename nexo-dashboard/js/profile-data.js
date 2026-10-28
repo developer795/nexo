@@ -232,14 +232,14 @@
   }
 
   // ---------- النافذة ----------
-  function modal(title, html, wide) {
+  function modal(title, html, wide, isForm) {
     var m = q('#xmodal');
     if (!m) {
       m = document.createElement('div'); m.id = 'xmodal'; m.className = 'xm'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
       document.body.appendChild(m);
       m.addEventListener('click', function (e) { if (e.target === m || e.target.closest('.xclose')) closeX(); });
     }
-    m.innerHTML = '<div class="xbox' + (wide ? ' wide' : '') + '"><header><h3>' + E(title) + '</h3><button type="button" class="xclose" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></header><div class="xbody">' + html + '</div></div>';
+    m.innerHTML = '<div class="xbox' + (wide ? ' wide' : '') + (isForm ? ' xfm' : '') + '"><header><h3>' + E(title) + '</h3><button type="button" class="xclose" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></header><div class="xbody">' + html + '</div></div>';
     m.classList.add('on'); document.body.style.overflow = 'hidden';
     var f = m.querySelector('input,select,textarea,button.xclose'); if (f) f.focus();
     return m;
@@ -268,21 +268,23 @@
   // ---------- نماذج الإضافة (لصاحب الملف) ----------
   var opts = function (a) { return a.map(function (x) { return '<option>' + E(x) + '</option>'; }).join(''); };
   var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" placeholder="' + E(ph || '') + '" ' + (extra || '') + '></label>'; };
+  var GAMES = ['EA SPORTS FC', 'Rocket League', 'Valorant', 'Fortnite', 'Call of Duty', 'Overwatch 2', 'League of Legends', 'Apex Legends', 'Counter-Strike 2', 'PUBG', 'Dota 2'];
+  var GSEL = function (id, label, req) { return '<label class="xf"><span>' + label + '</span><select id="' + id + '"' + (req ? ' required' : '') + '><option value="" disabled selected hidden>اللعبة</option>' + opts(GAMES) + '</select></label>'; };
   var FORMS = {
-    game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: F('x_name', 'اسم اللعبة', 'EA SPORTS FC', 'required') + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
-    match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + F('x_game', 'اسم اللعبة', 'EA SPORTS FC') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
+    game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: GSEL('x_name', 'اسم اللعبة', 1) + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
+    match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + GSEL('x_game', 'اسم اللعبة') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
     stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['Twitch', 'Kick', 'YouTube', 'TikTok']) + '</select></label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
     content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['YouTube', 'TikTok', 'Instagram', 'Snapchat', 'X']) + '</select></label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
     platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(PLATFORMS) + '</select></label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
     social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
   var CROPPED = null;
-  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['تيك توك', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
+  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
   function openSocial() {
     var cur = {}; itemsOf('social').forEach(function (it) { cur[it.type] = it.value; });
     var m = modal('حسابات التواصل', '<form class="xform" novalidate><p class="xsub">أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.</p><div class="xsoc-f">' +
       SOCF.map(function (f, i) { return '<label class="xsr"><span class="xsl"><b>' + f[0] + '</b><span class="xico">' + (ICO[f[0]] || '') + '</span></span><input id="xs' + i + '" type="' + f[2] + '" dir="ltr" placeholder="' + E(f[1]) + '" value="' + E(cur[f[0]] || '') + '"></label>'; }).join('') +
-      '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+      '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form');
     form.onsubmit = async function (e) {
       e.preventDefault();
@@ -306,7 +308,7 @@
   }
   // تعديل النبذة من القلم في قسم النبذة
   function openBio() {
-    var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000" placeholder="اكتب نبذة عنك">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+    var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000" placeholder="اكتب نبذة عنك">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form');
     form.onsubmit = async function (e) {
       e.preventDefault();
@@ -320,7 +322,7 @@
   function openAdd(k) {
     if (k === 'social') return openSocial();
     CROPPED = null;
-    var m = modal(SEC[k].add, '<form class="xform" novalidate><p class="xsub">' + FORMS[k].sub + '</p><div class="xfields' + (k === 'social' || k === 'platform' ? '' : ' two') + '">' + FORMS[k].html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+    var m = modal(SEC[k].add, '<form class="xform" novalidate><p class="xsub">' + FORMS[k].sub + '</p><div class="xfields' + (k === 'social' || k === 'platform' ? '' : ' two') + '">' + FORMS[k].html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form'), file = m.querySelector('#x_img');
     if (file) file.onchange = async function () {
       var f = file.files[0]; if (!f) return;
@@ -340,7 +342,7 @@
       var data = {};
       form.querySelectorAll('input:not([type=file]),select').forEach(function (x) { if (x.value.trim()) data[x.id.replace('x_', '')] = x.value.trim(); });
       var req = form.querySelector('[required]');
-      if (req && !req.value.trim()) { err.textContent = 'اكتب ' + req.closest('label').querySelector('span').textContent; req.focus(); return; }
+      if (req && !(req.value || '').trim()) { err.textContent = (req.tagName === 'SELECT' ? 'اختر ' : 'اكتب ') + req.closest('label').querySelector('span').textContent; req.focus(); return; }
       if (data.url && !/^https:\/\//.test(data.url)) { err.textContent = 'الرابط لازم يبدأ بـ https://'; return; }
       if (k === 'social') {
         var t = val('x_type'), v = val('x_value');
