@@ -267,9 +267,9 @@
 
   // ---------- نماذج الإضافة (لصاحب الملف) ----------
   var opts = function (a) { return a.map(function (x) { return '<option>' + E(x) + '</option>'; }).join(''); };
-  var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" placeholder="' + E(ph || '') + '" ' + (extra || '') + '></label>'; };
+  var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" ' + (extra || '') + '></label>'; };
   var GAMES = ['EA SPORTS FC', 'Rocket League', 'Valorant', 'Fortnite', 'Call of Duty', 'Overwatch 2', 'League of Legends', 'Apex Legends', 'Counter-Strike 2', 'PUBG', 'Dota 2'];
-  var GSEL = function (id, label, req) { return '<label class="xf"><span>' + label + '</span><select id="' + id + '"' + (req ? ' required' : '') + '><option value="" disabled selected hidden>اللعبة</option>' + opts(GAMES) + '</select></label>'; };
+  var GSEL = function (id, label, req) { return '<label class="xf"><span>' + label + '</span><select id="' + id + '"' + (req ? ' required' : '') + '><option value="" disabled selected hidden></option>' + opts(GAMES) + '</select></label>'; };
   var FORMS = {
     game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: GSEL('x_name', 'اسم اللعبة', 1) + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
     match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + GSEL('x_game', 'اسم اللعبة') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
@@ -308,7 +308,7 @@
   }
   // تعديل النبذة من القلم في قسم النبذة
   function openBio() {
-    var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000" placeholder="اكتب نبذة عنك">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
+    var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form');
     form.onsubmit = async function (e) {
       e.preventDefault();
@@ -333,7 +333,7 @@
     var ty = m.querySelector('#x_type');
     if (ty) ty.onchange = function () {
       var v = m.querySelector('#x_value');
-      v.placeholder = ty.value === 'رقم الجوال' ? '+966 5XXXXXXXX' : ty.value === 'البريد الإلكتروني' ? 'username@example.com' : 'https://example.com/username';
+      
     };
     form.onsubmit = async function (e) {
       e.preventDefault();
