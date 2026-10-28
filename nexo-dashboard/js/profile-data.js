@@ -25,6 +25,8 @@
     if (OWN && e.target.closest('.pen')) {
       e.preventDefault();
       e.stopImmediatePropagation();
+      var sec = e.target.closest('section');
+      if (sec && sec.querySelector('.bio') && PROFILE) { openBio(); return; }
       location.href = 'dash-home.html#edit';
     }
   }, true);
@@ -142,12 +144,12 @@
   var CHV = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
   var ITEMS = null; // null = جدول profile_items لسا ما انضاف
   var SEC = {
-    match:    { t: 'المباريات والبطولات', add: 'إضافة مباراة أو بطولة', n: 2 },
-    game:     { t: 'الألعاب', add: 'إضافة لعبة', n: 2 },
-    stream:   { t: 'أبرز البثوث', add: 'إضافة بث', n: 2 },
-    content:  { t: 'إبراز المحتوى', add: 'إضافة محتوى', n: 2 },
-    platform: { t: 'المنصات', add: 'إضافة منصة', n: 3 },
-    social:   { t: 'حسابات التواصل', add: 'إضافة حساب', n: 3 },
+    match:    { t: 'المباريات والبطولات', add: 'إضافة المباريات والبطولات', n: 1 },
+    game:     { t: 'الألعاب', add: 'إضافة الألعاب', n: 1 },
+    stream:   { t: 'أبرز البثوث', add: 'إضافة بث', n: 1 },
+    content:  { t: 'إبراز المحتوى', add: 'إضافة محتوى', n: 1 },
+    platform: { t: 'المنصات', add: 'إضافة منصة', n: 2 },
+    social:   { t: 'حسابات التواصل', add: 'حسابات التواصل', n: 2 },
   };
   // الأقسام حسب نوع الحساب
   function kindsFor(p) {
@@ -200,17 +202,28 @@
     var head = kind === 'platform' && list.length ? '<div class="xhead"><span>المنصة</span><span>عدد المتابعين</span><span>زيارة الحساب</span></div>' : '';
     return head + '<div class="xlist' + (kind === 'game' ? ' xgrid' : '') + '">' + list.map(ROW[kind]).join('') + '</div>';
   }
+  var PEN = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
+  function preview(k, list) {
+    if (k === 'social') return '<div class="xsp">' + list.map(function (it) {
+      var plain = it.type === 'رقم الجوال' || it.type === 'البريد الإلكتروني';
+      var href = it.type === 'رقم الجوال' ? '' : it.type === 'البريد الإلكتروني' ? 'mailto:' + it.value : U(it.value);
+      var ic = '<span class="xspi">' + (ICO[it.type] || '') + '</span>';
+      return href ? '<a class="xspb" href="' + E(href) + '" target="_blank" rel="noopener" title="' + E(it.type) + '">' + ic + '</a>'
+        : '<span class="xspb" title="' + E(it.type) + '">' + ic + (plain ? '<small dir="ltr">' + E(it.value) + '</small>' : '') + '</span>';
+    }).join('') + '</div>';
+    return listHTML(k, list);
+  }
   function renderItems() {
     var box = q('#xsecs');
     if (!box || !PROFILE) return;
-    box.innerHTML = kindsFor(PROFILE).map(function (k) {
+    var ks = kindsFor(PROFILE);
+    var one = function (k) {
       var S = SEC[k], all = itemsOf(k);
-      var add = OWN ? '<button type="button" class="btn o xadd" data-add="' + k + '"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg> ' + S.add + '</button>' : '';
-      var body = all.length ? listHTML(k, all.slice(0, S.n))
-        : (OWN && ITEMS === null ? '<p class="xempty">هذا القسم يحتاج تحديث قاعدة البيانات</p>' : '');
-      return '<section class="card pad xsec"><div class="sec-head"><div><h2 class="sec">' + S.t + '</h2>' + (all.length ? '<div class="sub">' + all.length + '</div>' : '') + '</div>' + add + '</div>' + body +
+      var pen = OWN ? '<button type="button" class="xpen" data-add="' + k + '" aria-label="' + S.add + '">' + PEN + '</button>' : '';
+      return '<section class="card pad xsec">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '') +
         (all.length ? '<button type="button" class="xall" data-all="' + k + '">عرض الكل ' + CHV + '</button>' : '') + '</section>';
-    }).join('');
+    };
+    box.innerHTML = ks.length === 1 ? one(ks[0]) : one(ks[0]) + '<div class="xtwo">' + ks.slice(1).map(one).join('') + '</div>';
   }
   async function loadItems() {
     if (!q('#xsecs')) return;
@@ -257,14 +270,55 @@
   var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" placeholder="' + E(ph || '') + '" ' + (extra || '') + '></label>'; };
   var FORMS = {
     game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: F('x_name', 'اسم اللعبة', 'EA SPORTS FC', 'required') + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
-    match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + F('x_game', 'اسم اللعبة', 'EA SPORTS FC') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
+    match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + F('x_game', 'اسم اللعبة', 'EA SPORTS FC') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
     stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['Twitch', 'Kick', 'YouTube', 'TikTok']) + '</select></label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
     content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['YouTube', 'TikTok', 'Instagram', 'Snapchat', 'X']) + '</select></label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
     platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(PLATFORMS) + '</select></label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
-    social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
+    social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
   var CROPPED = null;
+  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['تيك توك', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
+  function openSocial() {
+    var cur = {}; itemsOf('social').forEach(function (it) { cur[it.type] = it.value; });
+    var m = modal('حسابات التواصل', '<form class="xform" novalidate><p class="xsub">أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.</p><div class="xsoc-f">' +
+      SOCF.map(function (f, i) { return '<label class="xsr"><span class="xsl"><b>' + f[0] + '</b><span class="xico">' + (ICO[f[0]] || '') + '</span></span><input id="xs' + i + '" type="' + f[2] + '" dir="ltr" placeholder="' + E(f[1]) + '" value="' + E(cur[f[0]] || '') + '"></label>'; }).join('') +
+      '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+    var form = m.querySelector('form');
+    form.onsubmit = async function (e) {
+      e.preventDefault();
+      var err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]'), vals = [];
+      for (var i = 0; i < SOCF.length; i++) {
+        var v = form.querySelector('#xs' + i).value.trim(), t = SOCF[i][0];
+        if (!v) continue;
+        if (t === 'البريد الإلكتروني' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { err.textContent = 'البريد الإلكتروني غير صحيح'; return; }
+        if (t === 'رقم الجوال' && !/^\+?[\d\s-]{8,16}$/.test(v)) { err.textContent = 'رقم الجوال غير صحيح'; return; }
+        if (SOCF[i][2] === 'url') { if (!/^https?:\/\//.test(v)) v = 'https://' + v.replace(/^\/+/, ''); }
+        vals.push({ type: t, value: v });
+      }
+      btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+      try {
+        var old = itemsOf('social');
+        for (var j = 0; j < old.length; j++) await nexoDB.deleteItem(old[j].id);
+        for (var k = 0; k < vals.length; k++) await nexoDB.addItem('social', vals[k]);
+        closeX(); toast('تم الحفظ'); await loadItems();
+      } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'إضافة'; }
+    };
+  }
+  // تعديل النبذة من القلم في قسم النبذة
+  function openBio() {
+    var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000" placeholder="اكتب نبذة عنك">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
+    var form = m.querySelector('form');
+    form.onsubmit = async function (e) {
+      e.preventDefault();
+      var v = form.querySelector('#x_bio').value.trim(), err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]');
+      if (!v) { err.textContent = 'اكتب النبذة'; return; }
+      btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+      try { await nexoDB.saveMe({ bio: v }); PROFILE.bio = v; var b = q('.bio'); if (b) b.textContent = v; closeX(); toast('تم الحفظ'); }
+      catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'إضافة'; }
+    };
+  }
   function openAdd(k) {
+    if (k === 'social') return openSocial();
     CROPPED = null;
     var m = modal(SEC[k].add, '<form class="xform" novalidate><p class="xsub">' + FORMS[k].sub + '</p><div class="xfields' + (k === 'social' || k === 'platform' ? '' : ' two') + '">' + FORMS[k].html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>');
     var form = m.querySelector('form'), file = m.querySelector('#x_img');
