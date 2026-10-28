@@ -39,7 +39,7 @@ const Onboarding={start(c){
  if(c.r&&!A[c.r[1]]){A[c.r[1]]=c.r[2][0];save()}
  function render(){
  const narrow=placeTop(c.lg);
- const m=$('#m');m.style.marginTop=(narrow?110:260)+'px';
+ const m=$('#m');m.style.marginTop=(narrow?124:260)+'px';
  const ab=(t,x)=>`style="top:${t}px;${x||''}"`;
  let h=`<div class="bar" aria-hidden="true">${Array.from({length:c.bar[1]},(_,i)=>`<i class="${i<c.bar[0]?'on':''}"></i>`).join('')}</div><h1 class="t" ${ab(c.t[0]+(narrow?0:0))}>${c.t[1]}</h1>`;
  if(c.s)h+=`<p class="s" ${ab(c.s[0])}>${c.s[1]}</p>`;
