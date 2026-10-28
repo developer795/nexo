@@ -13,8 +13,6 @@ const FILES = [
   'page-13-status.html',
   'page-14-org.html',
   'page-15-org-path.html',
-  'page-16-org-plans.html',
-  'page-17-org-payment.html',
   'nexo-logo.png',
 ]
 
@@ -24,6 +22,8 @@ const DIRS = [
   '3-talents',
   '4-teams',
   '5-opportunities',
+  '16-plans',
+  '17-payment',
   'assets',
   'css',
   'js',
