@@ -1,6 +1,6 @@
 v='pay';
 let PL='y';
-const VAT=.15,PLANS={y:{n:'سنوي',base:470,per:'سنويًا'},m:{n:'شهري',base:49,per:'شهريًا'}};
+const VAT=.15,PLANS={y:{n:'سنوي',base:0,per:'سنويًا'},m:{n:'شهري',base:0,per:'شهريًا'}};
 const ar=n=>(Math.round(n*100)/100).toLocaleString('en-US',{maximumFractionDigits:2});
 const day=d=>d.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn',{day:'numeric',month:'long',year:'numeric'});
 const trialEnd=()=>{const d=new Date();d.setDate(d.getDate()+7);return d};
@@ -8,7 +8,7 @@ const CHK='<svg width="16" height="16"><circle cx="8" cy="8" r="8" fill="#E0FAE0
 const ICO={card:'<svg width="16" height="12" fill="none" stroke="#9A9AAE" stroke-width="1.2"><rect x=".6" y=".6" width="14.8" height="10.8" rx="1.6"/><path d="M.6 4h14.8"/></svg>',cal:'<svg width="14" height="14" fill="none" stroke="#9A9AAE" stroke-width="1.2"><rect x=".6" y="2" width="12.8" height="11.4" rx="1.6"/><path d="M.6 5.5h12.8M4 .5v3M10 .5v3"/></svg>',lock:'<svg width="13" height="15" fill="none" stroke="#9A9AAE" stroke-width="1.2"><rect x=".6" y="6" width="11.8" height="8.4" rx="1.6"/><path d="M3.3 6V4a3.2 3.2 0 016.4 0v2"/><circle cx="6.5" cy="10.2" r="1"/></svg>'};
 function sum(){const p=PLANS[PL],vat=Math.round(p.base*VAT),tot=p.base+vat,end=day(trialEnd());
  return`<h2>ملخص الطلب</h2>
- <div class="plt"><button type="button" class="${PL==='y'?'on':''}" onclick="setPL('y')">سنوي · وفّر 20%</button><button type="button" class="${PL==='m'?'on':''}" onclick="setPL('m')">شهري · 49 ر.س</button></div>
+ <div class="plt"><button type="button" class="${PL==='y'?'on':''}" onclick="setPL('y')">سنوي · وفّر 20%</button><button type="button" class="${PL==='m'?'on':''}" onclick="setPL('m')">شهري · ${PLANS.m.base} ر.س</button></div>
  <div class="plc"><div><b>الباقة العليا للأفراد · ${p.n}</b><b class="pr3">${ar(p.base)} ر.س</b></div><p>${PL==='y'?`ما يعادل ${Math.round(p.base/12)} ر.س شهريًا · `:''}وصول كامل للفرص الحصرية</p></div>
  <div class="tl"><div class="ln"><i class="on"></i><i></i></div><div class="tlr"><div><b class="g">اليوم</b><span>بدء التجربة</span></div><div><b>${end}</b><span>أول دفعة</span></div></div></div>
  <div class="rows"><div><span>الباقة العليا للأفراد · ${p.n}</span><span>${ar(p.base)} ر.س</span></div><div><span>ضريبة القيمة المضافة (15%)</span><span>${ar(vat)} ر.س</span></div></div>
