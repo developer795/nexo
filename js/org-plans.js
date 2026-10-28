@@ -36,7 +36,7 @@ function trialEnd() {
 }
 
 // ---------------- صفحة الباقات ----------------
-function renderPlans(el) {
+function renderPlans(el, c) {
   function card(p) {
     var best = p.key === 'y';
     return '<article class="plan' + (best ? ' best' : '') + '">' +
@@ -48,8 +48,8 @@ function renderPlans(el) {
         (best ? '<span class="save">' + perMonth(p) + ' ر.س / شهرياً — بدلاً من ' + priceOf(ORG_PLANS.m) + ' ر.س</span>' : '') +
         '<ul class="feats">' + ORG_FEATURES.map(function (f) { return '<li>' + CHK + f + '</li>'; }).join('') + '</ul>' +
         '<div class="acts">' +
-          '<a class="bt' + (best ? ' g' : '') + '" href="page-17-org-payment.html?plan=' + p.key + '&mode=pay">اشترك الآن' + (best ? ' ووفّر ' + ORG_SAVE + '%' : '') + '</a>' +
-          '<a class="bt o" href="page-17-org-payment.html?plan=' + p.key + '&mode=trial">جرّب مجانًا</a>' +
+          '<a class="bt' + (best ? ' g' : '') + '" href="' + c.next + '?plan=' + p.key + '&mode=pay">اشترك الآن' + (best ? ' ووفّر ' + ORG_SAVE + '%' : '') + '</a>' +
+          '<a class="bt o" href="' + c.next + '?plan=' + p.key + '&mode=trial">جرّب مجانًا</a>' +
         '</div>' +
       '</div></article>';
   }
@@ -61,7 +61,7 @@ function renderPlans(el) {
 }
 
 // ---------------- صفحة الدفع ----------------
-function renderPayment(el) {
+function renderPayment(el, c) {
   var q = new URLSearchParams(location.search);
   var PL = q.get('plan') === 'm' ? 'm' : 'y';
   var TRIAL = q.get('mode') !== 'pay';
@@ -184,13 +184,22 @@ function renderPayment(el) {
       '<p>' + (TRIAL
         ? 'استمتع بباقة الجهات ' + p.name + ' مجانًا حتى ' + arDate(trialEnd()) + '. تقدر تلغي في أي وقت قبل هذا التاريخ.'
         : 'تم تفعيل باقة الجهات ' + p.name + '. أهلاً بك في نيكسو.') + '</p>' +
-      '<a class="bt" href="/auth.html#/login">تسجيل الدخول</a></div>';
+      '<a class="bt" href="' + c.next + '">تسجيل الدخول</a></div>';
   };
 }
 
-(function () {
-  var el = document.getElementById('m');
-  if (!el) return;
-  if (el.dataset.page === 'plans') renderPlans(el);
-  else if (el.dataset.page === 'payment') renderPayment(el);
-})();
+// نفس نمط Onboarding.start في js/onboarding-core.js: كل صفحة تستدعيه من ملفها (js/page-16-…, js/page-17-…)
+var OrgPlans = {
+  start: function (c) {
+    var el = document.getElementById('m');
+    backLink(c.back);
+    function layout() {
+      var narrow = placeTop(c.lg);
+      el.style.marginTop = (narrow ? 110 : 260) + 'px';
+    }
+    addEventListener('resize', layout);
+    layout();
+    if (c.page === 'plans') renderPlans(el, c);
+    else renderPayment(el, c);
+  }
+};
