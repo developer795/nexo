@@ -33,13 +33,5 @@ function show(onClose){
 }
 
 window.nexoPaywall=show;
-// أي رابط للفرص أو تفاصيل فرصة: غير المشترك تطلع له النافذة بنفس الصفحة
-document.addEventListener('click',function(e){
- var a=e.target.closest('a[href]');if(!a)return;
- var h=a.getAttribute('href')||'';
- if(!/(^|\/)dash-opportunit(ies|y-details)\.html/.test(h))return;
- if(SUBST===true)return;
- e.preventDefault();e.stopPropagation();
- ready.then(function(ok){if(ok)location.href=a.href;else show()});
-},true);
+
 })();

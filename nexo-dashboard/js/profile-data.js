@@ -259,7 +259,7 @@
       modal('منشورات', '<div class="xlist">' + POSTS.map(function (p) {
         return '<article class="xpost"><div class="xph"><span class="a">' + img(p.a, p.n) + '</span><div><b>' + E(p.n) + '</b><small>' + E(p.r) + '</small></div><time>' + E(ago(p.at)) + '</time></div><p>' + E(p.t) + '</p>' +
           (U(p.im) ? '<img src="' + E(U(p.im)) + '" alt="">' : '') + '</article>';
-      }).join('') + '</div>', true);
+      }).join('') + '</div>');
       return;
     }
     modal(SEC[k].t, listHTML(k, itemsOf(k)), k === 'game' || k === 'platform');
