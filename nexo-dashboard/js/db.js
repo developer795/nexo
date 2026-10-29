@@ -269,5 +269,6 @@ export function createDB(user) {
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
     listItems, addItem, deleteItem,
     getSubscription, subscribe,
+    signOut: () => supabase.auth.signOut(),
   }
 }
