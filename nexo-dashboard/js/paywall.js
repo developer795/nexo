@@ -34,4 +34,20 @@ function show(onClose){
 
 window.nexoPaywall=show;
 
+// غير المشترك يضغط "الفرص" (أو أي رابط فرصة): تطلع النافذة فوق نفس الصفحة اللي هو فيها،
+// و"الفرص" تصير هي المختارة في الهيدر. يطلع منها بالضغط على أي صفحة ثانية في الهيدر.
+document.addEventListener('click',function(e){
+ var a=e.target.closest('a[href]');if(!a)return;
+ var h=a.getAttribute('href')||'';
+ if(!/(^|\/)dash-opportunit(ies|y-details)\.html/.test(h))return;
+ if(SUBST===true)return;
+ e.preventDefault();e.stopPropagation();
+ ready.then(function(ok){if(ok){location.href=a.href;return}
+  document.querySelectorAll('#nav a,nav.top .links a').forEach(function(x){
+   var on=/dash-opportunities\.html/.test(x.getAttribute('href')||'');
+   x.classList.toggle('on',on);if(on)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current');
+  });
+  show();
+ });
+},true);
 })();
