@@ -27,7 +27,7 @@
       e.stopImmediatePropagation();
       var sec = e.target.closest('section');
       if (sec && sec.querySelector('.bio') && PROFILE) { openBio(); return; }
-      location.href = 'dash-home.html#edit';
+      if (PROFILE) openEditProfile();
     }
   }, true);
 
@@ -279,7 +279,7 @@
     social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
   var CROPPED = null;
-  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
+  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['تيك توك', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
   function openSocial() {
     var cur = {}; itemsOf('social').forEach(function (it) { cur[it.type] = it.value; });
     var m = modal('حسابات التواصل', '<form class="xform" novalidate><p class="xsub">أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.</p><div class="xsoc-f">' +
@@ -306,6 +306,51 @@
       } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'إضافة'; }
     };
   }
+  // تعديل الملف (الاسم، الصور، الدور...) من قلم الغلاف — يبقى في صفحة الملف
+  var CITIES = ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','بريدة','عنيزة','الرس','حائل','تبوك','أبها','خميس مشيط','بيشة','نجران','جازان','صبيا','أبو عريش','ينبع','رابغ','الليث','القنفذة','الباحة','سكاكا','دومة الجندل','عرعر','رفحاء','طريف','القريات','حفر الباطن','الخرج','الدرعية','الزلفي','المجمعة','شقراء','الدوادمي','وادي الدواسر','الأفلاج','العلا','الوجه','ضباء','تيماء','خيبر','شرورة','محايل عسير','بقيق','رأس تنورة','النعيرية'];
+  function openEditProfile() {
+    var p = PROFILE, team = p.kind === 'team';
+    var sel = function (id, label, list, val, labels) {
+      return '<label class="xf"><span>' + label + '</span><select id="' + id + '" required><option value="" disabled hidden' + (val ? '' : ' selected') + '></option>' +
+        list.map(function (x) { return '<option value="' + E(x) + '"' + (x === val ? ' selected' : '') + '>' + E((labels && labels[x]) || x) + '</option>'; }).join('') + '</select></label>';
+    };
+    var txt = function (id, label, val, req) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" value="' + E(val || '') + '"' + (req ? ' required' : '') + ' maxlength="80"></label>'; };
+    var file = function (id, label) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" type="file" accept="image/*"></label>'; };
+    var cl = CITIES.indexOf(p.city) < 0 && p.city ? CITIES.concat([p.city]) : CITIES;
+    var html = team
+      ? txt('e_n', 'اسم الجهة', p.n, 1) + file('e_ph', 'الشعار') + file('e_cv', 'صورة الغلاف') + sel('e_type', 'النوع', ['نادي', 'جهة', 'مقدم خدمة'], p.type) + txt('e_sub', 'وصف قصير', p.sub) + sel('e_city', 'المدينة', cl, p.city)
+      : txt('e_n', 'الاسم', p.n, 1) + file('e_ph', 'صورتك الشخصية') + file('e_cv', 'صورة الغلاف') + sel('e_role', 'أنت', ['لاعب', 'صانع محتوى', 'ستريمر'], p.role) + txt('e_g', 'اللعبة أو المنصة', p.g) + sel('e_city', 'المدينة', cl, p.city) + sel('e_s', 'الحالة', ['يبحث عن فريق', 'منضم لفريق'], p.s, { 'يبحث عن فريق': 'يبحث عن فرصة' });
+    var m = modal(team ? 'ملف الجهة' : 'ملفك الشخصي', '<form class="xform" novalidate><div class="xfields two">' + html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">حفظ</button></form>', false, true);
+    var form = m.querySelector('form'), IMG = {};
+    form.querySelector('#e_n').closest('label').classList.add('xfull');
+    ['e_ph', 'e_cv'].forEach(function (id) {
+      var inp = form.querySelector('#' + id), key = id === 'e_ph' ? 'ph' : 'cv';
+      var pick = async function (again) {
+        var f = inp.files[0]; if (!f) return;
+        var bl = window.CROP ? await CROP(f, CROPCFG[key]) : f;
+        if (bl) { IMG[key] = bl; if (window.CPV) CPV(inp, bl, function () { pick(1); }); }
+        else if (!again) { IMG[key] = null; inp.value = ''; if (window.CPV) CPV(inp, null); }
+      };
+      inp.onchange = function () { pick(0); };
+    });
+    form.onsubmit = async function (e) {
+      e.preventDefault();
+      var err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]');
+      var v = function (id) { var x = form.querySelector('#' + id); return x ? (x.value || '').trim() : ''; };
+      if (!v('e_n')) { err.textContent = 'اكتب ' + (team ? 'اسم الجهة' : 'الاسم'); return; }
+      btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+      try {
+        var o = team ? { n: v('e_n'), type: v('e_type'), sub: v('e_sub'), city: v('e_city') }
+                     : { n: v('e_n'), role: v('e_role'), g: v('e_g'), city: v('e_city'), s: v('e_s') };
+        if (IMG.ph) o.ph = await nexoDB.upload(IMG.ph);
+        if (IMG.cv) o.cv = await nexoDB.upload(IMG.cv);
+        await nexoDB.saveMe(o);
+        closeX(); toast('تم الحفظ');
+        await loadProfile();
+      } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'حفظ'; }
+    };
+  }
+
   // تعديل النبذة من القلم في قسم النبذة
   function openBio() {
     var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);

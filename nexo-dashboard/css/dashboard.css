@@ -21,7 +21,7 @@ h1{font-size:28px;font-weight:700;margin:60px 0 0;line-height:1.4}
 .sb{font-size:16px;margin:2px 0 0}
 .fl{display:flex;align-items:center;gap:10px;margin-top:34px;padding-bottom:14px;border-bottom:1px solid #DFE2E6;flex-wrap:wrap}
 .ch{border:1px solid transparent;background:none;border-radius:99px;font-size:13px;color:var(--gy);padding:0 22px;height:30px;cursor:pointer;font-weight:500}
-.ch.on{border-color:#201F49;background:#E0FAE0;color:var(--navy);font-weight:600}
+.ch.on{border-color:#8a86b8;background:#f1f0fb;color:var(--navy);font-weight:700}
 .dd{margin-inline-start:auto;display:flex;gap:10px}
 .dd select{appearance:none;width:135px;height:30px;border-radius:99px;border:1px solid #CACFD5;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23797992' stroke-width='1.6'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E") no-repeat 12px center;color:#797992;font-size:12px;padding:0 14px;text-align:right}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:28px}

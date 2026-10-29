@@ -7,5 +7,5 @@ start();
 /* الفرص للمشتركين: تظهر الفرص ورا، ونافذة الباقة العليا فوقها كبطاقة */
 function PW(){if(SUB())return;nexoPaywall()}
 /* نافذة الباقة تطلع بعد ما يتحمّل الاشتراك من قاعدة البيانات */
-/* دخل صفحة الفرص مباشرة وهو غير مشترك: النافذة فوق الفرص (مغبّشة)، والإغلاق يرجعه للصفحة اللي جاء منها */
-onReady(()=>{const t=setInterval(()=>{if(LOADED){clearInterval(t);if(!SUB())nexoPaywall(()=>{const r=document.referrer;if(r&&new URL(r).origin===location.origin&&!/dash-opportunit/.test(r))history.back();else location.href='dash-home.html'})}},50)});
+/* غير المشترك: النافذة فوق الفرص (مغبّشة) بدون زر إغلاق، ويتنقل من الهيدر */
+onReady(()=>{const t=setInterval(()=>{if(LOADED){clearInterval(t);if(!SUB())nexoPaywall()}},50)});
