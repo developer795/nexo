@@ -129,6 +129,7 @@
       if (crumb) crumb.insertAdjacentHTML('beforeend', ' <b>' + E(PROFILE.n) + '</b>');
     }
     renderHead(PROFILE);
+    setupNetwork(PROFILE);
     var posts = PROFILE.user_id ? await nexoDB.listPosts(PROFILE.user_id) : [];
     renderPosts(posts);
     if (q('.grid2')) renderOpps(await oppsFor(PROFILE));
@@ -421,6 +422,38 @@
       } catch (ex) { toast(ex.message || 'تعذر الحذف'); d.disabled = false; }
     }
   });
+
+
+  // ---------- شبكة التواصل: زر "تواصل" في ملف الزائر، والعدد في الملفات ----------
+  async function setupNetwork(p) {
+    if (!window.nexoDB || !nexoDB.countConnections) return;
+    var cnt = null;
+    document.querySelectorAll('.stats > div').forEach(function (d) { if (/شبكة التواصل/.test(d.textContent)) cnt = d.querySelector('b'); });
+    var setCount = async function () { if (cnt && p.user_id) cnt.textContent = await nexoDB.countConnections(p.user_id); };
+    setCount();
+    if (!VISITOR) return;
+    var btn = null;
+    document.querySelectorAll('.stats button').forEach(function (b) { if (/تواصل/.test(b.textContent) && !/مراسلة/.test(b.textContent)) btn = b; });
+    if (!btn) return;
+    btn.removeAttribute('onclick');
+    var ICA = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>';
+    var ICD = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>';
+    if (!p.user_id || p.user_id === nexoDB.uid) { btn.disabled = true; btn.title = p.user_id ? 'هذا ملفك' : 'هذا الملف ما له حساب في نيكسو'; return; }
+    var list = await nexoDB.listFollowing();
+    var on = Array.isArray(list) && list.indexOf(p.user_id) >= 0;
+    var paint = function () { btn.innerHTML = (on ? ICD + ' متواصل' : ICA + ' تواصل'); btn.classList.toggle('o', on); btn.setAttribute('aria-pressed', on); };
+    paint();
+    btn.onclick = async function () {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        if (on) { await nexoDB.disconnect(p.user_id); on = false; toast('تمت الإزالة من شبكة التواصل'); }
+        else { await nexoDB.connect(p.user_id); on = true; toast('تمت الإضافة لشبكة التواصل'); }
+        paint();
+      } catch (e) { toast(e.message || 'تعذر التنفيذ'); }
+      btn.disabled = false;
+    };
+  }
 
   // نشر منشور من صفحة ملفي (بدل النسخة المحلية في profile-common.js)
   window.publishPost = async function () {

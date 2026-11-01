@@ -122,10 +122,33 @@ export function createDB(user) {
   }
 
   async function loadAll() {
-    const [me, posts, talents, teams, opps, sub] = await Promise.all([
-      getMe(), listPosts(), listTalents(), listTeams(), listOpps(), getSubscription(),
+    const [me, posts, talents, teams, opps, sub, following] = await Promise.all([
+      getMe(), listPosts(), listTalents(), listTeams(), listOpps(), getSubscription(), listFollowing(),
     ])
-    return { me, posts, talents, teams, opps, sub }
+    return { me, posts, talents, teams, opps, sub, following }
+  }
+
+  // ---------- شبكة التواصل (جدول nexo_connections) ----------
+  // لو الجدول لسا ما انضاف يرجع null (والرئيسية تعرض كل المنشورات مثل قبل)
+  const connMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_connections/.test(e.message || ''))
+  async function listFollowing() {
+    const { data, error } = await supabase.from('nexo_connections').select('target_id').eq('user_id', uid)
+    if (error) { if (!connMissing(error)) console.error('تعذر تحميل شبكة التواصل', error); return null }
+    return data.map((r) => r.target_id)
+  }
+  async function countConnections(userId) {
+    const { count, error } = await supabase.from('nexo_connections').select('target_id', { count: 'exact', head: true }).eq('user_id', userId)
+    if (error) return 0
+    return count || 0
+  }
+  async function connect(targetId) {
+    const { error } = await supabase.from('nexo_connections').insert({ user_id: uid, target_id: targetId })
+    if (connMissing(error)) throw new Error('شبكة التواصل تحتاج تحديث قاعدة البيانات (nexo_connections)')
+    if (error && error.code !== '23505') fail(error, 'تعذر الإضافة')
+  }
+  async function disconnect(targetId) {
+    const { error } = await supabase.from('nexo_connections').delete().eq('user_id', uid).eq('target_id', targetId)
+    fail(error, 'تعذر الإزالة')
   }
 
   // ---------- الاشتراك (جدول nexo_subscriptions) ----------
@@ -270,5 +293,6 @@ export function createDB(user) {
     listItems, addItem, deleteItem,
     getSubscription, subscribe,
     signOut: () => supabase.auth.signOut(),
+    listFollowing, countConnections, connect, disconnect,
   }
 }
