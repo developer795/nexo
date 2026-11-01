@@ -174,7 +174,15 @@ export function createDB(user) {
       status: trial ? 'trialing' : 'active',
     }
     const { error } = await supabase.from('nexo_subscriptions').upsert(row, { onConflict: 'user_id' })
-    fail(error, 'تعذر حفظ الاشتراك')
+    if (error) {
+      console.error('تعذر حفظ الاشتراك', error)
+      // رسالة توضح السبب بدل "تعذر حفظ الاشتراك" بس
+      if (error.code === '42P01' || error.code === 'PGRST205' || /nexo_subscriptions/.test(error.message || ''))
+        throw new Error('جدول الاشتراكات ما انضاف في قاعدة البيانات. شغّل supabase/002_subscriptions.sql في Supabase')
+      if (error.code === '42501' || /row-level security|permission/i.test(error.message || ''))
+        throw new Error('ما عندك صلاحية تحفظ الاشتراك. سجّل خروج وادخل من جديد مع رمز التحقق')
+      throw new Error('تعذر حفظ الاشتراك (' + (error.code || error.message || 'خطأ غير معروف') + ')')
+    }
     return getSubscription()
   }
 
