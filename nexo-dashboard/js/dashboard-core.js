@@ -31,6 +31,9 @@ const SL={'يبحث عن فريق':'يبحث عن فرصة'};
 const OTL={'حملة اعلانية':'حملة إعلانية','مشاركة في البطولة':'مشاركة في بطولة'},otl=x=>OTL[x]||x;
 /* الاشتراك في الباقة العليا (واجهة فقط، يتحفظ في المتصفح) */
 /* الاشتراك من جدول nexo_subscriptions (يتحمّل مع باقي البيانات في D.sub) — ساري لو مدفوع أو التجربة ما انتهت */
+/* نوع البطاقة من أول أرقامها، ويرجع آخر 4 أرقام بس (رقم البطاقة الكامل ما ينحفظ) */
+const MADA=['588845','588846','588847','588848','588849','588850','588851','588982','588983','589005','589206','604906','605141','636120','968201','968202','968203','968204','968205','968206','968207','968208','968209','968210','968211','440647','440795','446404','457865'];
+const CARDSUM=(num,mm,yy)=>{const n=String(num).replace(/\D/g,'');const b=MADA.some(p=>n.startsWith(p))?'mada':/^4/.test(n)?'visa':/^(5[1-5]|2(2[2-9]|[3-6]\d|7[01]|720))/.test(n)?'mastercard':/^3[47]/.test(n)?'amex':'card';return{brand:b,last4:n.slice(-4),exp_month:+mm,exp_year:2000+(+yy%100)}};
 const SUB=()=>{const s=D.sub;return s&&(s.status==='active'||(s.status==='trialing'&&s.trialEnd>Date.now()))?s:null};
 const bar=(k,ch,key,dd)=>`<div class="fl">${ch.map(([l,x])=>`<button class="ch ${F[k]===x?'on':''}" onclick="F.${k}='${x}';R()">${l} (${x?D[k].filter(i=>i[key]===x).length:D[k].length})</button>`).join('')}<div class="dd">${dd}</div></div>`;
 const head=(t,s)=>`<h1>${t}</h1><p class="sb">${s}</p>`;

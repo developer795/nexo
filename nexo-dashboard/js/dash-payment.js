@@ -41,6 +41,6 @@ function bind(){const f=$('#pfm');if(!f)return;
   if(!$('#ch').value.trim())return bad('#ch','اكتب اسم حامل البطاقة');
   if(!$('#ag').checked)return er('لازم توافق على شروط التجربة المجانية');
   const b=f.querySelector('.ap');b.disabled=true;
-  try{await nexoDB.subscribe({plan:PL,trial:true});await load()}catch(x){b.disabled=false;return er(x.message||'تعذر حفظ الاشتراك')}R()}}
+  try{await nexoDB.subscribe({plan:PL,trial:true});if(nexoDB.saveCard)await nexoDB.saveCard(CARDSUM(n,mm,yy)).catch(e=>console.error(e));await load()}catch(x){b.disabled=false;return er(x.message||'تعذر حفظ الاشتراك')}R()}}
 const _R=R;R=function(){_R();bind()};
 start();

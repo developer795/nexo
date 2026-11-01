@@ -186,6 +186,21 @@ export function createDB(user) {
     return getSubscription()
   }
 
+  // ---------- طريقة الدفع (آخر 4 أرقام + النوع + الانتهاء فقط) ----------
+  const pmMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_payment_methods/.test(e.message || ''))
+  async function getCard() {
+    const { data, error } = await supabase.from('nexo_payment_methods').select('brand,last4,exp_month,exp_year').eq('user_id', uid).maybeSingle()
+    if (error) { if (!pmMissing(error)) console.error('تعذر تحميل طريقة الدفع', error); return null }
+    return data
+  }
+  async function saveCard({ brand, last4, exp_month, exp_year }) {
+    if (!/^\d{4}$/.test(String(last4))) throw new Error('بيانات البطاقة غير صحيحة')
+    const row = { user_id: uid, brand, last4: String(last4), exp_month, exp_year, updated_at: new Date().toISOString() }
+    const { error } = await supabase.from('nexo_payment_methods').upsert(row, { onConflict: 'user_id' })
+    if (pmMissing(error)) throw new Error('طريقة الدفع تحتاج تحديث قاعدة البيانات. شغّل supabase/005_payment_methods.sql في Supabase')
+    fail(error, 'تعذر حفظ البطاقة')
+  }
+
   async function cancelSubscription() {
     const { error } = await supabase.from('nexo_subscriptions').update({ status: 'canceled' }).eq('user_id', uid)
     fail(error, 'تعذر إلغاء الاشتراك')
@@ -305,7 +320,7 @@ export function createDB(user) {
     uid, kind, user, upload, getMe, saveMe, loadAll, listTalents, listTeams, listPosts,
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
     listItems, addItem, deleteItem,
-    getSubscription, subscribe, cancelSubscription,
+    getSubscription, subscribe, cancelSubscription, getCard, saveCard,
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,
   }

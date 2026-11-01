@@ -290,3 +290,13 @@ a.ph2{color:inherit;text-decoration:none;width:fit-content}a.ph2:hover h4{text-d
 .blbt{display:flex;gap:10px;justify-content:center;margin-top:12px}
 .blbt button{height:36px;min-width:110px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--navy);background:#fff;color:var(--navy)}
 .blbt .blok{background:var(--navy);color:#fff}.blbt .bldanger{background:#BB0327;border-color:#BB0327}
+/* طريقة الدفع: زر تحديث وشعارات البطاقات */
+.bl-pyh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.bl-upd{height:32px;padding:0 18px;border:1px solid #201F49;border-radius:99px;background:#fff;color:#201F49;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.bl-upd:hover{background:#F4F5FB}
+.bl-vi{font-weight:900;font-style:italic;font-size:15px;letter-spacing:.5px;color:#fff}
+.bl-md{display:flex;flex-direction:column;align-items:center;gap:2px}.bl-md i{display:block;width:26px;height:5px;background:#1E8AD0}.bl-md i+i{background:#84B741}.bl-md b{font-size:9px}
+.blcf{display:grid;gap:12px;margin-top:16px;text-align:right}
+.blcf label{display:grid;gap:6px;font-size:13px;font-weight:600}
+.blcf input{height:44px;border:1px solid var(--bd);border-radius:10px;padding:0 14px;font:inherit;font-size:13px;text-align:left}
+.blcf input:focus{outline:0;border-color:var(--navy)}

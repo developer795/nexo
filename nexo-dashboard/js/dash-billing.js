@@ -37,8 +37,7 @@ V.billing=function(){
    <div class="bl-boxes"><div><small>السعر قبل الضريبة</small><b>${bnum(p.base)} ر.س</b></div><div><small>${s.status==='trialing'?'نهاية التجربة':s.status==='active'?'التجديد القادم':'تاريخ البداية'}</small><b>${bday(s.status==='canceled'?s.start:brenew(s))}</b></div><div><small>الدورة</small><b>${p.cyc}</b></div></div>
    <div class="bl-act"><button type="button" class="bl-main" onclick="BCHANGE()">${BI.swap} تغيير الخطة</button>${s.status==='canceled'?'':`<button type="button" class="bl-link" onclick="BCANCEL()">إلغاء الاشتراك</button>`}</div>
   </div>`:`<div class="bl-plan card"><div class="bl-ph"><span class="bl-ic">${BI.doc}</span><div><small>الخطة الحالية</small><h2>لا يوجد اشتراك</h2></div><span class="bd nu">غير مشترك</span></div><p class="bl-empty">اشترك في الباقة العليا للوصول إلى الفرص الحصرية.</p><div class="bl-act"><a class="bl-main" href="dash-payment.html">جرّب مجانًا</a></div></div>`;
- const pay=`<div class="bl-pay card"><div class="bl-pyh"><div><h3>طريقة الدفع</h3><small>البطاقة الافتراضية للفوترة</small></div></div>
-   <div class="bl-cc"><span class="bl-mc"><i></i><i></i></span><div><b dir="ltr">•••• •••• •••• ••••</b><small>لا توجد بطاقة محفوظة</small></div></div></div>`;
+ const pay=BPAY();
  const rows=inv.map(i=>`<tr><td dir="ltr">${E(i.no)}</td><td>${bday(i.date)}</td><td>${E(i.plan)}</td><td>${bnum(i.amt)} ر.س</td><td><span class="bd ${i.state==='مدفوعة'?'gr':'yl'}">${E(i.state)}</span></td><td><button type="button" class="bl-dl" aria-label="تنزيل الفاتورة" onclick="BINV('${E(i.no)}')">${BI.dl}</button></td></tr>`).join('');
  return`<h1>الاشتراك والفوترة</h1><p class="sb">تابع خطتك الحالية، طريقة الدفع، والفواتير من مكان واحد.</p>
  <div class="bl-top">${plan}${pay}</div>
@@ -60,4 +59,31 @@ function BSAVE(name,type,text){const a=document.createElement('a');a.href=URL.cr
 function BINV(no){const i=binvoices(D.sub).find(x=>x.no===no);if(!i)return;const who=(D.me&&D.me.n)||'';const email=(nexoDB.user&&nexoDB.user.email)||'';
  BSAVE(no+'.html','text/html;charset=utf-8',`<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><title>${E(no)}</title><body style="font-family:Tahoma,sans-serif;max-width:640px;margin:40px auto;color:#000"><h1 style="color:#201F49">NEXO</h1><h2>فاتورة ${E(no)}</h2><p>التاريخ: ${bday(i.date)}</p><p>العميل: ${E(who)} ${E(email)}</p><table style="width:100%;border-collapse:collapse" border="1" cellpadding="8"><tr><th>الوصف</th><th>المبلغ</th></tr><tr><td>${E(bplanName(D.sub))} (${E(i.state)})</td><td>${bnum(i.amt)} ر.س</td></tr></table><p>الإجمالي شامل الضريبة: ${bnum(i.amt)} ر.س</p></body></html>`)}
 function BSTMT(){const rows=binvoices(D.sub).map(i=>[i.no,bday(i.date),i.plan,bnum(i.amt)+' SAR',i.state].join(','));BSAVE('nexo-statement.csv','text/csv;charset=utf-8',['رقم الفاتورة,التاريخ,الخطة,المبلغ,الحالة'].concat(rows).join('\n'))}
+// ---------- طريقة الدفع ----------
+let BCARD;// undefined = لسا ما تحمّل
+const BLOGO={mastercard:'<span class="bl-mc"><i></i><i></i></span>',visa:'<span class="bl-vi">VISA</span>',mada:'<span class="bl-md"><i></i><i></i><b>mada</b></span>',amex:'<span class="bl-vi">AMEX</span>',card:''};
+const BNAME={mastercard:'Mastercard',visa:'Visa',mada:'مدى',amex:'American Express',card:'بطاقة'};
+function BPAY(){const c=BCARD;
+ const head=`<div class="bl-pyh"><div><h3>طريقة الدفع</h3><small>البطاقة الافتراضية للفوترة</small></div><button type="button" class="bl-upd" onclick="BCARDM()">${c?'تحديث':'إضافة'}</button></div>`;
+ const body=c?`<div class="bl-cc">${BLOGO[c.brand]||''}<div><b dir="ltr">•••• •••• •••• ${E(c.last4)}</b><small><span dir="ltr">${E(BNAME[c.brand]||'')}</span> · تنتهي <span dir="ltr">${String(c.exp_month).padStart(2,'0')} / ${String(c.exp_year).slice(-2)}</span></small></div></div>`
+  :`<div class="bl-cc"><span class="bl-mc"><i></i><i></i></span><div><b dir="ltr">•••• •••• •••• ••••</b><small>${BCARD===undefined?'جاري التحميل...':'لا توجد بطاقة محفوظة'}</small></div></div>`;
+ return`<div class="bl-pay card">${head}${body}</div>`}
+function BCARDM(){
+ const m=BM(`<h3>${BCARD?'تحديث البطاقة':'إضافة بطاقة'}</h3><p>نحفظ آخر 4 أرقام ونوع البطاقة وتاريخ الانتهاء فقط.</p>
+ <form class="blcf" novalidate><label>رقم البطاقة<input id="bcn" inputmode="numeric" autocomplete="cc-number" dir="ltr" maxlength="23" placeholder="0000  0000  0000  0000"></label>
+ <label>تاريخ الانتهاء<input id="bce" inputmode="numeric" autocomplete="cc-exp" dir="ltr" maxlength="7" placeholder="MM / YY"></label>
+ <p class="blerr" role="alert"></p><div class="blbt"><button type="button" class="blc">إلغاء</button><button class="blok">حفظ</button></div></form>`);
+ const f=m.querySelector('form'),cn=f.querySelector('#bcn'),ce=f.querySelector('#bce'),er=f.querySelector('.blerr');
+ cn.oninput=()=>{cn.value=cn.value.replace(/\D/g,'').slice(0,19).replace(/(\d{4})(?=\d)/g,'$1  ')};
+ ce.oninput=()=>{let x=ce.value.replace(/\D/g,'').slice(0,4);ce.value=x.length>2?x.slice(0,2)+' / '+x.slice(2):x};
+ cn.focus();
+ f.onsubmit=async e=>{e.preventDefault();const n=cn.value.replace(/\D/g,''),[mm,yy]=ce.value.split('/').map(x=>+x.trim());
+  const luhn=d=>{let s=0,t=0;for(let i=d.length-1;i>=0;i--){let x=+d[i];if(t&&(x*=2)>9)x-=9;s+=x;t^=1}return s%10===0};
+  if(n.length<13||!luhn(n)){er.textContent='رقم البطاقة غير صحيح';cn.focus();return}
+  if(!(mm>=1&&mm<=12)||isNaN(yy)||new Date(2000+yy,mm)<=new Date()){er.textContent='تاريخ الانتهاء غير صحيح';ce.focus();return}
+  const card=CARDSUM(n,mm,yy);cn.value='';ce.value='';// الرقم الكامل ما يطلع من المتصفح
+  const b=f.querySelector('.blok');b.disabled=true;
+  try{await nexoDB.saveCard(card);BCARD=card;m.classList.remove('on');R()}catch(x){er.textContent=x.message||'تعذر الحفظ';b.disabled=false}};
+}
+onReady(()=>{(nexoDB.getCard?nexoDB.getCard():Promise.resolve(null)).then(c=>{BCARD=c||null;if(LOADED)R();else{const t=setInterval(()=>{if(LOADED){clearInterval(t);R()}},50)}})});
 start();
