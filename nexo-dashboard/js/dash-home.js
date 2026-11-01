@@ -3,7 +3,7 @@ const EMP='<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#
 const IC_T='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
 const IC_J='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg>';
 /* الرئيسية: منشوراتك ومنشورات اللي ضفتهم من "تواصل" بس (لو جدول التواصل ما انضاف: الكل مثل قبل) */
-const FEED=()=>{const f=D.following;if(!Array.isArray(f))return D.posts;const ok=new Set(f.concat([nexoDB.uid]));return D.posts.filter(p=>ok.has(p.author_id))};
+const FEED=()=>{const f=Array.isArray(D.following)?D.following:[];const ok=new Set(f.concat([nexoDB.uid]));return D.posts.filter(p=>ok.has(p.author_id))};
 /* رابط ملف صاحب المنشور */
 const AUTH=p=>p.author_id===nexoDB.uid?(nexoDB.kind==='team'?'dash-entity-profile.html':'dash-talent-profile.html'):p.pid?(p.kind==='team'?'dash-entity-visitor.html':'dash-talent-visitor.html')+'?id='+encodeURIComponent(p.pid):'';
 V.home=function(){const m=D.me,has=m.n,ps=FEED().filter(hit);

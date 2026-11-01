@@ -129,11 +129,11 @@ export function createDB(user) {
   }
 
   // ---------- شبكة التواصل (جدول nexo_connections) ----------
-  // لو الجدول لسا ما انضاف يرجع null (والرئيسية تعرض كل المنشورات مثل قبل)
+  // لو الجدول لسا ما انضاف يرجع قائمة فاضية (الرئيسية تعرض منشوراتك بس)
   const connMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_connections/.test(e.message || ''))
   async function listFollowing() {
     const { data, error } = await supabase.from('nexo_connections').select('target_id').eq('user_id', uid)
-    if (error) { if (!connMissing(error)) console.error('تعذر تحميل شبكة التواصل', error); return null }
+    if (error) { if (!connMissing(error)) console.error('تعذر تحميل شبكة التواصل', error); return [] }
     return data.map((r) => r.target_id)
   }
   async function countConnections(userId) {
