@@ -178,6 +178,12 @@ export function createDB(user) {
     return getSubscription()
   }
 
+  async function cancelSubscription() {
+    const { error } = await supabase.from('nexo_subscriptions').update({ status: 'canceled' }).eq('user_id', uid)
+    fail(error, 'تعذر إلغاء الاشتراك')
+    return getSubscription()
+  }
+
   // ---------- الإضافة ----------
   async function addPost({ t, im }) {
     const { error } = await supabase.from('posts').insert({ author_id: uid, body: t, image_url: im || null })
@@ -291,7 +297,7 @@ export function createDB(user) {
     uid, kind, user, upload, getMe, saveMe, loadAll, listTalents, listTeams, listPosts,
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
     listItems, addItem, deleteItem,
-    getSubscription, subscribe,
+    getSubscription, subscribe, cancelSubscription,
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,
   }

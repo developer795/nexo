@@ -57,7 +57,7 @@ function place(btn){var r=btn.getBoundingClientRect();menu.style.top=(r.bottom+8
 function closeMenu(){if(menu&&!menu.hidden){menu.hidden=true;var b=document.querySelector('[aria-expanded="true"][data-nxam]');if(b)b.setAttribute('aria-expanded','false')}}
 function openMenu(btn){
  if(!menu){menu=document.createElement('div');menu.className='nxam';menu.setAttribute('role','menu');menu.hidden=true;document.body.appendChild(menu);
-  menu.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;closeMenu();if(b.dataset.act==='out')confirmOut();else showSubs()})}
+  menu.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;closeMenu();if(b.dataset.act==='out')confirmOut();else location.href='dash-billing.html'})}
  if(!menu.hidden){closeMenu();return}
  btn.setAttribute('data-nxam','');btn.setAttribute('aria-expanded','true');
  menu.innerHTML='<div class="nxu" style="padding:14px;font-size:12px;color:#9A9AAE">جاري التحميل...</div>';
