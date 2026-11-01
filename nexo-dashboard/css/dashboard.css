@@ -300,3 +300,17 @@ a.ph2{color:inherit;text-decoration:none;width:fit-content}a.ph2:hover h4{text-d
 .blcf label{display:grid;gap:6px;font-size:13px;font-weight:600}
 .blcf input{height:44px;border:1px solid var(--bd);border-radius:10px;padding:0 14px;font:inherit;font-size:13px;text-align:left}
 .blcf input:focus{outline:0;border-color:var(--navy)}
+/* نافذة تم نشر المنشور */
+.pok{position:fixed;inset:0;z-index:70;background:rgba(32,31,73,.45);display:none;align-items:center;justify-content:center;padding:16px}
+.pok.on{display:flex}
+.pkb{position:relative;background:#fff;border-radius:28px;width:min(540px,100%);padding:34px 30px 30px;text-align:center;box-shadow:0 20px 60px rgba(32,31,73,.25)}
+.pkx{position:absolute;left:24px;top:22px;width:32px;height:32px;border:0;background:none;border-radius:50%;cursor:pointer;display:grid;place-items:center}
+.pkx:hover{background:#F4F4F6}.pkx svg{width:18px;height:18px;stroke:#201F49;stroke-width:2;fill:none}
+.pkc{width:56px;height:56px;border-radius:50%;background:#E0FAE0;display:grid;place-items:center;margin:18px auto 22px;box-shadow:0 0 0 10px #F2FCF2}
+.pkc svg{width:24px;height:24px;stroke:#03BB43;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.pkb h3{margin:0 0 10px;font-size:24px;font-weight:700}
+.pkb p{margin:0 auto;max-width:420px;font-size:13.5px;color:#9A9AAE;line-height:1.8}
+.pkbt{display:flex;gap:14px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.pkbt button{height:38px;border-radius:99px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #201F49}
+.pkh{background:#fff;color:#201F49;min-width:130px}.pkv{background:#201F49;color:#fff;min-width:220px}
+.feed .post.pnew{border-color:#03BB43;box-shadow:0 0 0 3px #E0FAE0;transition:box-shadow .3s}

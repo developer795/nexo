@@ -56,7 +56,7 @@ function F_(k){if(!LOADED)return;if(k==='posts'&&!D.me.n)k='me';if(k==='me'&&nex
  const CB={};$('#fm').querySelectorAll('input[type=file]').forEach(inp=>{const pick=async again=>{const f=inp.files[0];if(!f)return;const bl=await CROP(f,CROPCFG[inp.name]||CROPCFG.im);if(bl){CB[inp.name]=bl;CPV(inp,bl,()=>pick(1))}else if(!again){CB[inp.name]=null;inp.value='';CPV(inp,null)}};inp.onchange=()=>pick(0)});
  $('#fm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('.ok');if(b.disabled)return;b.disabled=true;const lbl=b.textContent;b.textContent='جاري الحفظ...';
   try{const o={};for(const[n,x]of new FormData(e.target).entries())o[n]=x instanceof File?await nexoDB.upload(CB[n]||await rz(x,n==='ph'?300:900)):String(x).trim();
-   await add(o);await load();$('#dlg').close();R()}
+   await add(o);await load();$('#dlg').close();R();if(k==='posts'&&typeof POSTOK==='function')POSTOK()}
   catch(err){console.error(err);alert(err.message||'حدث خطأ، حاول مرة ثانية')}
   finally{b.disabled=false;b.textContent=lbl}};$('#dlg').showModal()}
 function R(){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===({detail:'opps',pay:'opps'}[v]||v)));
