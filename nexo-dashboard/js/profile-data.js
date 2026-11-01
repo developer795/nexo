@@ -48,7 +48,11 @@
     var tags = [p.g, p.kind === 'team' ? p.type : ''].filter(Boolean)
       .map(function (t) { return '<span class="chip">' + E(t) + '</span>'; }).join('');
     var status = p.s ? '<span class="chip ' + (p.s === 'يبحث عن فريق' ? 'g' : '') + '">' + E(p.s) + '</span>' : '';
-    if (label || tags || status) info.insertAdjacentHTML('beforeend', '<div class="row"><span class="role">' + E(label) + '</span>' + tags + status + '</div>');
+    if (label || tags) info.insertAdjacentHTML('beforeend', '<div class="row"><span class="role">' + E(label) + '</span>' + tags + '</div>');
+    // الحالة (يبحث عن فريق / منضم لفريق) على اليسار مثل التصميم
+    var head = q('.head'), oldSt = head && head.querySelector('.hst');
+    if (oldSt) oldSt.remove();
+    if (head && status) head.insertAdjacentHTML('beforeend', status.replace('class="chip', 'class="chip hst'));
     if (p.city) info.insertAdjacentHTML('beforeend', '<div class="row loc">📍 ' + E(p.city) + '</div>');
 
     q('.av-lg').innerHTML = img(p.ph, p.n);
