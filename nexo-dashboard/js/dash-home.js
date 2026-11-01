@@ -15,5 +15,3 @@ start();
 // فتح تعديل الملف مباشرة لو جاي من زر القلم في صفحة ملفي
 onReady(()=>{const t=setInterval(()=>{if(LOADED){clearInterval(t);if(location.hash==='#edit'){history.replaceState(null,'',location.pathname);F_('me')}}},50)});
 
-/* الضغط على المنشور يفتح ملف صاحبه */
-document.addEventListener('click',e=>{const a=e.target.closest('article.plink');if(!a||e.target.closest('a,button'))return;location.href=a.dataset.href});
