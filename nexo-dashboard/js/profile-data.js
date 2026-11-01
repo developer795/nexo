@@ -53,7 +53,7 @@
     var head = q('.head'), oldSt = head && head.querySelector('.hst');
     if (oldSt) oldSt.remove();
     if (head && status) head.insertAdjacentHTML('beforeend', status.replace('class="chip', 'class="chip hst'));
-    if (p.city) info.insertAdjacentHTML('beforeend', '<div class="row loc">📍 ' + E(p.city) + '</div>');
+    if (p.city) info.insertAdjacentHTML('beforeend', '<div class="row loc"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ' + E(p.city) + '</div>');
 
     q('.av-lg').innerHTML = img(p.ph, p.n);
     if (U(p.cv)) q('.banner').style.backgroundImage = 'url("' + U(p.cv) + '")';
@@ -98,7 +98,7 @@
       return '<a class="opp" style="text-decoration:none;color:inherit" href="dash-opportunity-details.html?id=' + E(o.id) + '">' +
         (U(o.ph) ? '<img src="' + E(U(o.ph)) + '" alt="">' : '<div style="width:90px;height:90px;border-radius:10px;background:var(--primary-100);color:#fff;display:grid;place-items:center;font-size:32px">' + ini(o.org) + '</div>') +
         '<div><b>' + E(o.title) + '</b><span class="co">' + E(o.org) + '</span><div class="tags"><div><span class="chip">' + E(o.aud) + '</span></div><span class="chip g">' + E(o.type) + '</span></div></div>' +
-        '<div class="m"><span>📍 ' + E(o.city || 'غير محدد') + '</span><span>آخر موعد: ' + E(o.due || 'غير محدد') + '</span><span>' + E(o.n) + ' متقدم</span></div></a>';
+        '<div class="m"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ' + E(o.city || 'غير محدد') + '</span><span>آخر موعد: ' + E(o.due || 'غير محدد') + '</span><span>' + E(o.n) + ' متقدم</span></div></a>';
     }).join('');
     var sub = subOf(grid);
     if (sub) sub.textContent = opps.length + ' فرص';
