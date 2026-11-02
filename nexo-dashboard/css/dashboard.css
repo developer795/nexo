@@ -394,7 +394,7 @@ a.mwho:hover b{text-decoration:underline}
 .bl-st.ok{background:#E0FAE0;color:#03BB43}.bl-st.wait{background:#FDF6D3;color:#D9A400}.bl-st.off{background:#EAECEE;color:#797992}
 .bl-boxes div{padding:12px 14px}.bl-boxes b{font-size:15px}
 .bl-main{height:42px;padding:0 22px;font-size:13px}
-.bl-link{margin-inline-start:12px}
+.bl-act{justify-content:space-between}.bl-link{margin:0;padding:0 24px;height:42px}
 .bl-pyh h3,.bl-ih h3{font-size:15px;color:#201F49}
 .bl-upd{height:40px;padding:0 24px;border-color:#CACFD5;color:#000;font-size:13px}
 .bl-cc{margin-top:34px;align-items:center;min-height:0;height:78px;padding:0 14px;border-radius:6px;flex-direction:row-reverse;justify-content:space-between}
