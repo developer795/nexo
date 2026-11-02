@@ -7,8 +7,10 @@ const bnum=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
 const BI={
  doc:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#03BB43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>',
  swap:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/><path d="M21 21v-5h-5"/></svg>',
+ org:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#03BB43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg>',
  dl:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>'
 };
+const BIC=()=>nexoDB.kind==='team'?BI.org:BI.doc;
 function bplanName(s){return (nexoDB.kind==='team'?'باقة الجهات ':'الباقة العليا ')+BP[s.plan==='m'?'m':'y'].n}
 function brenew(s){
  if(s.status==='trialing')return s.trialEnd;
@@ -33,15 +35,15 @@ function binvoices(s){
 V.billing=function(){
  const s=D.sub,[st,sc]=bstate(s),inv=binvoices(s),p=s?BP[s.plan==='m'?'m':'y']:null;
  const plan=s?`<div class="bl-plan card">
-   <div class="bl-ph"><span class="bl-ic">${BI.doc}</span><div><small>الخطة الحالية</small><h2>${E(bplanName(s))}</h2></div><span class="bd ${sc}">${st}</span></div>
+   <div class="bl-ph"><span class="bl-ic">${BIC()}</span><div><small>الخطة الحالية</small><h2>${E(bplanName(s))}</h2></div><span class="bd bl-st ${sc==='gr'?'ok':'off'}">${st}</span></div>
    <div class="bl-boxes"><div><small>السعر قبل الضريبة</small><b>${bnum(p.base)} ر.س</b></div><div><small>${s.status==='trialing'?'نهاية التجربة':s.status==='active'?'التجديد القادم':'تاريخ البداية'}</small><b>${bday(s.status==='canceled'?s.start:brenew(s))}</b></div><div><small>الدورة</small><b>${p.cyc}</b></div></div>
-   <div class="bl-act"><button type="button" class="bl-main" onclick="BCHANGE()">${BI.swap} تغيير الخطة</button>${s.status==='canceled'?'':`<button type="button" class="bl-link" onclick="BCANCEL()">إلغاء الاشتراك</button>`}</div>
-  </div>`:`<div class="bl-plan card"><div class="bl-ph"><span class="bl-ic">${BI.doc}</span><div><small>الخطة الحالية</small><h2>لا يوجد اشتراك</h2></div><span class="bd nu">غير مشترك</span></div><p class="bl-empty">اشترك في الباقة العليا للوصول إلى الفرص الحصرية.</p><div class="bl-act"><a class="bl-main" href="dash-payment.html">جرّب مجانًا</a></div></div>`;
+   <div class="bl-act"><button type="button" class="bl-main" onclick="BCHANGE()">${BI.swap} تغيير الباقة</button>${s.status==='canceled'?'':`<button type="button" class="bl-link" onclick="BCANCEL()">إلغاء الاشتراك</button>`}</div>
+  </div>`:`<div class="bl-plan card"><div class="bl-ph"><span class="bl-ic">${BIC()}</span><div><small>الخطة الحالية</small><h2>لا يوجد اشتراك</h2></div><span class="bd nu">غير مشترك</span></div><p class="bl-empty">اشترك في الباقة العليا للوصول إلى الفرص الحصرية.</p><div class="bl-act"><a class="bl-main" href="dash-payment.html">جرّب مجانًا</a></div></div>`;
  const pay=BPAY();
- const rows=inv.map(i=>`<tr><td dir="ltr">${E(i.no)}</td><td>${bday(i.date)}</td><td>${E(i.plan)}</td><td>${bnum(i.amt)} ر.س</td><td><span class="bd ${i.state==='مدفوعة'?'gr':'yl'}">${E(i.state)}</span></td><td><button type="button" class="bl-dl" aria-label="تنزيل الفاتورة" onclick="BINV('${E(i.no)}')">${BI.dl}</button></td></tr>`).join('');
- return`<h1>الاشتراك والفوترة</h1><p class="sb">تابع خطتك الحالية، طريقة الدفع، والفواتير من مكان واحد.</p>
+ const rows=inv.map(i=>`<tr><td dir="ltr">${E(i.no)}</td><td>${bday(i.date)}</td><td>${E(i.plan)}</td><td>${bnum(i.amt)} ر.س</td><td><span class="bd bl-st ${i.state==='مدفوعة'?'ok':'wait'}">${E(i.state)}</span></td><td><button type="button" class="bl-dl" aria-label="تنزيل الفاتورة" onclick="BINV('${E(i.no)}')">${BI.dl}</button></td></tr>`).join('');
+ return`<h1>الاشتراك والفوترة</h1><p class="sb">${nexoDB.kind==='team'?'تابع خطتك الحالية، طريقة الدفع، استخدام الجهة، والفواتير من مكان واحد.':'تابع خطتك الحالية، طريقة الدفع، والفواتير من مكان واحد.'}</p>
  <div class="bl-top">${plan}${pay}</div>
- <div class="card bl-inv"><div class="bl-ih"><div><h3>الفواتير</h3><small>السجل الكامل لعمليات الدفع</small></div><button type="button" class="bl-out" onclick="BSTMT()" ${inv.length?'':'disabled'}>${BI.dl} تنزيل كشف الحساب</button></div>
+ <div class="card bl-inv"><div class="bl-ih"><div><h3>الفواتير</h3><small>${D.me&&D.me.n?'السجل المالي لحساب '+E(D.me.n):'السجل الكامل لعمليات الدفع'}</small></div><button type="button" class="bl-out" onclick="BSTMT()" ${inv.length?'':'disabled'}>${BI.dl} تنزيل كشف الحساب</button></div>
  ${inv.length?`<div class="bl-tw"><table><thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>الخطة</th><th>المبلغ</th><th>الحالة</th><th>تنزيل</th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="bl-empty">لا توجد فواتير بعد</p>'}</div>`;
 };
 // ---------- النوافذ ----------
