@@ -781,3 +781,47 @@ button {
     gap: 7px;
   }
 }
+
+/* مطابقة مقاسات الهيدر مع صفحة عن نيكسو */
+@media (min-width: 761px) {
+  .container { width: min(1160px, calc(100% - 96px)); }
+  .header { height: 105px; }
+  .navbar {
+    display: grid;
+    grid-template-columns: 190px 1fr 150px;
+    align-items: center;
+    gap: 30px;
+  }
+  .brand {
+    width: 190px;
+    height: 82px;
+    justify-content: flex-start;
+    justify-self: start;
+  }
+  .brand .small-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right center;
+  }
+  .nav-links {
+    gap: 42px;
+    height: 100%;
+  }
+  .nav-links a {
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+  }
+  .nav-links a.active::after { bottom: 24px; }
+  .login-btn {
+    width: 130px;
+    height: auto;
+    justify-self: end;
+    padding: 11px 20px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
