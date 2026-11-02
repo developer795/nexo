@@ -113,7 +113,7 @@ function EntityRegister() {
     try {
       const email = form.email.trim().toLowerCase()
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password: form.password,
         options: {
@@ -141,6 +141,12 @@ function EntityRegister() {
           )
         }
 
+        return
+      }
+
+      // البريد مسجّل من قبل: Supabase يرجع بدون خطأ وما يرسل رمز (identities فاضية)
+      if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setServerError('هذا البريد الإلكتروني مسجل مسبقًا. جربي تسجيل الدخول أو استخدمي بريدًا آخر.')
         return
       }
 
