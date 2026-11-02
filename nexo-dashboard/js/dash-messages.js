@@ -62,7 +62,7 @@ async function mload(first){
   if(changed||first){if(SEL)await mread(SEL);MR()}}
  catch(e){console.error(e);if(!MS){MERR=e.message||'تعذر تحميل المحادثات';MR()}}}
 async function mread(id){const un=(MS||[]).filter(m=>m.sender_id===id&&m.receiver_id===nexoDB.uid&&!m.read_at);
- if(!un.length)return;const now=new Date().toISOString();un.forEach(m=>m.read_at=now);await nexoDB.markRead(id)}
+ if(!un.length)return;const now=new Date().toISOString();un.forEach(m=>m.read_at=now);await nexoDB.markRead(id);if(window.nexoRefreshUnread)nexoRefreshUnread()}
 
 document.addEventListener('click',async e=>{
  const r=e.target.closest('.mrow');if(r){SEL=r.dataset.cid;$('#merr').textContent='';MR();await mread(SEL);MR();const t=$('#mtx');if(t&&innerWidth>820)t.focus();return}

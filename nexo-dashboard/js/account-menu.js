@@ -33,7 +33,10 @@ var CSS=
 '.nxcm .nxe{font-size:12.5px;color:#9A9AAE;text-align:right;margin:0}'+
 '.nxcm .nxck{width:56px;height:56px;border-radius:50%;background:#E0FAE0;display:grid;place-items:center;margin:16px auto 22px;box-shadow:0 0 0 10px #F2FCF2}'+
 '.nxcm .nxck svg{width:24px;height:24px;stroke:#03BB43;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}'+
-'.nxcm .nxdone p{max-width:440px;margin:0 auto}';
+'.nxcm .nxdone p{max-width:440px;margin:0 auto}'+
+'#mew.nxun,.nav-av.nxun{position:relative;overflow:visible}'+
+'#mew.nxun::after,.nav-av.nxun::after{content:"";position:absolute;top:-5px;left:-5px;width:14px;height:14px;border-radius:50%;background:#E5243B;border:2px solid #fff;box-sizing:border-box;pointer-events:none}'+
+'.nxam .nxcnt{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:#E5243B;color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center;flex:none}';
 var st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
 var E=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var U=function(s){return /^https:\/\/[^\s"'()<>]+$/.test(String(s||''))?s:''};
@@ -45,7 +48,7 @@ var IC={
  out:'<svg viewBox="0 0 24 24" fill="none" stroke="#BB0327" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>'
 };
 var XS='<button type="button" class="nxx" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>';
-var ME=null,SUB=null,menu=null;
+var ME=null,SUB=null,menu=null,UNREAD=0;
 function ready(f){if(window.nexoDB)f();else addEventListener('nexo:ready',f,{once:true})}
 function profileUrl(){return window.nexoDB&&nexoDB.kind==='team'?'dash-entity-profile.html':(ME&&ME.role==='صانع محتوى'?'dash-creator-profile.html':'dash-talent-profile.html')}
 function active(s){return !!(s&&(s.status==='active'||(s.status==='trialing'&&s.trialEnd>Date.now())))}
@@ -55,7 +58,7 @@ function build(){
  var av=U(ME.ph)?'<img src="'+E(ME.ph)+'" alt="">':'<span class="nxi">'+E(String(ME.n||email||'؟').trim()[0]||'؟')+'</span>';
  menu.innerHTML=
   '<a class="nxu" href="'+profileUrl()+'" role="menuitem">'+av+'<span><b>'+E(ME.n||'ملفك الشخصي')+'</b><small>'+E(email)+'</small></span></a>'+
-  '<button type="button" data-act="msgs" role="menuitem"><span class="nxic">'+IC.chat+'</span><span class="nxt">المحادثات</span></button>'+
+  '<button type="button" data-act="msgs" role="menuitem"><span class="nxic">'+IC.chat+'</span><span class="nxt">المحادثات</span>'+(UNREAD?'<span class="nxcnt">'+(UNREAD>99?'99+':UNREAD)+'</span>':'')+'</button>'+
   '<button type="button" data-act="apps" role="menuitem"><span class="nxic">'+IC.bag+'</span><span class="nxt">متابعة الفرص</span></button>'+
   '<button type="button" data-act="subs" role="menuitem"><span class="nxic">'+IC.card+'</span><span class="nxt">الاشتراكات والفواتير</span>'+(active(SUB)?'<span class="nxpro">Pro</span>':'')+'</button>'+
   '<button type="button" class="nxout" data-act="out" role="menuitem"><span class="nxic">'+IC.out+'</span><span class="nxt">تسجيل الخروج</span></button>';
@@ -114,6 +117,12 @@ function showSubs(){
   modal('<h3>الاشتراكات والفواتير</h3><div class="nxs">'+rows+'</div><h4>الفواتير</h4>'+inv+'<div class="nxbt">'+btns+'</div>');
  })});
 }
+// نقطة حمراء على صورتك فوق لما يكون عندك رسائل ما انقرت
+function paintUnread(){document.querySelectorAll('#mew,.nav-av').forEach(function(a){a.classList.toggle('nxun',UNREAD>0);if(UNREAD>0)a.setAttribute('aria-label','ملفي — عندك '+UNREAD+' رسائل جديدة')})}
+function checkUnread(){ready(function(){if(!nexoDB.countUnread)return;nexoDB.countUnread().then(function(n){UNREAD=n||0;paintUnread();if(menu&&!menu.hidden&&ME)build()}).catch(function(){})})}
+window.nexoRefreshUnread=checkUnread;
+checkUnread();setInterval(function(){if(!document.hidden)checkUnread()},30000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)checkUnread()});
 // الضغط على صورتك فوق يفتح القائمة (بدل ما يروح للملف مباشرة)
 document.addEventListener('click',function(e){
  var b=e.target.closest('#mew,.nav-av');

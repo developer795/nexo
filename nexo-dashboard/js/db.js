@@ -187,6 +187,12 @@ export function createDB(user) {
     fail(error, 'تعذر إرسال الرسالة')
     return data
   }
+  // عدد الرسائل اللي ما انقرت (للنقطة الحمراء على صورتك فوق)
+  async function countUnread() {
+    const { count, error } = await supabase.from('nexo_messages').select('id', { count: 'exact', head: true }).eq('receiver_id', uid).is('read_at', null)
+    if (error) return 0
+    return count || 0
+  }
   async function markRead(from) {
     const { error } = await supabase.from('nexo_messages').update({ read_at: new Date().toISOString() })
       .eq('receiver_id', uid).eq('sender_id', from).is('read_at', null)
@@ -405,7 +411,7 @@ export function createDB(user) {
     getSubscription, subscribe, cancelSubscription, getCard, saveCard,
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,
-    listMyApplications, listMessages, sendMessage, markRead, getPeople,
+    listMyApplications, listMessages, sendMessage, markRead, getPeople, countUnread,
     listApplicants, setApplicationStatus, listConnectionsOf,
   }
 }
