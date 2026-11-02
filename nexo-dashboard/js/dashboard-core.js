@@ -42,7 +42,7 @@ const STS=['يبحث عن فريق','منضم لفريق'],ROLES=['لاعب','ص
 const V={};
 /* نافذة "تم نشر الفرصة" */
 function OPPOK(id){nexoDone({title:'تم نشر الفرصة',text:'تم نشر الفرصة بنجاح، وأصبحت متاحة للمواهب للتقديم عليها عبر نيكسو.',close:'العودة لملف الجهة',closeHref:'dash-entity-profile.html',go:'عرض الفرصة',goHref:'dash-opportunity-details.html?id='+encodeURIComponent(id)})}
-async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap||o.created_by===nexoDB.uid)return;o.ap=1;o.n++;R();
+async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap||o.created_by===nexoDB.uid||(o.due&&o.due<new Date().toISOString().slice(0,10)))return;o.ap=1;o.n++;R();
  try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;R();alert(e.message);return}R();
  if(window.nexoDone)nexoDone({title:'تم التقديم على الفرصة',text:'تم إرسال طلبك بنجاح إلى الجهة، وهو الآن قيد المراجعة. يمكنك متابعة حالته من صفحة طلباتك.',close:'إغلاق',go:'عرض الفرص التي تم التقديم عليها',goHref:'dash-applications.html'})}
 const FM={
