@@ -457,3 +457,12 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 #odue{text-align:right;direction:rtl}
 #odue::-webkit-date-and-time-value{text-align:right}
 #odue::-webkit-datetime-edit{text-align:right}
+/* المنصات: الاسم وعدد المتابعين ما يتراكبون لما البطاقة ضيقة */
+.xhead,.xplat{grid-template-columns:minmax(0,1fr) minmax(0,130px) minmax(0,120px)}
+.xplat .xname{overflow:hidden}
+.xplat .xname b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.xplat .xf{max-width:100%;overflow:hidden;text-overflow:ellipsis;padding:4px 12px}
+.xplat .xv{max-width:100%}
+.xplat .xvisit{max-width:100%;white-space:nowrap}
+.xsec{container-type:inline-size}
+@container (max-width:480px){.xhead,.xplat{grid-template-columns:minmax(0,1fr) 96px 96px;gap:8px}.xplat .xf{padding:4px 10px}.xplat .xvisit{padding:0 10px;font-size:11px}}
