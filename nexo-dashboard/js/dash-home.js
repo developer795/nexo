@@ -22,7 +22,7 @@ function POSTOK(){let m=document.getElementById('pok');
   m.addEventListener('click',e=>{if(e.target===m||e.target.closest('.pkx,.pkh'))m.classList.remove('on')})}
  m.innerHTML=`<div class="pkb"><button type="button" class="pkx" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>
  <div class="pkc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
- <h3>تم نشر المنشور</h3><p>منشورك أصبح متاحًا الآن على ملفك الشخصي وفي مجتمع نيكسو. شكرًا لمشاركتنا!</p>
+ <h3>تم نشر المنشور</h3><p>منشورك أصبح متاحًا الآن على ملفك الشخصي وفي مجتمع نيكسو. شكرًا لمشاركتك!</p>
  <div class="pkbt"><button type="button" class="pkh">العودة للرئيسية</button><button type="button" class="pkv">عرض المنشور</button></div></div>`;
  m.querySelector('.pkv').onclick=()=>{m.classList.remove('on');const a=[...document.querySelectorAll('.feed .post')].find(x=>x.querySelector('a.ph2[href*="-profile.html"]'))||document.querySelector('.feed .post');if(a){a.scrollIntoView({behavior:'smooth',block:'center'});a.classList.add('pnew');setTimeout(()=>a.classList.remove('pnew'),2200)}};
  m.classList.add('on');m.querySelector('.pkv').focus()}

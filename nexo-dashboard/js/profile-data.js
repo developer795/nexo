@@ -92,6 +92,18 @@
   }
 
   var OPPS = [];
+  // زائر غير مشترك: الفرص تبان مغبّشة وفوقها "فرص حصرية بانتظارك"
+  function subActive(x) { return !!(x && (x.status === 'active' || (x.status === 'trialing' && x.trialEnd > Date.now()))); }
+  async function lockOpps(sec, n) {
+    if (!sec || !VISITOR) return;
+    var old = sec.querySelector('.oplk'); if (old) old.remove();
+    sec.classList.remove('oplock');
+    if (!n || !nexoDB.getSubscription) return;
+    var s = null; try { s = await nexoDB.getSubscription(); } catch (e) { s = null; }
+    if (subActive(s)) return;
+    sec.classList.add('oplock');
+    sec.insertAdjacentHTML('beforeend', '<div class="oplk"><h3>فرص حصرية بانتظارك</h3><p>اشترك في الباقة العليا للاطلاع على الفرص الخاصة والتقديم عليها.</p><a class="btn" href="dash-payment.html">اشترك الآن</a></div>');
+  }
   function oppCard(o) {
       return '<a class="opp" style="text-decoration:none;color:inherit"' + (OWN ? ' data-nopw' : '') + ' href="dash-opportunity-details.html?id=' + E(o.id) + '">' +
         (U(o.ph) ? '<img src="' + E(U(o.ph)) + '" alt="">' : '<div class="oph">' + ini(o.org) + '</div>') +
@@ -108,6 +120,7 @@
     if (sec && opps.length > 2) sec.insertAdjacentHTML('beforeend', '<button type="button" class="xall" data-all="opps">عرض الكل ' + CHV + '</button>');
     var sub = subOf(grid);
     if (sub) sub.textContent = opps.length + ' فرص';
+    lockOpps(sec, opps.length);
     // الجهة اللي عندها فرص: "فرص متاحة للتقديم" على اليسار
     if (PROFILE && PROFILE.kind === 'team') {
       var head = q('.head'), st = head && head.querySelector('.hst');
@@ -558,8 +571,18 @@
       await nexoDB.addPost({ t: t });
       q('#ptxt').value = '';
       closeM();
-      toast('تم النشر');
       renderPosts(await nexoDB.listPosts(nexoDB.uid));
+      b.disabled = false;
+      if (window.nexoDone) {
+        nexoDone({ title: 'تم نشر المنشور', text: 'منشورك أصبح متاحًا الآن على ملفك الشخصي وفي مجتمع نيكسو. شكرًا لمشاركتك!',
+          close: 'العودة للرئيسية', closeBtnHref: 'dash-home.html', go: 'عرض المنشور',
+          onGo: function () {
+            var el = q('#postGrid .post');
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('pnew'); setTimeout(function () { el.classList.remove('pnew'); }, 2200);
+          } });
+      } else toast('تم النشر');
     } catch (e) {
       toast(e.message || 'تعذر النشر');
       b.disabled = false;

@@ -81,10 +81,11 @@ function modal(html){
 function closeModal(){var m=document.getElementById('nxcm');if(m)m.classList.remove('on')}
 window.nexoModal=modal;window.nexoCloseModal=closeModal;
 // نافذة نجاح (علامة صح + عنوان + نص + زرين): تستخدم بعد التقديم على فرصة وبعد نشر فرصة
-// closeHref: وين يروح لما يقفل النافذة (زر الإغلاق أو X أو برا النافذة)، goHref: الزر الأساسي
+// closeHref: وين يروح لما يقفل النافذة (زر الإغلاق أو X أو برا النافذة)، closeBtnHref: زر الإغلاق بس، goHref/onGo: الزر الأساسي
 window.nexoDone=function(o){
  var m=modal('<div class="nxdone"><div class="nxck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div><h3>'+E(o.title)+'</h3><p>'+E(o.text)+'</p><div class="nxbt"><button type="button" class="nxo">'+E(o.close||'إغلاق')+'</button><button type="button" class="nxf">'+E(o.go)+'</button></div></div>');
- m.querySelector('.nxf').onclick=function(){closeModal();if(o.goHref)location.href=o.goHref};
+ m.querySelector('.nxf').onclick=function(){closeModal();if(o.onGo)o.onGo();else if(o.goHref)location.href=o.goHref};
+ if(o.closeBtnHref)m.querySelector('.nxo').addEventListener('click',function(){location.href=o.closeBtnHref});
  if(o.closeHref){var leave=function(e){if(e.target===m||e.target.closest('.nxx,.nxo')){m.removeEventListener('click',leave);location.href=o.closeHref}};m.addEventListener('click',leave)}
  m.querySelector('.nxf').focus();return m;
 };

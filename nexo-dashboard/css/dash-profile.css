@@ -436,3 +436,13 @@ a.xnet:hover{background:#F6F6FA}
 .xopps{display:grid;gap:12px}
 /* الشاشات الضيقة: الاسم يبقى يمين تحت الصورة */
 @media(max-width:900px){.head{align-items:flex-start}}
+/* زائر غير مشترك: الفرص مقفولة */
+section.oplock{position:relative;overflow:hidden}
+section.oplock .grid2{filter:blur(4px);pointer-events:none;user-select:none}
+section.oplock .xall{pointer-events:none;opacity:.5}
+.oplk{position:absolute;left:50%;top:50%;transform:translate(-50%,-30%);width:min(440px,calc(100% - 32px));background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(32,31,73,.16);padding:22px 20px;text-align:center;z-index:2}
+.oplk h3{margin:0 0 6px;font-size:20px;font-weight:700}
+.oplk p{margin:0 0 14px;font-size:12px;color:#9A9AAE;line-height:1.7}
+.oplk .btn{display:inline-flex;text-decoration:none;background:#201F49;color:#fff;border-radius:99px}
+/* المنشور الجديد بعد النشر */
+.post.pnew{border-color:#03BB43;box-shadow:0 0 0 3px #E0FAE0;transition:box-shadow .3s}
