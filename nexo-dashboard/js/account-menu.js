@@ -1,5 +1,5 @@
 // =====================================================================
-// قائمة الحساب (الضغط على صورتك فوق): ملفك، الاشتراكات والفواتير، تسجيل الخروج
+// قائمة الحساب (الضغط على صورتك فوق): ملفك، المحادثات، متابعة الفرص، الاشتراكات والفواتير، تسجيل الخروج
 // يحتاج window.nexoDB (من auth-guard.js)
 // =====================================================================
 (function(){
@@ -36,6 +36,8 @@ var E=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){ret
 var U=function(s){return /^https:\/\/[^\s"'()<>]+$/.test(String(s||''))?s:''};
 var IC={
  user:'<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+ chat:'<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+ bag:'<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
  card:'<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
  out:'<svg viewBox="0 0 24 24" fill="none" stroke="#BB0327" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>'
 };
@@ -50,6 +52,8 @@ function build(){
  var av=U(ME.ph)?'<img src="'+E(ME.ph)+'" alt="">':'<span class="nxi">'+E(String(ME.n||email||'؟').trim()[0]||'؟')+'</span>';
  menu.innerHTML=
   '<a class="nxu" href="'+profileUrl()+'" role="menuitem">'+av+'<span><b>'+E(ME.n||'ملفك الشخصي')+'</b><small>'+E(email)+'</small></span></a>'+
+  '<button type="button" data-act="msgs" role="menuitem"><span class="nxic">'+IC.chat+'</span><span class="nxt">المحادثات</span></button>'+
+  '<button type="button" data-act="apps" role="menuitem"><span class="nxic">'+IC.bag+'</span><span class="nxt">متابعة الفرص</span></button>'+
   '<button type="button" data-act="subs" role="menuitem"><span class="nxic">'+IC.card+'</span><span class="nxt">الاشتراكات والفواتير</span>'+(active(SUB)?'<span class="nxpro">Pro</span>':'')+'</button>'+
   '<button type="button" class="nxout" data-act="out" role="menuitem"><span class="nxic">'+IC.out+'</span><span class="nxt">تسجيل الخروج</span></button>';
 }
@@ -57,7 +61,7 @@ function place(btn){var r=btn.getBoundingClientRect();menu.style.top=(r.bottom+8
 function closeMenu(){if(menu&&!menu.hidden){menu.hidden=true;var b=document.querySelector('[aria-expanded="true"][data-nxam]');if(b)b.setAttribute('aria-expanded','false')}}
 function openMenu(btn){
  if(!menu){menu=document.createElement('div');menu.className='nxam';menu.setAttribute('role','menu');menu.hidden=true;document.body.appendChild(menu);
-  menu.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;closeMenu();if(b.dataset.act==='out')confirmOut();else location.href='dash-billing.html'})}
+  menu.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;closeMenu();if(b.dataset.act==='out')confirmOut();else location.href={msgs:'dash-messages.html',apps:'dash-applications.html'}[b.dataset.act]||'dash-billing.html'})}
  if(!menu.hidden){closeMenu();return}
  btn.setAttribute('data-nxam','');btn.setAttribute('aria-expanded','true');
  menu.innerHTML='<div class="nxu" style="padding:14px;font-size:12px;color:#9A9AAE">جاري التحميل...</div>';

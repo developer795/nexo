@@ -466,6 +466,13 @@
     var setCount = async function () { if (cnt && p.user_id) cnt.textContent = await nexoDB.countConnections(p.user_id); };
     setCount();
     if (!VISITOR) return;
+    // زر "مراسلة" يفتح صفحة المحادثات مع صاحب الملف
+    document.querySelectorAll('.stats button').forEach(function (b) {
+      if (!/مراسلة/.test(b.textContent)) return;
+      b.removeAttribute('onclick');
+      if (!p.user_id || p.user_id === nexoDB.uid) { b.disabled = true; b.title = p.user_id ? 'هذا ملفك' : 'هذا الملف ما له حساب في نيكسو'; return; }
+      b.onclick = function () { location.href = 'dash-messages.html?to=' + encodeURIComponent(p.user_id); };
+    });
     var btn = null;
     document.querySelectorAll('.stats button').forEach(function (b) { if (/تواصل/.test(b.textContent) && !/مراسلة/.test(b.textContent)) btn = b; });
     if (!btn) return;

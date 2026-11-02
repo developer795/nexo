@@ -128,6 +128,59 @@ export function createDB(user) {
     return { me, posts, talents, teams, opps, sub, following }
   }
 
+  // ---------- متابعة الفرص (تقديماتي مع الحالة) ----------
+  // لو عمود status لسا ما انضاف (006_application_status.sql) كل التقديمات تطلع "قيد المراجعة"
+  async function listMyApplications() {
+    let res = await supabase.from('applications').select('opportunity_id, status, created_at').eq('user_id', uid).order('created_at', { ascending: false })
+    if (res.error && (res.error.code === '42703' || /status/.test(res.error.message || ''))) {
+      res = await supabase.from('applications').select('opportunity_id, created_at').eq('user_id', uid).order('created_at', { ascending: false })
+    }
+    fail(res.error, 'تعذر تحميل تقديماتك')
+    const apps = res.data || []
+    if (!apps.length) return []
+    const { data, error } = await supabase.from('nexo_opportunities').select('*').in('id', apps.map((a) => a.opportunity_id))
+    fail(error, 'تعذر تحميل الفرص')
+    const byId = new Map((data || []).map((r) => [r.id, r]))
+    return apps.filter((a) => byId.has(a.opportunity_id)).map((a) => ({
+      ...oppFromRow(byId.get(a.opportunity_id), true), st: a.status || 'pending', appliedAt: a.created_at,
+    }))
+  }
+
+  // ---------- المحادثات (جدول nexo_messages) ----------
+  const msgMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_messages/.test(e.message || ''))
+  const MSG_DB = 'المحادثات تحتاج تحديث قاعدة البيانات (شغّل 007_messages.sql)'
+  async function listMessages() {
+    const { data, error } = await supabase.from('nexo_messages').select('*')
+      .or(`sender_id.eq.${uid},receiver_id.eq.${uid}`).order('created_at', { ascending: true }).limit(2000)
+    if (msgMissing(error)) throw new Error(MSG_DB)
+    fail(error, 'تعذر تحميل المحادثات')
+    return data
+  }
+  async function sendMessage(to, body) {
+    const { data, error } = await supabase.from('nexo_messages').insert({ sender_id: uid, receiver_id: to, body }).select().single()
+    if (msgMissing(error)) throw new Error(MSG_DB)
+    fail(error, 'تعذر إرسال الرسالة')
+    return data
+  }
+  async function markRead(from) {
+    const { error } = await supabase.from('nexo_messages').update({ read_at: new Date().toISOString() })
+      .eq('receiver_id', uid).eq('sender_id', from).is('read_at', null)
+    if (error) console.error('تعذر تحديث حالة القراءة', error)
+  }
+  // بيانات أصحاب الحسابات (الاسم والصورة والدور) من جدولي talents و teams
+  async function getPeople(ids) {
+    const list = [...new Set(ids)].filter(Boolean)
+    if (!list.length) return {}
+    const [t, m] = await Promise.all([
+      supabase.from('talents').select('*').in('user_id', list),
+      supabase.from('teams').select('*').in('user_id', list),
+    ])
+    const out = {}
+    ;(m.data || []).map(teamFromRow).forEach((x) => { out[x.user_id] = x })
+    ;(t.data || []).map(talentFromRow).forEach((x) => { out[x.user_id] = x })
+    return out
+  }
+
   // ---------- شبكة التواصل (جدول nexo_connections) ----------
   // لو الجدول لسا ما انضاف يرجع قائمة فاضية (الرئيسية تعرض منشوراتك بس)
   const connMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_connections/.test(e.message || ''))
@@ -327,5 +380,6 @@ export function createDB(user) {
     getSubscription, subscribe, cancelSubscription, getCard, saveCard,
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,
+    listMyApplications, listMessages, sendMessage, markRead, getPeople,
   }
 }

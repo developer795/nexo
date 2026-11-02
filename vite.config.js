@@ -35,6 +35,8 @@ export default defineConfig({
         dashCreateOpportunity: r('nexo-dashboard/dash-create-opportunity.html'),
         dashPayment: r('nexo-dashboard/dash-payment.html'),
         dashBilling: r('nexo-dashboard/dash-billing.html'),
+        dashMessages: r('nexo-dashboard/dash-messages.html'),
+        dashApplications: r('nexo-dashboard/dash-applications.html'),
       },
     },
   },
