@@ -37,6 +37,7 @@ export default defineConfig({
         dashBilling: r('nexo-dashboard/dash-billing.html'),
         dashMessages: r('nexo-dashboard/dash-messages.html'),
         dashApplications: r('nexo-dashboard/dash-applications.html'),
+        dashNetwork: r('nexo-dashboard/dash-network.html'),
       },
     },
   },

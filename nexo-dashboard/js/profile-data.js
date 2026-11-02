@@ -470,6 +470,7 @@
       var box = cnt.closest('div');
       box.classList.add('netopen'); box.setAttribute('role', 'button'); box.tabIndex = 0; box.title = 'عرض شبكة التواصل';
       var openNet = async function () {
+        if (OWN) { location.href = 'dash-network.html'; return; }
         modal('شبكة التواصل', '<p class="xempty">جاري التحميل...</p>');
         var list = await nexoDB.listConnectionsOf(p.user_id);
         var m = q('#xmodal'); if (!m || !m.classList.contains('on')) return;
