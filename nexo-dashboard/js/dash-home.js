@@ -9,7 +9,7 @@ const AUTH=p=>p.author_id===nexoDB.uid?(nexoDB.kind==='team'?'dash-entity-profil
 V.home=function(){const m=D.me,has=m.n,ps=FEED().filter(hit);
  return`<div class="hm"><aside class="side">${has?`<a class="card pf hpf" data-profile href="dash-talent-profile.html" title="ملفي"><div class="cv" ${cv(m.cv)}></div>${ph(m.ph,m.n)}<h3>${E(m.n)}</h3><p class="r">${E(m.role||m.sub||m.type)}</p>${m.g?`<span class="tg">${E(m.g)}</span>`:''}<div class="ft"><span>${PIN} ${E(m.city)}</span>${m.s?`<span class="bd ${m.s===STS[0]?'gr':'nu'}">${E(m.s)}</span>`:''}</div></a>`:''}
  <div class="card" style="padding:14px 12px;margin-top:${has?12:0}px;display:grid;gap:10px">${has?'':`<button class="nb" onclick="F_('me')">أنشئ ملفك</button>`}<button class="nb" onclick="${has?"F_('posts')":"F_('me')"}">ابدا منشورك ${PEN}</button></div></aside>
- <section class="feed">${ps.length?ps.map(p=>{const h=AUTH(p);return`<article class="card post${h?' plink':''}"${h?` data-href="${E(h)}"`:''}>${h?`<a class="ph2" href="${E(h)}">`:'<div class="ph2">'}${pic(p.a,p.n)}<div><h4>${E(p.n)}</h4><p>${E(p.r)}</p></div>${h?'</a>':'</div>'}<p>${E(p.t)}</p>${U(p.im)?`<img src="${E(U(p.im))}" alt="" style="display:block;max-width:260px;width:100%;border-radius:8px;margin:14px 0 0 auto">`:''}</article>`}).join(''):
+ <section class="feed">${ps.length?ps.map(p=>{const h=AUTH(p);return`<article class="card post${h?' plink':''}"${h?` data-href="${E(h)}"`:''}>${p.author_id===nexoDB.uid?PMORE(p.id):''}${h?`<a class="ph2" href="${E(h)}">`:'<div class="ph2">'}${pic(p.a,p.n)}<div><h4>${E(p.n)}</h4><p>${E(p.r)}</p></div>${h?'</a>':'</div>'}<p>${E(p.t)}</p>${U(p.im)?`<img src="${E(U(p.im))}" alt="" style="display:block;max-width:260px;width:100%;border-radius:8px;margin:14px 0 0 auto">`:''}</article>`}).join(''):
  `<div class="hemp">${EMP}<h3>لا توجد منشورات بعد</h3><p>تابع الأشخاص والجهات التي تهمك لتظهر أحدث منشوراتهم هنا</p><div class="hbt"><a href="dash-talents.html">${IC_T} المواهب</a><a href="dash-teams.html">${IC_J} الجهات</a></div></div>`}</section></div>`};
 start();
 // فتح تعديل الملف مباشرة لو جاي من زر القلم في صفحة ملفي
@@ -27,3 +27,21 @@ function POSTOK(){let m=document.getElementById('pok');
  m.querySelector('.pkv').onclick=()=>{m.classList.remove('on');const a=[...document.querySelectorAll('.feed .post')].find(x=>x.querySelector('a.ph2[href*="-profile.html"]'))||document.querySelector('.feed .post');if(a){a.scrollIntoView({behavior:'smooth',block:'center'});a.classList.add('pnew');setTimeout(()=>a.classList.remove('pnew'),2200)}};
  m.classList.add('on');m.querySelector('.pkv').focus()}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('pok');if(m)m.classList.remove('on')}});
+
+/* منشوراتك: زر ••• فيه "إزالة المنشور" ونافذة تأكيد */
+const IC_DEL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
+function PMORE(id){return`<div class="pmw"><button type="button" class="pmore" aria-label="خيارات المنشور" aria-haspopup="menu" aria-expanded="false" data-pid="${E(String(id))}"><i></i><i></i><i></i></button><div class="pmenu" role="menu" hidden><button type="button" role="menuitem" class="pdel"><span class="pdi">${IC_DEL}</span>إزالة المنشور</button></div></div>`}
+function PMCLOSE(){document.querySelectorAll('.pmenu:not([hidden])').forEach(x=>{x.hidden=true;x.previousElementSibling.setAttribute('aria-expanded','false')})}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('.pmore');
+ if(b){e.preventDefault();e.stopPropagation();const mn=b.nextElementSibling,open=mn.hidden;PMCLOSE();if(open){mn.hidden=false;b.setAttribute('aria-expanded','true')}return}
+ const d=e.target.closest('.pdel');
+ if(d){e.preventDefault();e.stopPropagation();const id=d.closest('.pmw').querySelector('.pmore').dataset.pid;PMCLOSE();PDEL(id);return}
+ if(!e.target.closest('.pmenu'))PMCLOSE();
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')PMCLOSE()});
+function PDEL(id){if(!window.nexoModal)return;
+ const m=nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">إزالة المنشور</button></div>');
+ m.querySelector('.nxf').onclick=async function(){this.disabled=true;this.textContent='جاري الإزالة...';
+  try{await nexoDB.deletePost(id);D.posts=D.posts.filter(p=>String(p.id)!==String(id));nexoCloseModal();R()}
+  catch(er){this.disabled=false;this.textContent='إزالة المنشور';m.querySelector('.nxe').textContent=er.message||'تعذر إزالة المنشور'}}}

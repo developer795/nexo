@@ -212,6 +212,10 @@ export function createDB(user) {
     const { error } = await supabase.from('posts').insert({ author_id: uid, body: t, image_url: im || null })
     fail(error, 'تعذر نشر المنشور')
   }
+  async function deletePost(id) {
+    const { error } = await supabase.from('posts').delete().eq('id', id).eq('author_id', uid)
+    fail(error, 'تعذر إزالة المنشور')
+  }
   async function addTalent(o) {
     const { error } = await supabase.from('talents').insert({ ...talentToRow(o), created_by: uid })
     fail(error, 'تعذر إضافة الموهبة')
@@ -319,7 +323,7 @@ export function createDB(user) {
   return {
     uid, kind, user, upload, getMe, saveMe, loadAll, listTalents, listTeams, listPosts,
     listOpps, addPost, addTalent, addTeam, addOpp, apply, getProfile, syncOnboarding,
-    listItems, addItem, deleteItem,
+    listItems, addItem, deleteItem, deletePost,
     getSubscription, subscribe, cancelSubscription, getCard, saveCard,
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,

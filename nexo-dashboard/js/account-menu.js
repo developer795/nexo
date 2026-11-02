@@ -72,6 +72,7 @@ function modal(html){
  var f=m.querySelector('.nxo,.nxf,.nxx');if(f)f.focus();return m;
 }
 function closeModal(){var m=document.getElementById('nxcm');if(m)m.classList.remove('on')}
+window.nexoModal=modal;window.nexoCloseModal=closeModal;
 function confirmOut(){
  var m=modal('<h3>تأكيد تسجيل الخروج</h3><p>هل أنت متأكد من رغبتك في تسجيل الخروج من حسابك في نيكسو؟</p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">تسجيل الخروج</button></div>');
  m.querySelector('.nxf').onclick=function(){
