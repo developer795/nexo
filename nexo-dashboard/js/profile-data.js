@@ -58,7 +58,7 @@
     q('.av-lg').innerHTML = img(p.ph, p.n);
     if (U(p.cv)) q('.banner').style.backgroundImage = 'url("' + U(p.cv) + '")';
     var bio = q('.bio');
-    if (bio) bio.textContent = p.bio || (p.kind === 'team' ? '' : OWN ? 'اكتب نبذة عنك من زر التعديل' : 'لا توجد نبذة بعد');
+    if (bio) bio.textContent = p.bio || (OWN ? 'اكتب نبذة عنك من زر التعديل' : 'لا توجد نبذة بعد');
 
     // نسبة اكتمال الملف
     var ring = q('.ring');
@@ -432,22 +432,6 @@
 
   // تعديل النبذة من القلم في قسم النبذة
   function openBio() {
-    if (PROFILE && PROFILE.kind === 'team') {
-      // الجهة: نفس شكل نافذة إنشاء منشور (بدون ملاحظة)
-      var mt = modal('تعديل النبذة', '<form class="xform xbiot" novalidate><textarea id="x_bio" maxlength="2000" aria-label="النبذة" placeholder="عرّف مجتمع نيكسو بالجهة">' + E(PROFILE.bio || '') + '</textarea><p class="xerr" role="alert"></p><button class="btn" type="submit">حفظ</button></form>', false, true);
-      mt.querySelector('.xbox').classList.add('xent');
-      var ft = mt.querySelector('form'), ta = ft.querySelector('#x_bio'), bt = ft.querySelector('button[type=submit]');
-      var sync = function () { bt.disabled = !ta.value.trim(); }; ta.oninput = sync; sync();
-      ft.onsubmit = async function (e) {
-        e.preventDefault();
-        var v = ta.value.trim(), err = ft.querySelector('.xerr');
-        if (!v) return;
-        bt.disabled = true; bt.textContent = 'جاري الحفظ...';
-        try { await nexoDB.saveMe({ bio: v }); PROFILE.bio = v; var b = q('.bio'); if (b) b.textContent = v; closeX(); toast('تم الحفظ'); }
-        catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; bt.disabled = false; bt.textContent = 'حفظ'; }
-      };
-      return;
-    }
     var m = modal('تعديل النبذة', '<form class="xform" novalidate><p class="xsub">عرّف مجتمع نيكسو بك وبخبراتك وطموحاتك في عالم الألعاب.</p><label class="xf"><span>النبذة</span><textarea id="x_bio" maxlength="2000">' + E(PROFILE && PROFILE.bio || '') + '</textarea></label><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form');
     form.onsubmit = async function (e) {

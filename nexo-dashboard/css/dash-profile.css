@@ -451,11 +451,3 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 #modal.xent .box textarea:focus{border-color:#CACFD5}
 #modal.xent .box textarea::placeholder{color:#9A9AAE}
 #modal.xent #pubBtn:disabled{background:#E3E5E9;border-color:#E3E5E9;color:#9A9AAE;opacity:1;cursor:default}
-/* تعديل نبذة الجهة: نفس شكل نافذة إنشاء منشور */
-.xbox.xent header{border-bottom:0}
-.xbiot{padding:0}
-.xbiot textarea{width:100%;min-height:180px;border-radius:8px;border:1px solid #ECECEF;background:#F7F7F8;padding:12px 14px;font:inherit;font-size:13px;resize:none;outline:0}
-.xbiot textarea:focus{border-color:#CACFD5}.xbiot textarea::placeholder{color:#9A9AAE}
-.xbiot .xerr{margin:10px 0 0}.xbiot .xerr:empty{display:none}
-.xbiot .btn{margin-top:14px}
-.xbiot .btn:disabled{background:#E3E5E9;border-color:#E3E5E9;color:#9A9AAE;opacity:1;cursor:default}
