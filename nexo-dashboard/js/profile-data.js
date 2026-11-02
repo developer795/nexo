@@ -83,7 +83,7 @@
     if (old) old.remove();
     if (sec && posts.length) sec.insertAdjacentHTML('beforeend', '<button type="button" class="xall" data-all="posts">عرض الكل ' + CHV + '</button>');
     grid.innerHTML = posts.slice(0, 3).map(function (p) {
-      return '<div class="post"><div class="h"><div class="a">' + img(p.a, p.n) + '</div><div><b>' + E(p.n) +
+      return '<div class="post">' + PMORE(p) + '<div class="h"><div class="a">' + img(p.a, p.n) + '</div><div><b>' + E(p.n) +
         '</b><small>' + E(p.r) + '</small></div></div><p>' + E(p.t) + '</p>' +
         (U(p.im) ? '<img src="' + E(U(p.im)) + '" alt="" style="width:100%;border-radius:8px;margin-top:12px">' : '') + '</div>';
     }).join('');
@@ -259,10 +259,40 @@
     var n = Math.round(d / 86400);
     return n === 1 ? 'أمس' : n < 7 ? 'منذ ' + n + ' أيام' : n < 14 ? 'منذ أسبوع' : new Date(t).toLocaleDateString('ar-SA-u-ca-gregory-nu-latn');
   }
+  // ---------- إزالة المنشور (صاحب الملف بس): زر ••• وقائمة ونافذة تأكيد ----------
+  var IC_DEL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
+  function PMORE(p) {
+    if (!OWN || !p || p.id == null || !window.nexoDB || p.author_id !== nexoDB.uid) return '';
+    return '<div class="pmw"><button type="button" class="pmore" aria-label="خيارات المنشور" aria-haspopup="menu" aria-expanded="false" data-pid="' + E(String(p.id)) + '"><i></i><i></i><i></i></button>' +
+      '<div class="pmenu" role="menu" hidden><button type="button" role="menuitem" class="pdel"><span class="pdi">' + IC_DEL + '</span>إزالة المنشور</button></div></div>';
+  }
+  function pmClose() { document.querySelectorAll('.pmenu:not([hidden])').forEach(function (x) { x.hidden = true; x.previousElementSibling.setAttribute('aria-expanded', 'false'); }); }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.pmore');
+    if (b) { e.preventDefault(); e.stopPropagation(); var mn = b.nextElementSibling, open = mn.hidden; pmClose(); if (open) { mn.hidden = false; b.setAttribute('aria-expanded', 'true'); } return; }
+    var d = e.target.closest('.pdel');
+    if (d) { e.preventDefault(); e.stopPropagation(); var id = d.closest('.pmw').querySelector('.pmore').dataset.pid; pmClose(); delPost(id); return; }
+    if (!e.target.closest('.pmenu')) pmClose();
+  }, true);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') pmClose(); });
+  function delPost(id) {
+    if (!window.nexoModal) return;
+    var m = nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">إزالة المنشور</button></div>');
+    m.querySelector('.nxf').onclick = function () {
+      var btn = this; btn.disabled = true; btn.textContent = 'جاري الإزالة...';
+      nexoDB.deletePost(id).then(function () {
+        nexoCloseModal();
+        renderPosts(POSTS.filter(function (p) { return String(p.id) !== String(id); }));
+        var xm = q('#xmodal');
+        if (xm && xm.classList.contains('on') && xm.querySelector('.xpost,.xlist')) { if (POSTS.length) openAll('posts'); else closeX(); }
+      }).catch(function (er) { btn.disabled = false; btn.textContent = 'إزالة المنشور'; m.querySelector('.nxe').textContent = (er && er.message) || 'تعذر إزالة المنشور'; });
+    };
+  }
+
   function openAll(k) {
     if (k === 'posts') {
       modal('منشورات', '<div class="xlist">' + POSTS.map(function (p) {
-        return '<article class="xpost"><div class="xph"><span class="a">' + img(p.a, p.n) + '</span><div><b>' + E(p.n) + '</b><small>' + E(p.r) + '</small></div><time>' + E(ago(p.at)) + '</time></div><p>' + E(p.t) + '</p>' +
+        return '<article class="xpost">' + PMORE(p) + '<div class="xph"><span class="a">' + img(p.a, p.n) + '</span><div><b>' + E(p.n) + '</b><small>' + E(p.r) + '</small></div><time>' + E(ago(p.at)) + '</time></div><p>' + E(p.t) + '</p>' +
           (U(p.im) ? '<img src="' + E(U(p.im)) + '" alt="">' : '') + '</article>';
       }).join('') + '</div>');
       return;
