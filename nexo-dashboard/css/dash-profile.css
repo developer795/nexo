@@ -446,25 +446,3 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 .oplk .btn{display:inline-flex;text-decoration:none;background:#201F49;color:#fff;border-radius:99px}
 /* المنشور الجديد بعد النشر */
 .post.pnew{border-color:#03BB43;box-shadow:0 0 0 3px #E0FAE0;transition:box-shadow .3s}
-/* نافذة إنشاء منشور مثل التصميم (ملف الجهة بس) */
-#modal.xent .box{width:min(860px,100%);padding:28px 44px 34px}
-#modal.xent .box header{margin-bottom:26px}
-#modal.xent .box header .x{left:0;font-size:24px}
-#modal.xent .box h3{font-size:24px;font-weight:700}
-#modal.xent .box textarea{min-height:300px;border-radius:12px;border:1px solid #ECECEF;background:#F7F7F8;padding:16px 18px;font-size:15px;margin-bottom:22px;resize:none;outline:0}
-#modal.xent .box textarea:focus{border-color:#CACFD5}
-#modal.xent .box textarea::placeholder{color:#9A9AAE}
-#modal.xent #pubBtn{min-width:150px;height:44px;font-size:16px}
-#modal.xent #pubBtn:disabled{background:#E3E5E9;border-color:#E3E5E9;color:#9A9AAE;opacity:1;cursor:default}
-@media(max-width:640px){#modal.xent .box{padding:20px 18px 22px}#modal.xent .box textarea{min-height:200px}}
-/* تعديل نبذة الجهة: نفس شكل نافذة إنشاء منشور */
-.xbox.xent{width:min(860px,100%)}
-.xbox.xent header{border-bottom:0;padding:28px 56px 8px}
-.xbox.xent header h3{font-size:24px;font-weight:700}
-.xbiot{padding:0}
-.xbiot textarea{width:100%;min-height:300px;border-radius:12px;border:1px solid #ECECEF;background:#F7F7F8;padding:16px 18px;font:inherit;font-size:15px;resize:none;outline:0}
-.xbiot textarea:focus{border-color:#CACFD5}.xbiot textarea::placeholder{color:#9A9AAE}
-.xbiot .xerr{margin:10px 0 0}.xbiot .xerr:empty{display:none}
-.xbiot .btn{margin-top:22px;min-width:150px;height:44px;font-size:16px}
-.xbiot .btn:disabled{background:#E3E5E9;border-color:#E3E5E9;color:#9A9AAE;opacity:1;cursor:default}
-@media(max-width:640px){.xbiot textarea{min-height:200px}}
