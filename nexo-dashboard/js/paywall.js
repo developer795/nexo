@@ -39,7 +39,7 @@ document.addEventListener('click',function(e){
  var a=e.target.closest('a[href]');if(!a)return;
  var h=a.getAttribute('href')||'';
  if(!/(^|\/)dash-opportunity-details\.html/.test(h))return;
- if(SUBST===true)return;
+ if(SUBST===true||a.hasAttribute('data-nopw'))return; // data-nopw: فرصتك أنت (صاحب الفرصة يدخلها بدون اشتراك)
  e.preventDefault();e.stopPropagation();
  ready.then(function(ok){location.href=ok?a.href:'dash-opportunities.html'});
 },true);

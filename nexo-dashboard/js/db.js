@@ -146,6 +146,31 @@ export function createDB(user) {
     }))
   }
 
+  // ---------- المتقدمين على فرصة (لصاحب الفرصة) ----------
+  async function listApplicants(oppId) {
+    let res = await supabase.from('applications').select('user_id, status, created_at').eq('opportunity_id', oppId).order('created_at', { ascending: true })
+    if (res.error && (res.error.code === '42703' || /status/.test(res.error.message || ''))) {
+      res = await supabase.from('applications').select('user_id, created_at').eq('opportunity_id', oppId).order('created_at', { ascending: true })
+    }
+    fail(res.error, 'تعذر تحميل المتقدمين')
+    const rows = res.data || []
+    const people = await getPeople(rows.map((r) => r.user_id))
+    return rows.map((r) => ({ user_id: r.user_id, st: r.status || 'pending', at: r.created_at, p: people[r.user_id] || null }))
+  }
+  async function setApplicationStatus(oppId, userId, status) {
+    const { data, error } = await supabase.from('applications').update({ status }).eq('opportunity_id', oppId).eq('user_id', userId).select('status')
+    if (error && (error.code === '42703' || /status/.test(error.message || ''))) throw new Error('قبول ورفض المتقدمين يحتاج تحديث قاعدة البيانات (شغّل 006_application_status.sql)')
+    fail(error, 'تعذر تحديث حالة الطلب')
+    if (!data || !data.length) throw new Error('تعذر تحديث حالة الطلب (تأكد إنك شغّلت 006_application_status.sql)')
+  }
+  // ---------- شبكة التواصل لأي حساب (الأشخاص اللي ضافهم) ----------
+  async function listConnectionsOf(userId) {
+    const { data, error } = await supabase.from('nexo_connections').select('target_id, created_at').eq('user_id', userId).order('created_at', { ascending: false })
+    if (error) { if (!connMissing(error)) console.error('تعذر تحميل شبكة التواصل', error); return [] }
+    const people = await getPeople(data.map((r) => r.target_id))
+    return data.map((r) => ({ user_id: r.target_id, p: people[r.target_id] || null }))
+  }
+
   // ---------- المحادثات (جدول nexo_messages) ----------
   const msgMissing = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /nexo_messages/.test(e.message || ''))
   const MSG_DB = 'المحادثات تحتاج تحديث قاعدة البيانات (شغّل 007_messages.sql)'
@@ -381,5 +406,6 @@ export function createDB(user) {
     signOut: () => supabase.auth.signOut(),
     listFollowing, countConnections, connect, disconnect,
     listMyApplications, listMessages, sendMessage, markRead, getPeople,
+    listApplicants, setApplicationStatus, listConnectionsOf,
   }
 }

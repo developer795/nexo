@@ -95,8 +95,8 @@
     var grid = q('.grid2');
     if (!grid) return;
     grid.innerHTML = opps.map(function (o) {
-      return '<a class="opp" style="text-decoration:none;color:inherit" href="dash-opportunity-details.html?id=' + E(o.id) + '">' +
-        (U(o.ph) ? '<img src="' + E(U(o.ph)) + '" alt="">' : '<div style="width:90px;height:90px;border-radius:10px;background:var(--primary-100);color:#fff;display:grid;place-items:center;font-size:32px">' + ini(o.org) + '</div>') +
+      return '<a class="opp" style="text-decoration:none;color:inherit"' + (OWN ? ' data-nopw' : '') + ' href="dash-opportunity-details.html?id=' + E(o.id) + '">' +
+        (U(o.ph) ? '<img src="' + E(U(o.ph)) + '" alt="">' : '<div class="oph">' + ini(o.org) + '</div>') +
         '<div><b>' + E(o.title) + '</b><span class="co">' + E(o.org) + '</span><div class="tags"><div><span class="chip">' + E(o.aud) + '</span></div><span class="chip g">' + E(o.type) + '</span></div></div>' +
         '<div class="m"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ' + E(o.city || 'غير محدد') + '</span><span>آخر موعد: ' + E(o.due || 'غير محدد') + '</span><span>' + E(o.n) + ' متقدم</span></div></a>';
     }).join('');
@@ -465,6 +465,26 @@
     document.querySelectorAll('.stats > div').forEach(function (d) { if (/شبكة التواصل/.test(d.textContent)) cnt = d.querySelector('b'); });
     var setCount = async function () { if (cnt && p.user_id) cnt.textContent = await nexoDB.countConnections(p.user_id); };
     setCount();
+    // الضغط على "شبكة التواصل" يفتح قائمة الأشخاص اللي ضافهم صاحب الملف
+    if (cnt && p.user_id && nexoDB.listConnectionsOf) {
+      var box = cnt.closest('div');
+      box.classList.add('netopen'); box.setAttribute('role', 'button'); box.tabIndex = 0; box.title = 'عرض شبكة التواصل';
+      var openNet = async function () {
+        modal('شبكة التواصل', '<p class="xempty">جاري التحميل...</p>');
+        var list = await nexoDB.listConnectionsOf(p.user_id);
+        var m = q('#xmodal'); if (!m || !m.classList.contains('on')) return;
+        var body = list.map(function (c) {
+          var x = c.p, n = (x && x.n) || 'مستخدم نيكسو';
+          var href = x && x.id != null ? (x.kind === 'team' ? 'dash-entity-visitor.html' : 'dash-talent-visitor.html') + '?id=' + encodeURIComponent(x.id) : '';
+          var lbl = x ? (x.kind === 'team' ? (x.type || 'جهة') : (x.role || '')) : '';
+          var inner = '<span class="a">' + img(x && x.ph, n) + '</span><span class="xt"><b>' + E(n) + '</b><small>' + E(lbl) + '</small></span>';
+          return href ? '<a class="xnet" href="' + E(href) + '">' + inner + '</a>' : '<div class="xnet">' + inner + '</div>';
+        }).join('');
+        modal('شبكة التواصل', list.length ? '<div class="xlist">' + body + '</div>' : '<p class="xempty">' + (VISITOR ? 'ما أضاف أحد لشبكة تواصله بعد' : 'ما أضفت أحد لشبكة تواصلك بعد. افتح ملف أي شخص واضغط "تواصل"') + '</p>');
+      };
+      box.addEventListener('click', function (e) { if (e.target.closest('button')) return; openNet(); });
+      box.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openNet(); } });
+    }
     if (!VISITOR) return;
     // زر "مراسلة" يفتح صفحة المحادثات مع صاحب الملف
     document.querySelectorAll('.stats button').forEach(function (b) {
