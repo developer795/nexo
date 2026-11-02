@@ -47,7 +47,7 @@ var IC={
 var XS='<button type="button" class="nxx" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>';
 var ME=null,SUB=null,menu=null;
 function ready(f){if(window.nexoDB)f();else addEventListener('nexo:ready',f,{once:true})}
-function profileUrl(){return window.nexoDB&&nexoDB.kind==='team'?'dash-entity-profile.html':'dash-talent-profile.html'}
+function profileUrl(){return window.nexoDB&&nexoDB.kind==='team'?'dash-entity-profile.html':(ME&&ME.role==='صانع محتوى'?'dash-creator-profile.html':'dash-talent-profile.html')}
 function active(s){return !!(s&&(s.status==='active'||(s.status==='trialing'&&s.trialEnd>Date.now())))}
 function load(){return Promise.all([nexoDB.getMe().catch(function(){return {}}),nexoDB.getSubscription?nexoDB.getSubscription().catch(function(){return null}):null]).then(function(r){ME=r[0]||{};SUB=r[1]})}
 function build(){
