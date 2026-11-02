@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاشتراك | NEXO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="subscription.css">
+</head>
+<body>
+
+  <header class="header">
+    <nav class="navbar container">
+      <a class="brand" href="#" aria-label="NEXO">
+        <img class="nexo-logo small-logo" src="assets/image.png" alt="NEXO">
+      </a>
+
+      <div class="nav-links" id="primary-navigation">
+        <a href="#">الرئيسية</a>
+        <a href="#">المواهب</a>
+        <a href="#">الفرق والجهات</a>
+        <a href="#">الفرص</a>
+        <a class="active" href="#">الاشتراك</a>
+        <a href="#">عن نكسو</a>
+      </div>
+
+      <a class="login-btn" href="#">تسجيل دخول</a>
+      <button class="menu-toggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="primary-navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <span class="eyebrow green-outline">الجهات</span>
+      <h1>كل ما تحتاجه جهتك في منظومة<br>الرياضات الإلكترونية</h1>
+      <p>تواصل مع المواهب، وشارك فرصك، وابنِ علاقات جديدة في الرياضات الإلكترونية.</p>
+    </section>
+
+    <section class="plans-section container">
+      <span class="eyebrow gray-pill">خطط الاشتراك</span>
+      <h2>اختر الباقة المناسبة لجهتك</h2>
+      <p class="section-subtitle">ابدأ بالتجربة المجانية، وانتقل للباقة المناسبة عندما تكون مستعدًا.</p>
+
+      <div class="plans">
+        <article class="plan plan-monthly">
+          <div class="plan-label">الأكثر شيوعًا</div>
+          <div class="plan-body">
+            <h3>الباقة الشهرية</h3>
+            <p class="plan-description">اشترك شهريًا بدون التزام طويل المدى</p>
+
+            <div class="price">
+              <strong>000</strong>
+              <div>
+                <span>رس</span>
+                <small>/ شهريًا</small>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <ul class="features">
+              <li>إنشاء حساب جهة رسمي موثق <span>✓</span></li>
+              <li>نشر الفرص الوظيفية والتدريبية <span>✓</span></li>
+              <li>إنشاء ونشر الفعاليات والبطولات <span>✓</span></li>
+              <li>التواصل مع اللاعبين وصناع المحتوى <span>✓</span></li>
+            </ul>
+
+            <button class="plan-btn dark" data-plan="monthly">اشترك الآن</button>
+          </div>
+        </article>
+
+        <article class="plan plan-yearly featured">
+          <div class="plan-label">وفر 20%</div>
+          <div class="plan-body">
+            <h3>الباقة السنوية</h3>
+            <p class="plan-description">وفر ما يعادل شهرين مجانًا مع الدفع السنوي</p>
+
+            <div class="price">
+              <strong>0.000</strong>
+              <div>
+                <span>رس</span>
+                <small>/ سنويًا</small>
+              </div>
+            </div>
+
+            <div class="saving">200 رس / شهريًا — بدلًا من 249 رس</div>
+
+            <div class="divider"></div>
+
+            <ul class="features">
+              <li>إنشاء حساب جهة رسمي موثق <span>✓</span></li>
+              <li>نشر الفرص الوظيفية والتدريبية <span>✓</span></li>
+              <li>إنشاء ونشر الفعاليات والبطولات <span>✓</span></li>
+              <li>التواصل مع اللاعبين وصناع المحتوى <span>✓</span></li>
+            </ul>
+
+            <button class="plan-btn green" data-plan="yearly">اشترك الآن ووفر 20%</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="trial">
+      <div class="trial-inner">
+        <span class="eyebrow trial-pill">ابدأ رحلتك اليوم</span>
+        <h2>لديك فرصة لتجربة نكسو</h2>
+        <p>استفد من تجربة مجانية لمدة 7 أيام، وتعرف على الأدوات والفرص المتاحة لجهتك.</p>
+        <button class="trial-btn" id="trialBtn">ابدأ الفترة التجريبية المجانية</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-main container">
+      <div class="socials">
+        <a href="#" aria-label="X">𝕏</a>
+        <a href="#" aria-label="TikTok">♪</a>
+        <a href="#" aria-label="Instagram">◎</a>
+        <a href="#" aria-label="LinkedIn">in</a>
+      </div>
+
+      <div class="footer-links">
+        <div>
+          <h3>عن المنصة</h3>
+          <a href="#">عن نيكسو</a>
+        </div>
+        <div>
+          <h3>الخدمات</h3>
+          <a href="#">استكشاف المواهب</a>
+          <a href="#">الفرق والجهات</a>
+          <a href="#">الفرص</a>
+        </div>
+      </div>
+
+      <div class="footer-brand">
+        <img class="nexo-footer-logo" src="assets/image copy.png" alt="NEXO">
+      </div>
+    </div>
+
+    <div class="footer-bottom container">
+      <span>جميع الحقوق محفوظة © 2026 NEXO</span>
+      <a href="mailto:Nexo.team5@gmail.com">Nexo.team5@gmail.com</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="subscription.js"></script>
+</body>
+</html>
