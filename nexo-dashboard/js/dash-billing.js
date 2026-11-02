@@ -66,7 +66,7 @@ let BCARD;// undefined = لسا ما تحمّل
 const BLOGO={mastercard:'<span class="bl-mc"><i></i><i></i></span>',visa:'<span class="bl-vi">VISA</span>',mada:'<span class="bl-md"><i></i><i></i><b>mada</b></span>',amex:'<span class="bl-vi">AMEX</span>',card:''};
 const BNAME={mastercard:'Mastercard',visa:'Visa',mada:'مدى',amex:'American Express',card:'بطاقة'};
 function BPAY(){const c=BCARD;
- const head=`<div class="bl-pyh"><div><h3>طريقة الدفع</h3><small>البطاقة الافتراضية للفوترة</small></div><button type="button" class="bl-upd" onclick="BCARDM()">${c?'تحديث':'إضافة'}</button></div>`;
+ const head=`<div class="bl-pyh"><div><h3>طريقة الدفع</h3><small>البطاقة الافتراضية للفوترة</small></div><button type="button" class="bl-upd" onclick="BCARDM()">تحديث</button></div>`;
  const body=c?`<div class="bl-cc">${BLOGO[c.brand]||''}<div><b dir="ltr">•••• •••• •••• ${E(c.last4)}</b><small><span dir="ltr">${E(BNAME[c.brand]||'')}</span> · تنتهي <span dir="ltr">${String(c.exp_month).padStart(2,'0')} / ${String(c.exp_year).slice(-2)}</span></small></div></div>`
   :`<div class="bl-cc"><span class="bl-mc"><i></i><i></i></span><div><b dir="ltr">•••• •••• •••• ••••</b><small>${BCARD===undefined?'جاري التحميل...':'لا توجد بطاقة محفوظة'}</small></div></div>`;
  return`<div class="bl-pay card">${head}${body}</div>`}
