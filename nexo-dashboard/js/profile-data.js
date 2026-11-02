@@ -58,7 +58,7 @@
     q('.av-lg').innerHTML = img(p.ph, p.n);
     if (U(p.cv)) q('.banner').style.backgroundImage = 'url("' + U(p.cv) + '")';
     var bio = q('.bio');
-    if (bio) bio.textContent = p.bio || (OWN ? 'اكتب نبذة عنك من زر التعديل' : 'لا توجد نبذة بعد');
+    if (bio) bio.textContent = p.bio || (p.kind === 'team' ? '' : OWN ? 'اكتب نبذة عنك من زر التعديل' : 'لا توجد نبذة بعد');
 
     // نسبة اكتمال الملف
     var ring = q('.ring');
