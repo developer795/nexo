@@ -24,6 +24,7 @@ const DIRS = [
   '5-opportunities',
   '16-plans',
   '17-payment',
+  'subscription',
   'assets',
   'css',
   'js',
