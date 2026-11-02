@@ -451,3 +451,9 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 #modal.xent .box textarea:focus{border-color:#CACFD5}
 #modal.xent .box textarea::placeholder{color:#9A9AAE}
 #modal.xent #pubBtn:disabled{background:#E3E5E9;border-color:#E3E5E9;color:#9A9AAE;opacity:1;cursor:default}
+/* إنشاء فرصة: الاسم والمدينة وآخر موعد في صف واحد، والتاريخ يمين */
+.two.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:640px){.two.three{grid-template-columns:1fr}}
+#odue{text-align:right;direction:rtl}
+#odue::-webkit-date-and-time-value{text-align:right}
+#odue::-webkit-datetime-edit{text-align:right}
