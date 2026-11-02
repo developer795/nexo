@@ -41,11 +41,11 @@ async function checkAuthentication() {
         ? 'dash-entity-profile.html'
         : 'dash-talent-profile.html'
 
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', async (e) => {
       const a = e.target.closest('[data-profile]')
       if (!a) return
       e.preventDefault()
-      window.location.href = profileUrl
+      let me = {}; try { me = await window.nexoDB.getMe() } catch { /* empty */ } window.location.href = (profileUrl === 'dash-talent-profile.html' && me.role === 'صانع محتوى') ? 'dash-creator-profile.html' : profileUrl
     })
 
     // 4. تجهيز قاعدة البيانات للصفحة (السكربتات العادية تستخدم window.nexoDB)
