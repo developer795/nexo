@@ -29,6 +29,7 @@ export default defineConfig({
         dashOpportunities: r('nexo-dashboard/dash-opportunities.html'),
         dashOpportunityDetails: r('nexo-dashboard/dash-opportunity-details.html'),
         dashTalentProfile: r('nexo-dashboard/dash-talent-profile.html'),
+        dashCreatorProfile: r('nexo-dashboard/dash-creator-profile.html'),
         dashTalentVisitor: r('nexo-dashboard/dash-talent-visitor.html'),
         dashEntityProfile: r('nexo-dashboard/dash-entity-profile.html'),
         dashEntityVisitor: r('nexo-dashboard/dash-entity-visitor.html'),
