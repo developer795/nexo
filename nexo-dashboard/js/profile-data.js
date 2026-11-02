@@ -603,15 +603,15 @@
     btn.onclick = async function () {
       var n = q('#oname').value.trim(), c = q('#ocity').value, d = q('#odesc').value.trim();
       var due = q('#odue') ? q('#odue').value : '';
-      if (!n || !c || !d) { toast('أكمل اسم الفرصة والمدينة والوصف'); return; }
-      if (due && due < new Date().toISOString().slice(0, 10)) { toast('آخر موعد للتقديم لازم يكون اليوم أو بعده'); q('#odue').focus(); return; }
+      if (!n || !c || !d || !due) { toast('أكمل اسم الفرصة والمدينة وآخر موعد للتقديم والوصف'); return; }
+      if (due < new Date().toISOString().slice(0, 10)) { toast('آخر موعد للتقديم لازم يكون اليوم أو بعده'); q('#odue').focus(); return; }
       if (btn.disabled) return;
       btn.disabled = true;
       try {
         var me = await nexoDB.getMe();
         var type = picked('types'), aud = picked('cats');
         var newId = await nexoDB.addOpp({
-          title: n, city: c, d: d, org: me.n || 'جهة', ph: me.ph, due: due || null,
+          title: n, city: c, d: d, org: me.n || 'جهة', ph: me.ph, due: due,
           type: TYPES[type] || type, aud: CATS[aud] || aud,
         });
         if (window.nexoDone) {
