@@ -40,7 +40,7 @@ const head=(t,s)=>`<h1>${t}</h1><p class="sb">${s}</p>`;
 const em=m=>`<p class="empty">${m}</p>`;
 const STS=['يبحث عن فريق','منضم لفريق'],ROLES=['لاعب','صانع محتوى','ستريمر'],OT=['عقد عمل','تدريب تعاوني','حملة اعلانية','مشاركة في البطولة','تدريب مهني'];
 const V={};
-async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap)return;o.ap=1;o.n++;R();
+async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap||o.created_by===nexoDB.uid)return;o.ap=1;o.n++;R();
  try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;alert(e.message)}R()}
 const FM={
  me:['ملفك الشخصي','حفظ',[['n','text','الاسم'],['ph','file','صورتك الشخصية',0,1],['cv','file','صورة الغلاف',0,1],['role','select','أنت',ROLES],['g','text','اللعبة أو المنصة',0,1],['city','city','المدينة'],['s','select','الحالة',STS],['bio','textarea','نبذة عنك',0,1]],o=>nexoDB.saveMe(o)],
