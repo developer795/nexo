@@ -44,8 +44,8 @@
     h1.textContent = p.n || (OWN ? 'أكمل ملفك الشخصي' : '');
     var info = q('.head .info');
     info.querySelectorAll('.row').forEach(function (r) { r.remove(); });
-    var label = p.kind === 'team' ? (p.sub || p.type) : p.role;
-    var tags = [p.g, p.kind === 'team' ? p.type : ''].filter(Boolean)
+    var label = p.kind === 'team' ? (p.type || 'جهة') : p.role;
+    var tags = [p.kind === 'team' ? '' : p.g].filter(Boolean)
       .map(function (t) { return '<span class="chip">' + E(t) + '</span>'; }).join('');
     var status = p.s ? '<span class="chip ' + (p.s === 'يبحث عن فريق' ? 'g' : '') + '">' + E(p.s) + '</span>' : '';
     if (label || tags) info.insertAdjacentHTML('beforeend', '<div class="row"><span class="role">' + E(label) + '</span>' + tags + '</div>');
@@ -91,17 +91,29 @@
     if (sub) sub.textContent = posts.length + ' منشورات';
   }
 
-  function renderOpps(opps) {
-    var grid = q('.grid2');
-    if (!grid) return;
-    grid.innerHTML = opps.map(function (o) {
+  var OPPS = [];
+  function oppCard(o) {
       return '<a class="opp" style="text-decoration:none;color:inherit"' + (OWN ? ' data-nopw' : '') + ' href="dash-opportunity-details.html?id=' + E(o.id) + '">' +
         (U(o.ph) ? '<img src="' + E(U(o.ph)) + '" alt="">' : '<div class="oph">' + ini(o.org) + '</div>') +
         '<div><b>' + E(o.title) + '</b><span class="co">' + E(o.org) + '</span><div class="tags"><div><span class="chip">' + E(o.aud) + '</span></div><span class="chip g">' + E(o.type) + '</span></div></div>' +
         '<div class="m"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ' + E(o.city || 'غير محدد') + '</span><span>آخر موعد: ' + E(o.due || 'غير محدد') + '</span><span>' + E(o.n) + ' متقدم</span></div></a>';
-    }).join('');
+  }
+  function renderOpps(opps) {
+    OPPS = opps;
+    var grid = q('.grid2');
+    if (!grid) return;
+    grid.innerHTML = opps.slice(0, 2).map(oppCard).join('');
+    var sec = grid.closest('section'), oldA = sec && sec.querySelector('.xall');
+    if (oldA) oldA.remove();
+    if (sec && opps.length > 2) sec.insertAdjacentHTML('beforeend', '<button type="button" class="xall" data-all="opps">عرض الكل ' + CHV + '</button>');
     var sub = subOf(grid);
     if (sub) sub.textContent = opps.length + ' فرص';
+    // الجهة اللي عندها فرص: "فرص متاحة للتقديم" على اليسار
+    if (PROFILE && PROFILE.kind === 'team') {
+      var head = q('.head'), st = head && head.querySelector('.hst');
+      if (st) st.remove();
+      if (head && opps.length) head.insertAdjacentHTML('beforeend', '<span class="chip hst y">فرص متاحة للتقديم</span>');
+    }
   }
 
   async function oppsFor(p) {
@@ -175,6 +187,7 @@
     'رقم الجوال': '<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="1.6"><path d="M8 3l2 4.5-2 1.7a11 11 0 0 0 5.8 5.8l1.7-2L20 15v3c0 1-.7 2-2 2C10.3 20 4 13.7 4 6c0-1.3 1-2 2-2z"/></svg>',
     'البريد الإلكتروني': '<svg viewBox="0 0 24 24" fill="none" stroke="#201F49" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>',
   };
+  ICO['الموقع الإلكتروني'] = '<svg viewBox="0 0 24 24" fill="none" stroke="#2F7BE8" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>';
   var PLATFORMS = ['يوتيوب', 'تويتش', 'كيك', 'تيك توك', 'سناب شات', 'إكس', 'إنستقرام'];
   var SOCIALS = ['إكس', 'تيك توك', 'لينكدإن', 'إنستقرام', 'سناب شات', 'رقم الجوال', 'البريد الإلكتروني'];
   var PLAY = '<span class="xplay"><svg viewBox="0 0 24 24"><path d="M9 7v10l8-5z" fill="#fff"/></svg></span>';
@@ -223,11 +236,26 @@
     if (!box || !PROFILE) return;
     var ks = kindsFor(PROFILE);
     var one = function (k) {
-      var S = SEC[k], all = itemsOf(k);
+      var S = SEC[k], all = itemsOf(k).filter(function (x) { return x.type !== 'الموقع الإلكتروني'; }); // الموقع يطلع تحت اسم الجهة
       var pen = OWN ? '<button type="button" class="xpen" data-add="' + k + '" aria-label="' + S.add + '">' + PEN + '</button>' : '';
       return '<section class="card pad xsec">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '') +
         (all.length ? '<button type="button" class="xall" data-all="' + k + '">عرض الكل ' + CHV + '</button>' : '') + '</section>';
     };
+    if (PROFILE.kind === 'team') {
+      // الجهة: نبذة وحسابات التواصل جنب بعض مثل التصميم
+      var bioSec = q('.bio') && q('.bio').closest('section');
+      if (bioSec) {
+        var wrap = bioSec.parentNode.classList.contains('xbio') ? bioSec.parentNode : null;
+        if (!wrap) { wrap = document.createElement('div'); wrap.className = 'xtwo xbio'; bioSec.parentNode.insertBefore(wrap, bioSec); wrap.appendChild(bioSec); }
+        var old = wrap.querySelector('.xsec'); if (old) old.remove();
+        wrap.insertAdjacentHTML('beforeend', ks.map(one).join(''));
+        box.innerHTML = '';
+      } else box.innerHTML = ks.map(one).join('');
+      var row = q('.head .info .row'), web = itemsOf('social').filter(function (x) { return x.type === 'الموقع الإلكتروني' && U(x.value); })[0];
+      var oldW = q('.head .hweb'); if (oldW) oldW.remove();
+      if (row && web) row.insertAdjacentHTML('beforeend', '<a class="hweb" href="' + E(U(web.value)) + '" target="_blank" rel="noopener">' + ICO['الموقع الإلكتروني'] + 'الموقع الإلكتروني</a>');
+      return;
+    }
     box.innerHTML = ks.length === 1 ? one(ks[0]) : one(ks[0]) + '<div class="xtwo">' + ks.slice(1).map(one).join('') + '</div>';
   }
   async function loadItems() {
@@ -290,6 +318,7 @@
   }
 
   function openAll(k) {
+    if (k === 'opps') { modal('الفرص المنشورة', '<div class="xlist xopps">' + OPPS.map(oppCard).join('') + '</div>', true); return; }
     if (k === 'posts') {
       modal('منشورات', '<div class="xlist">' + POSTS.map(function (p) {
         return '<article class="xpost">' + PMORE(p) + '<div class="xph"><span class="a">' + img(p.a, p.n) + '</span><div><b>' + E(p.n) + '</b><small>' + E(p.r) + '</small></div><time>' + E(ago(p.at)) + '</time></div><p>' + E(p.t) + '</p>' +
@@ -315,7 +344,9 @@
   };
   var CROPPED = null;
   var SOCF = [['إكس', 'https://example.com/username', 'url'], ['تيك توك', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
+  function socFields() { return PROFILE && PROFILE.kind === 'team' ? [['الموقع الإلكتروني', 'https://example.com', 'url']].concat(SOCF) : SOCF; }
   function openSocial() {
+    var SOCF = socFields();
     var cur = {}; itemsOf('social').forEach(function (it) { cur[it.type] = it.value; });
     var m = modal('حسابات التواصل', '<form class="xform" novalidate><p class="xsub">أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.</p><div class="xsoc-f">' +
       SOCF.map(function (f, i) { return '<label class="xsr"><span class="xsl"><b>' + f[0] + '</b><span class="xico">' + (ICO[f[0]] || '') + '</span></span><input id="xs' + i + '" type="' + f[2] + '" dir="ltr" placeholder="' + E(f[1]) + '" value="' + E(cur[f[0]] || '') + '"></label>'; }).join('') +
