@@ -30,7 +30,10 @@ var CSS=
 '.nxcm .nxs b{font-weight:600}.nxcm .nxok{color:#03BB43}.nxcm .nxno{color:#797992}'+
 '.nxcm h4{margin:20px 0 8px;font-size:15px;text-align:right}'+
 '.nxcm .nxinv{width:100%;border-collapse:collapse;font-size:12.5px;text-align:right}.nxcm .nxinv th{color:#9A9AAE;font-weight:500;padding:6px 4px;border-bottom:1px solid #EEF0F2}.nxcm .nxinv td{padding:10px 4px;border-bottom:1px solid #EEF0F2}'+
-'.nxcm .nxe{font-size:12.5px;color:#9A9AAE;text-align:right;margin:0}';
+'.nxcm .nxe{font-size:12.5px;color:#9A9AAE;text-align:right;margin:0}'+
+'.nxcm .nxck{width:56px;height:56px;border-radius:50%;background:#E0FAE0;display:grid;place-items:center;margin:16px auto 22px;box-shadow:0 0 0 10px #F2FCF2}'+
+'.nxcm .nxck svg{width:24px;height:24px;stroke:#03BB43;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}'+
+'.nxcm .nxdone p{max-width:440px;margin:0 auto}';
 var st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
 var E=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var U=function(s){return /^https:\/\/[^\s"'()<>]+$/.test(String(s||''))?s:''};
@@ -77,6 +80,14 @@ function modal(html){
 }
 function closeModal(){var m=document.getElementById('nxcm');if(m)m.classList.remove('on')}
 window.nexoModal=modal;window.nexoCloseModal=closeModal;
+// نافذة نجاح (علامة صح + عنوان + نص + زرين): تستخدم بعد التقديم على فرصة وبعد نشر فرصة
+// closeHref: وين يروح لما يقفل النافذة (زر الإغلاق أو X أو برا النافذة)، goHref: الزر الأساسي
+window.nexoDone=function(o){
+ var m=modal('<div class="nxdone"><div class="nxck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div><h3>'+E(o.title)+'</h3><p>'+E(o.text)+'</p><div class="nxbt"><button type="button" class="nxo">'+E(o.close||'إغلاق')+'</button><button type="button" class="nxf">'+E(o.go)+'</button></div></div>');
+ m.querySelector('.nxf').onclick=function(){closeModal();if(o.goHref)location.href=o.goHref};
+ if(o.closeHref){var leave=function(e){if(e.target===m||e.target.closest('.nxx,.nxo')){m.removeEventListener('click',leave);location.href=o.closeHref}};m.addEventListener('click',leave)}
+ m.querySelector('.nxf').focus();return m;
+};
 function confirmOut(){
  var m=modal('<h3>تأكيد تسجيل الخروج</h3><p>هل أنت متأكد من رغبتك في تسجيل الخروج من حسابك في نيكسو؟</p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">تسجيل الخروج</button></div>');
  m.querySelector('.nxf').onclick=function(){

@@ -553,12 +553,18 @@
       try {
         var me = await nexoDB.getMe();
         var type = picked('types'), aud = picked('cats');
-        await nexoDB.addOpp({
+        var newId = await nexoDB.addOpp({
           title: n, city: c, d: d, org: me.n || 'جهة', ph: me.ph,
           type: TYPES[type] || type, aud: CATS[aud] || aud,
         });
-        toast('تم نشر الفرصة');
-        setTimeout(function () { location.href = 'dash-entity-profile.html'; }, 900);
+        if (window.nexoDone) {
+          nexoDone({ title: 'تم نشر الفرصة', text: 'تم نشر الفرصة بنجاح، وأصبحت متاحة للمواهب للتقديم عليها عبر نيكسو.',
+            close: 'العودة لملف الجهة', closeHref: 'dash-entity-profile.html',
+            go: 'عرض الفرصة', goHref: 'dash-opportunity-details.html?id=' + encodeURIComponent(newId) });
+        } else {
+          toast('تم نشر الفرصة');
+          setTimeout(function () { location.href = 'dash-entity-profile.html'; }, 900);
+        }
       } catch (e) {
         toast(e.message || 'تعذر نشر الفرصة');
         btn.disabled = false;

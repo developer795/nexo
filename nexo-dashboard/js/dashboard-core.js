@@ -40,8 +40,11 @@ const head=(t,s)=>`<h1>${t}</h1><p class="sb">${s}</p>`;
 const em=m=>`<p class="empty">${m}</p>`;
 const STS=['يبحث عن فريق','منضم لفريق'],ROLES=['لاعب','صانع محتوى','ستريمر'],OT=['عقد عمل','تدريب تعاوني','حملة اعلانية','مشاركة في البطولة','تدريب مهني'];
 const V={};
+/* نافذة "تم نشر الفرصة" */
+function OPPOK(id){nexoDone({title:'تم نشر الفرصة',text:'تم نشر الفرصة بنجاح، وأصبحت متاحة للمواهب للتقديم عليها عبر نيكسو.',close:'العودة لملف الجهة',closeHref:'dash-entity-profile.html',go:'عرض الفرصة',goHref:'dash-opportunity-details.html?id='+encodeURIComponent(id)})}
 async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap||o.created_by===nexoDB.uid)return;o.ap=1;o.n++;R();
- try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;alert(e.message)}R()}
+ try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;R();alert(e.message);return}R();
+ if(window.nexoDone)nexoDone({title:'تم التقديم على الفرصة',text:'تم إرسال طلبك بنجاح إلى الجهة، وهو الآن قيد المراجعة. يمكنك متابعة حالته من صفحة طلباتك.',close:'إغلاق',go:'عرض الفرص التي تم التقديم عليها',goHref:'dash-applications.html'})}
 const FM={
  me:['ملفك الشخصي','حفظ',[['n','text','الاسم'],['ph','file','صورتك الشخصية',0,1],['cv','file','صورة الغلاف',0,1],['role','select','أنت',ROLES],['g','text','اللعبة أو المنصة',0,1],['city','city','المدينة'],['s','select','الحالة',STS],['bio','textarea','نبذة عنك',0,1]],o=>nexoDB.saveMe(o)],
  meTeam:['ملف الجهة','حفظ',[['n','text','اسم الجهة'],['ph','file','الشعار',0,1],['cv','file','صورة الغلاف',0,1],['type','select','النوع',['نادي','جهة','مقدم خدمة']],['sub','text','وصف قصير',0,1],['city','city','المدينة'],['bio','textarea','نبذة عن الجهة',0,1]],o=>nexoDB.saveMe(o)],
@@ -56,7 +59,7 @@ function F_(k){if(!LOADED)return;if(k==='posts'&&!D.me.n)k='me';if(k==='me'&&nex
  const CB={};$('#fm').querySelectorAll('input[type=file]').forEach(inp=>{const pick=async again=>{const f=inp.files[0];if(!f)return;const bl=await CROP(f,CROPCFG[inp.name]||CROPCFG.im);if(bl){CB[inp.name]=bl;CPV(inp,bl,()=>pick(1))}else if(!again){CB[inp.name]=null;inp.value='';CPV(inp,null)}};inp.onchange=()=>pick(0)});
  $('#fm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('.ok');if(b.disabled)return;b.disabled=true;const lbl=b.textContent;b.textContent='جاري الحفظ...';
   try{const o={};for(const[n,x]of new FormData(e.target).entries())o[n]=x instanceof File?await nexoDB.upload(CB[n]||await rz(x,n==='ph'?300:900)):String(x).trim();
-   await add(o);await load();$('#dlg').close();R();if(k==='posts'&&typeof POSTOK==='function')POSTOK()}
+   const rid=await add(o);await load();$('#dlg').close();R();if(k==='posts'&&typeof POSTOK==='function')POSTOK();if(k==='opps'&&rid&&window.nexoDone)OPPOK(rid)}
   catch(err){console.error(err);alert(err.message||'حدث خطأ، حاول مرة ثانية')}
   finally{b.disabled=false;b.textContent=lbl}};$('#dlg').showModal()}
 function R(){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===({detail:'opps',pay:'opps'}[v]||v)));

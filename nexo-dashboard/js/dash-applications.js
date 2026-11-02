@@ -1,7 +1,7 @@
 // صفحة متابعة الفرص: الفرص اللي تقدّمت عليها وحالة كل طلب (جدول applications)
 v='apps';
 let APL=null,APERR='',APF='';
-const AST={pending:['قيد المراجعة','ast-p'],accepted:['مقبول','ast-a'],rejected:['مرفوض','ast-r']};
+const AST={pending:['قيد مراجعة','ast-p'],accepted:['مقبول','ast-a'],rejected:['مرفوض','ast-r']};
 V.apps=function(){
  const top=head('الفرص التي تم التقديم عليها','تابع طلباتك وآخر تحديثات الجهات على الفرص التي تقدمت لها');
  if(APERR)return top+em(E(APERR));
