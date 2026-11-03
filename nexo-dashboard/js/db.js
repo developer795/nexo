@@ -19,6 +19,7 @@ const teamFromRow = (r) => ({
   kind: 'team', id: r.id, user_id: r.user_id, n: r.name, ph: r.logo_url || '',
   cv: r.cover_url || '', type: r.type || '', sub: r.description || '', city: r.city || '',
   bio: r.bio || '',
+  s: r.status || '',
 })
 const postFromRow = (r) => ({
   id: r.id, author_id: r.author_id, n: r.author_name, r: r.author_label || '',
@@ -38,6 +39,7 @@ const talentToRow = (o) => clean({
 const teamToRow = (o) => clean({
   name: o.n, type: o.type, description: o.sub, city: o.city, bio: o.bio,
   logo_url: o.ph, cover_url: o.cv,
+  status: o.s,
 })
 // يشيل القيم الفاضية عشان التعديل ما يمسح بيانات موجودة
 function clean(o) {
@@ -81,7 +83,12 @@ export function createDB(user) {
     const row = kind === 'team' ? teamToRow(o) : talentToRow(o)
     const { data: existing } = await supabase.from(myTable).select('id').eq('user_id', uid).maybeSingle()
     if (existing) {
-      const { error } = await supabase.from(myTable).update(row).eq('id', existing.id)
+      let { error } = await supabase.from(myTable).update(row).eq('id', existing.id)
+      // الجهة: لو عمود status لسا ما انضاف (009_team_status.sql) نحفظ الباقي بدونه
+      if (error && kind === 'team' && 'status' in row && (error.code === '42703' || error.code === 'PGRST204' || /status/.test(error.message || ''))) {
+        const { status, ...rest } = row
+        ;({ error } = await supabase.from(myTable).update(rest).eq('id', existing.id))
+      }
       fail(error, 'تعذر حفظ الملف')
     } else {
       if (!row.name) row.name = user.email?.split('@')[0] || 'عضو نيكسو'

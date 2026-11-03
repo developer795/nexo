@@ -467,3 +467,10 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 .xsec{container-type:inline-size}
 @container (max-width:480px){.xhead,.xplat{grid-template-columns:minmax(0,1fr) 96px 96px;gap:8px}.xplat .xf{padding:4px 10px}.xplat .xvisit{padding:0 10px;font-size:11px}}
 @media(max-width:900px){.head .hst{align-self:flex-end}}
+/* قلم تعديل المعلومات: تحت الغلاف مو عليه (مثل التصميم) */
+.card:has(>.banner)>.pen{inset-block-start:calc(140px + 14px);color:var(--primary-60)}
+/* ملفي: الضغط على الصورة أو الغلاف يغيّرها */
+.ximg{cursor:pointer}
+.banner.ximg:hover{filter:brightness(.92)}
+.av-lg.ximg:hover{filter:brightness(.92)}
+.ximg:focus-visible{outline:2px solid #8a86b8;outline-offset:2px}

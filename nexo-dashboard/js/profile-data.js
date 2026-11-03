@@ -125,7 +125,8 @@
     if (PROFILE && PROFILE.kind === 'team') {
       var head = q('.head'), st = head && head.querySelector('.hst');
       if (st) st.remove();
-      if (head && opps.length) head.insertAdjacentHTML('beforeend', '<span class="chip hst y">فرص متاحة للتقديم</span>');
+      var tst = PROFILE.s || (opps.length ? 'فرص متاحة للتقديم' : '');
+      if (head && tst) head.insertAdjacentHTML('beforeend', '<span class="chip hst' + (tst === 'فرص متاحة للتقديم' ? ' y' : '') + '">' + E(tst) + '</span>');
     }
   }
 
@@ -158,6 +159,7 @@
       if (crumb) crumb.insertAdjacentHTML('beforeend', ' <b>' + E(PROFILE.n) + '</b>');
     }
     renderHead(PROFILE);
+    setupImageEdit();
     setupNetwork(PROFILE);
     var posts = PROFILE.user_id ? await nexoDB.listPosts(PROFILE.user_id) : [];
     renderPosts(posts);
@@ -397,47 +399,68 @@
   }
   // تعديل الملف (الاسم، الصور، الدور...) من قلم الغلاف — يبقى في صفحة الملف
   var CITIES = ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','بريدة','عنيزة','الرس','حائل','تبوك','أبها','خميس مشيط','بيشة','نجران','جازان','صبيا','أبو عريش','ينبع','رابغ','الليث','القنفذة','الباحة','سكاكا','دومة الجندل','عرعر','رفحاء','طريف','القريات','حفر الباطن','الخرج','الدرعية','الزلفي','المجمعة','شقراء','الدوادمي','وادي الدواسر','الأفلاج','العلا','الوجه','ضباء','تيماء','خيبر','شرورة','محايل عسير','بقيق','رأس تنورة','النعيرية'];
+  // المعلومات الأساسية (قلم الملف) — مثل التصميم. الصور تتغيّر بالضغط على الصورة أو الغلاف
+  var TEAM_ST = ['فرص متاحة للتقديم', 'لا توجد فرص حاليًا'];
   function openEditProfile() {
     var p = PROFILE, team = p.kind === 'team';
-    var sel = function (id, label, list, val, labels) {
-      return '<label class="xf"><span>' + label + '</span><select id="' + id + '" required><option value="" disabled hidden' + (val ? '' : ' selected') + '></option>' +
-        list.map(function (x) { return '<option value="' + E(x) + '"' + (x === val ? ' selected' : '') + '>' + E((labels && labels[x]) || x) + '</option>'; }).join('') + '</select></label>';
+    var sel = function (id, label, list, val, ph) {
+      if (val && list.indexOf(val) < 0) list = list.concat([val]);
+      return '<label class="xf"><span>' + label + '</span><select id="' + id + '"><option value="" disabled hidden' + (val ? '' : ' selected') + '>' + E(ph || label) + '</option>' +
+        list.map(function (x) { return '<option value="' + E(x) + '"' + (x === val ? ' selected' : '') + '>' + E(x) + '</option>'; }).join('') + '</select></label>';
     };
-    var txt = function (id, label, val, req) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" value="' + E(val || '') + '"' + (req ? ' required' : '') + ' maxlength="80"></label>'; };
-    var file = function (id, label) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" type="file" accept="image/*"></label>'; };
-    var cl = CITIES.indexOf(p.city) < 0 && p.city ? CITIES.concat([p.city]) : CITIES;
+    var txt = function (id, label, val, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" value="' + E(val || '') + '" placeholder="' + E(ph || '') + '" ' + (extra || 'maxlength="80"') + '></label>'; };
+    var web = itemsOf('social').filter(function (x) { return x.type === 'الموقع الإلكتروني'; })[0];
     var html = team
-      ? txt('e_n', 'اسم الجهة', p.n, 1) + file('e_ph', 'الشعار') + file('e_cv', 'صورة الغلاف') + sel('e_type', 'النوع', ['نادي', 'جهة', 'مقدم خدمة'], p.type) + txt('e_sub', 'وصف قصير', p.sub) + sel('e_city', 'المدينة', cl, p.city)
-      : txt('e_n', 'الاسم', p.n, 1) + file('e_ph', 'صورتك الشخصية') + file('e_cv', 'صورة الغلاف') + sel('e_role', 'أنت', ['لاعب', 'صانع محتوى', 'ستريمر'], p.role) + txt('e_g', 'اللعبة أو المنصة', p.g) + sel('e_city', 'المدينة', cl, p.city) + sel('e_s', 'الحالة', ['يبحث عن فريق', 'منضم لفريق'], p.s, { 'يبحث عن فريق': 'يبحث عن فرصة' });
-    var m = modal(team ? 'ملف الجهة' : 'ملفك الشخصي', '<form class="xform" novalidate><div class="xfields two">' + html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">حفظ</button></form>', false, true);
-    var form = m.querySelector('form'), IMG = {};
+      ? txt('e_n', 'اسم الجهة', p.n, 'اسم الجهة') + sel('e_s', 'حالة الفرص', TEAM_ST.slice(), p.s) + sel('e_type', 'الفئة', ['نادي', 'جهة', 'مقدم خدمة'], p.type) +
+        sel('e_city', 'المدينة', CITIES.slice(), p.city) + txt('e_web', 'رابط الموقع الالكتروني', web && web.value, 'رابط الموقع', 'type="url" dir="ltr" maxlength="300"')
+      : txt('e_n', 'اسم المستخدم', p.n, 'اسم المستخدم') + sel('e_s', 'حالة التوفر', ['يبحث عن فريق', 'منضم لفريق'], p.s) + sel('e_role', 'الفئة', ['لاعب', 'صانع محتوى', 'ستريمر'], p.role) +
+        sel('e_city', 'المدينة', CITIES.slice(), p.city) + sel('e_g', 'اسم اللعبة', GAMES.slice(), p.g, 'اللعبة');
+    var m = modal('المعلومات الأساسية', '<form class="xform" novalidate><p class="xsub">حدّث معلوماتك الأساسية التي تظهر على ملفك الشخصي.</p><div class="xfields two">' + html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
+    var form = m.querySelector('form');
     form.querySelector('#e_n').closest('label').classList.add('xfull');
-    ['e_ph', 'e_cv'].forEach(function (id) {
-      var inp = form.querySelector('#' + id), key = id === 'e_ph' ? 'ph' : 'cv';
-      var pick = async function (again) {
-        var f = inp.files[0]; if (!f) return;
-        var bl = window.CROP ? await CROP(f, CROPCFG[key]) : f;
-        if (bl) { IMG[key] = bl; if (window.CPV) CPV(inp, bl, function () { pick(1); }); }
-        else if (!again) { IMG[key] = null; inp.value = ''; if (window.CPV) CPV(inp, null); }
-      };
-      inp.onchange = function () { pick(0); };
-    });
     form.onsubmit = async function (e) {
       e.preventDefault();
       var err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]');
       var v = function (id) { var x = form.querySelector('#' + id); return x ? (x.value || '').trim() : ''; };
-      if (!v('e_n')) { err.textContent = 'اكتب ' + (team ? 'اسم الجهة' : 'الاسم'); return; }
+      if (!v('e_n')) { err.textContent = 'اكتب ' + (team ? 'اسم الجهة' : 'اسم المستخدم'); return; }
+      var url = team ? v('e_web') : '';
+      if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url.replace(/^\/+/, '');
+      url = url.replace(/^http:\/\//i, 'https://');
+      if (url && !/^https:\/\/[^\s"'()<>]+\.[^\s"'()<>]+$/.test(url)) { err.textContent = 'رابط الموقع غير صحيح'; return; }
       btn.disabled = true; btn.textContent = 'جاري الحفظ...';
       try {
-        var o = team ? { n: v('e_n'), type: v('e_type'), sub: v('e_sub'), city: v('e_city') }
+        var o = team ? { n: v('e_n'), type: v('e_type'), city: v('e_city'), s: v('e_s') }
                      : { n: v('e_n'), role: v('e_role'), g: v('e_g'), city: v('e_city'), s: v('e_s') };
-        if (IMG.ph) o.ph = await nexoDB.upload(IMG.ph);
-        if (IMG.cv) o.cv = await nexoDB.upload(IMG.cv);
+        Object.keys(o).forEach(function (k) { if (!o[k]) delete o[k]; });
         await nexoDB.saveMe(o);
+        if (team && (url || web) && (!web || web.value !== url)) {
+          if (web) await nexoDB.deleteItem(web.id);
+          if (url) await nexoDB.addItem('social', { type: 'الموقع الإلكتروني', value: url });
+        }
         closeX(); toast('تم الحفظ');
         await loadProfile();
-      } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'حفظ'; }
+      } catch (ex) { err.textContent = ex.message || 'تعذر الحفظ'; btn.disabled = false; btn.textContent = 'إضافة'; }
     };
+  }
+  // ملفي: الضغط على الصورة أو الغلاف يغيّرها (مع القص)
+  function setupImageEdit() {
+    if (!OWN) return;
+    [['.av-lg', 'ph', 'تغيير الصورة'], ['.banner', 'cv', 'تغيير صورة الغلاف']].forEach(function (x) {
+      var el = q(x[0]); if (!el || el.dataset.edit) return;
+      el.dataset.edit = '1'; el.classList.add('ximg'); el.title = x[2]; el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-label', x[2]);
+      var pick = function () {
+        var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+        inp.onchange = async function () {
+          var f = inp.files[0]; if (!f) return;
+          var bl = window.CROP ? await CROP(f, CROPCFG[x[1]]) : f; if (!bl) return;
+          try { var o = {}; o[x[1]] = await nexoDB.upload(bl); await nexoDB.saveMe(o); toast('تم تحديث الصورة'); await loadProfile(); }
+          catch (ex) { toast(ex.message || 'تعذر رفع الصورة'); }
+        };
+        inp.click();
+      };
+      el.addEventListener('click', function (e) { if (e.target.closest('button,a')) return; pick(); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    });
   }
 
   // تعديل النبذة من القلم في قسم النبذة
