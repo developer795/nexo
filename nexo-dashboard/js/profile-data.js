@@ -208,8 +208,18 @@
   var pill = function (t) { return t ? '<span class="xpill">' + E(t) + '</span>' : ''; };
   var lines = function (arr) { return arr.filter(Boolean).map(function (x) { return '<p>' + E(x) + '</p>'; }).join(''); };
   var visit = function (u) { return U(u) ? '<a class="xvisit" href="' + E(U(u)) + '" target="_blank" rel="noopener">زيارة الحساب</a>' : ''; };
+  // صورة البث من الرابط نفسه (يوتيوب وتويتش) لو ما رفع صورة
+  function autoThumb(u) {
+    u = U(u); if (!u) return '';
+    var m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|shorts\/|embed\/))([\w-]{11})/i);
+    if (m) return 'https://i.ytimg.com/vi/' + m[1] + '/hqdefault.jpg';
+    m = u.match(/^https:\/\/(?:www\.|m\.)?twitch\.tv\/([a-z0-9_]{3,25})\/?(?:[?#].*)?$/i);
+    if (m && !/^(videos|directory|p|downloads|jobs|turbo)$/i.test(m[1])) return 'https://static-cdn.jtvnw.net/previews-ttv/live_user_' + m[1].toLowerCase() + '-640x360.jpg';
+    return '';
+  }
   var thumb = function (it) {
-    return '<span class="xthumb">' + (U(it.img) ? '<img src="' + E(U(it.img)) + '" alt="">' : '') + PLAY + '</span>';
+    var src = U(it.img) || autoThumb(it.url);
+    return '<span class="xthumb">' + (src ? '<img src="' + E(src) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + PLAY + '</span>';
   };
   var ROW = {
     game: function (it) { return '<div class="xit xgame">' + DEL(it) + '<div class="xt"><h3>' + E(it.name) + '</h3>' + lines([it.level, it.role]) + '</div>' + pill(it.device) + '</div>'; },
@@ -467,7 +477,9 @@
       form.querySelectorAll('input:not([type=file]),select').forEach(function (x) { if (x.value.trim()) data[x.id.replace('x_', '')] = x.value.trim(); });
       var req = form.querySelector('[required]');
       if (req && !(req.value || '').trim()) { err.textContent = (req.tagName === 'SELECT' ? 'اختر ' : 'اكتب ') + req.closest('label').querySelector('span').textContent; req.focus(); return; }
-      if (data.url && !/^https:\/\//.test(data.url)) { err.textContent = 'الرابط لازم يبدأ بـ https://'; return; }
+      if (data.url && !/^https?:\/\//i.test(data.url)) data.url = 'https://' + data.url.replace(/^\/+/, '');
+      if (data.url) data.url = data.url.replace(/^http:\/\//i, 'https://');
+      if (data.url && !/^https:\/\/[^\s"'()<>]+\.[^\s"'()<>]+$/.test(data.url)) { err.textContent = 'الرابط غير صحيح'; return; }
       if (k === 'social') {
         var t = val('x_type'), v = val('x_value');
         if (t === 'البريد الإلكتروني' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { err.textContent = 'البريد الإلكتروني غير صحيح'; return; }
