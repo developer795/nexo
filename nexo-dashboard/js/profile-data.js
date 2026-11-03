@@ -202,7 +202,7 @@
   };
   ICO['الموقع الإلكتروني'] = '<svg viewBox="0 0 24 24" fill="none" stroke="#2F7BE8" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>';
   var PLATFORMS = ['يوتيوب', 'تويتش', 'كيك', 'تيك توك', 'سناب شات', 'إكس', 'إنستقرام'];
-  var SOCIALS = ['إكس', 'تيك توك', 'لينكدإن', 'إنستقرام', 'سناب شات', 'رقم الجوال', 'البريد الإلكتروني'];
+  var SOCIALS = ['إكس', 'لينكدإن', 'إنستقرام', 'سناب شات', 'رقم الجوال', 'البريد الإلكتروني'];
   var PLAY = '<span class="xplay"><svg viewBox="0 0 24 24"><path d="M9 7v10l8-5z" fill="#fff"/></svg></span>';
   var DEL = function (it) { return OWN ? '<button type="button" class="xdel" data-del="' + E(it.id) + '" aria-label="حذف">حذف</button>' : ''; };
   var pill = function (t) { return t ? '<span class="xpill">' + E(t) + '</span>' : ''; };
@@ -356,7 +356,7 @@
     social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
   var CROPPED = null;
-  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['تيك توك', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
+  var SOCF = [['إكس', 'https://example.com/username', 'url'], ['لينكدإن', 'https://example.com/username', 'url'], ['رقم الجوال', '+966 5XXXXXXXX', 'tel'], ['البريد الإلكتروني', 'username@example.com', 'email']];
   function socFields() { return PROFILE && PROFILE.kind === 'team' ? [['الموقع الإلكتروني', 'https://example.com', 'url']].concat(SOCF) : SOCF; }
   function openSocial() {
     var SOCF = socFields();
