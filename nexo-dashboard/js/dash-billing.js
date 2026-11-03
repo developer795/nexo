@@ -64,8 +64,8 @@ function BCHANGE(){const s=D.sub;if(!s){location.href='dash-payment.html';return
   <ul>${f}</ul><button type="button" class="blpbtn" data-k="${k}" ${k===cur?'disabled':''}>${k===cur?'الباقة الحالية':'اشترك الآن'}</button></div></div>`};
  const m=BM(`<div class="blpl"><span class="blpt">خطط الاشتراك</span><h3>${nexoDB.kind==='team'?'اختر الباقة المناسبة لجهتك':'اختر الباقة المناسبة لك'}</h3><div class="blpg">${card('y')}${card('m')}</div><p class="blerr" role="alert"></p></div>`);
  m.querySelector('.blb').classList.add('wide');
- m.querySelectorAll('.blpbtn:not([disabled])').forEach(b=>b.onclick=async function(){const k=this.dataset.k;this.disabled=true;
-  try{D.sub=await nexoDB.subscribe({plan:k,trial:s.status==='trialing'});m.classList.remove('on');R()}catch(e){m.querySelector('.blerr').textContent=e.message||'تعذر الحفظ';this.disabled=false}})}
+ // "اشترك الآن" يودّي لصفحة الدفع بالباقة اللي اختارها
+ m.querySelectorAll('.blpbtn:not([disabled])').forEach(b=>b.onclick=function(){location.href='dash-payment.html?plan='+this.dataset.k+'&change=1'})}
 function BCANCEL(){const m=BM(`<h3>إلغاء الاشتراك</h3><p>هل أنت متأكد من إلغاء اشتراكك؟ راح تفقد الوصول للفرص الحصرية.</p><p class="blerr" role="alert"></p><div class="blbt"><button type="button" class="blc">تراجع</button><button type="button" class="blok bldanger">إلغاء الاشتراك</button></div>`);
  m.querySelector('.blok').onclick=async function(){this.disabled=true;try{D.sub=await nexoDB.cancelSubscription();m.classList.remove('on');R()}catch(e){m.querySelector('.blerr').textContent=e.message||'تعذر الإلغاء';this.disabled=false}}}
 // ---------- التنزيل ----------
