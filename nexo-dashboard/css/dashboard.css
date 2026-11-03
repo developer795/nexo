@@ -438,3 +438,42 @@ a.apw:hover b{text-decoration:underline}
 .nwmsg{display:flex;align-items:center;justify-content:center;gap:8px;height:34px;margin-top:14px;border:1px solid #201F49;border-radius:99px;color:#201F49;font-size:12.5px;font-weight:600;text-decoration:none;background:#fff}
 .nwmsg:hover{background:#F4F5FB}
 .apc .tr .tg{background:#CACACF;color:#201F49}
+/* صفحة الاشتراك: أيقونة الخطة رمادية مثل التصميم */
+.bl-ic{background:#F1F1F4}
+/* نافذة طريقة الدفع */
+.blb.mid{width:min(560px,100%);text-align:right;padding:26px 24px 24px}
+.blb.mid .blx,.blb.wide .blx{left:22px;top:22px;font-size:20px}
+.blcm h3{margin:0;font-size:22px;font-weight:700}
+.blcm .blcs{margin:4px 0 0;font-size:11.5px;color:var(--gy)}
+.blpm{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px;font-size:12.5px}
+.blpm b{font-weight:700}
+.blcf2 .cbox label{display:block;font-size:12.5px;font-weight:600;margin:12px 0 6px}
+.blcf2 .cbox label:first-child{margin-top:0}
+.blcf2 .fi input{font:inherit;font-size:13px}
+.blcf2 .blerr{text-align:center}
+.blupd{width:100%;height:46px;border:0;border-radius:99px;background:var(--navy);color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px}
+.blupd[disabled]{opacity:.6;cursor:default}
+/* نافذة تغيير الباقة */
+.blb.wide{width:min(760px,100%);text-align:right;padding:24px 22px 22px;max-height:92vh;overflow:auto}
+.blpt{display:inline-block;background:#F1F1F4;color:#201F49;font-size:10.5px;font-weight:600;border-radius:99px;padding:3px 12px}
+.blpl h3{margin:10px 0 18px;font-size:26px;font-weight:700}
+.blpg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.blpg{grid-template-columns:1fr}.blpl h3{font-size:21px}}
+.blpc{border:1px solid var(--bd);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.blph{background:#F7F8FA;border-bottom:1px solid var(--bd);text-align:center;font-size:11px;font-weight:600;padding:8px}
+.blpb{padding:18px 18px 16px;display:flex;flex-direction:column;flex:1}
+.blpb h4{margin:0;font-size:17px;font-weight:700;color:#201F49}
+.blpb>small{font-size:10.5px;color:var(--gy);margin-top:4px}
+.blpp{display:flex;align-items:baseline;gap:6px;margin-top:22px}
+.blpp b{font-size:34px;font-weight:800;color:#000;line-height:1}.blpp .cur{font-size:13px;font-weight:700}.blpp .per{font-size:11px;color:var(--gy)}
+.blps{align-self:flex-start;margin-top:8px;background:#E0FAE0;color:#03BB43;font-size:10.5px;font-weight:600;border-radius:99px;padding:2px 10px}
+.blpb ul{list-style:none;margin:16px 0 0;padding:16px 0 0;border-top:1px solid var(--bd);font-size:11.5px;display:grid;gap:10px}
+.blpb li{display:flex;align-items:center;gap:8px}
+.blpbtn{margin-top:auto;height:40px;border:0;border-radius:99px;background:var(--navy);color:#fff;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.blpb ul+.blpbtn{margin-top:22px}
+.blpbtn[disabled]{background:#E3E5E9;color:#9A9AAE;cursor:default}
+.blpl .blerr{text-align:center}
+/* صفحة الدفع: زر العودة */
+.pback{display:inline-flex;align-items:center;gap:10px;margin-top:22px;color:#201F49;font-size:15px;font-weight:600;text-decoration:none}
+.pback:hover{text-decoration:underline}
+.blcf2 .g2f{gap:0 12px}.blcf2 .g2f>div{min-width:0}.blcf2 .fi{min-width:0}.blcf2 .fi input{width:100%}
