@@ -418,6 +418,15 @@
   var CITIES = ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','القطيف','الجبيل','الطائف','بريدة','عنيزة','الرس','حائل','تبوك','أبها','خميس مشيط','بيشة','نجران','جازان','صبيا','أبو عريش','ينبع','رابغ','الليث','القنفذة','الباحة','سكاكا','دومة الجندل','عرعر','رفحاء','طريف','القريات','حفر الباطن','الخرج','الدرعية','الزلفي','المجمعة','شقراء','الدوادمي','وادي الدواسر','الأفلاج','العلا','الوجه','ضباء','تيماء','خيبر','شرورة','محايل عسير','بقيق','رأس تنورة','النعيرية'];
   // المعلومات الأساسية (قلم الملف) — مثل التصميم. الصور تتغيّر بالضغط على الصورة أو الغلاف
   var TEAM_ST = ['فرص متاحة للتقديم', 'لا توجد فرص حاليًا'];
+  // اللاعب يختار اللعبة، وصانع المحتوى والستريمر يختارون المنصة
+  var CPLATS = ['YouTube', 'Twitch', 'Kick', 'TikTok', 'Snapchat'];
+  function gsel(role, val) {
+    var plat = role === 'صانع محتوى' || role === 'ستريمر', list = (plat ? CPLATS : GAMES).slice();
+    if (val && list.indexOf(val) < 0 && (plat ? GAMES : CPLATS).indexOf(val) < 0) list.push(val);
+    var keep = list.indexOf(val) >= 0 ? val : '';
+    return '<label class="xf" id="e_gw"><span>' + (plat ? 'المنصة' : 'اسم اللعبة') + '</span><select id="e_g"><option value="" disabled hidden' + (keep ? '' : ' selected') + '>' + (plat ? 'المنصة' : 'اللعبة') + '</option>' +
+      list.map(function (x) { return '<option value="' + E(x) + '"' + (x === keep ? ' selected' : '') + '>' + E(x) + '</option>'; }).join('') + '</select></label>';
+  }
   function openEditProfile() {
     var p = PROFILE, team = p.kind === 'team';
     var sel = function (id, label, list, val, ph) {
@@ -431,10 +440,12 @@
       ? txt('e_n', 'اسم الجهة', p.n, 'اسم الجهة') + sel('e_s', 'حالة الفرص', TEAM_ST.slice(), p.s) + sel('e_type', 'الفئة', ['نادي', 'جهة', 'مقدم خدمة'], p.type) +
         sel('e_city', 'المدينة', CITIES.slice(), p.city) + txt('e_web', 'رابط الموقع الالكتروني', web && web.value, 'رابط الموقع', 'type="url" dir="ltr" maxlength="300"')
       : txt('e_n', 'اسم المستخدم', p.n, 'اسم المستخدم') + sel('e_s', 'حالة التوفر', ['يبحث عن فريق', 'منضم لفريق'], p.s) + sel('e_role', 'الفئة', ['لاعب', 'صانع محتوى', 'ستريمر'], p.role) +
-        sel('e_city', 'المدينة', CITIES.slice(), p.city) + sel('e_g', 'اسم اللعبة', GAMES.slice(), p.g, 'اللعبة');
+        sel('e_city', 'المدينة', CITIES.slice(), p.city) + gsel(p.role, p.g);
     var m = modal('المعلومات الأساسية', '<form class="xform" novalidate><p class="xsub">حدّث معلوماتك الأساسية التي تظهر على ملفك الشخصي.</p><div class="xfields two">' + html + '</div><p class="xerr" role="alert"></p><button class="btn" type="submit">إضافة</button></form>', false, true);
     var form = m.querySelector('form');
     form.querySelector('#e_n').closest('label').classList.add('xfull');
+    var roleSel = form.querySelector('#e_role');
+    if (roleSel) roleSel.onchange = function () { var w = form.querySelector('#e_gw'); if (w) w.outerHTML = gsel(roleSel.value, ''); };
     form.onsubmit = async function (e) {
       e.preventDefault();
       var err = form.querySelector('.xerr'), btn = form.querySelector('button[type=submit]');
