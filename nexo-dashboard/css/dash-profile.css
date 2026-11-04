@@ -476,3 +476,6 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 .ximg:focus-visible{outline:2px solid #8a86b8;outline-offset:2px}
 /* أيقونة أزرار تواصل ومراسلة بنفس لون النص (كحلي) مو رمادي */
 .stats .btn .ic{color:currentColor}
+/* صانع المحتوى: المنصات في الملف مختصرة (المنصة وعدد المتابعين) مثل التصميم، والتفاصيل في "عرض الكل" */
+.xcplat .xhead,.xcplat .xplat .xv{display:none}
+.xcplat .xplat{grid-template-columns:minmax(0,1fr) auto}

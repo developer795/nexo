@@ -170,7 +170,7 @@
 
   // ===================================================================
   // أقسام الملف + نوافذ "عرض الكل"
-  //   الألعاب، المباريات والبطولات، أبرز البثوث، إبراز المحتوى،
+  //   الألعاب، المباريات والبطولات، أبرز البثوث، أبرز المحتوى،
   //   المنصات، حسابات التواصل، المنشورات
   // ===================================================================
   var CHV = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
@@ -179,7 +179,7 @@
     match:    { t: 'المباريات والبطولات', add: 'إضافة المباريات والبطولات', n: 1 },
     game:     { t: 'الألعاب', add: 'إضافة الألعاب', n: 1 },
     stream:   { t: 'أبرز البثوث', add: 'إضافة بث', n: 1 },
-    content:  { t: 'إبراز المحتوى', add: 'إضافة محتوى', n: 1 },
+    content:  { t: 'أبرز المحتوى', add: 'إضافة محتوى', n: 1 },
     platform: { t: 'المنصات', add: 'إضافة منصة', n: 2 },
     social:   { t: 'حسابات التواصل', add: 'حسابات التواصل', n: 2 },
   };
@@ -263,7 +263,7 @@
     var one = function (k) {
       var S = SEC[k], all = itemsOf(k).filter(function (x) { return x.type !== 'الموقع الإلكتروني'; }); // الموقع يطلع تحت اسم الجهة
       var pen = OWN ? '<button type="button" class="xpen" data-add="' + k + '" aria-label="' + S.add + '">' + PEN + '</button>' : '';
-      return '<section class="card pad xsec">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '') +
+      return '<section class="card pad xsec' + (k === 'platform' && PROFILE.role === 'صانع محتوى' ? ' xcplat' : '') + '">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '') +
         (all.length ? '<button type="button" class="xall" data-all="' + k + '">عرض الكل ' + CHV + '</button>' : '') + '</section>';
     };
     if (PROFILE.kind === 'team') {
