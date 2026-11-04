@@ -190,7 +190,7 @@
     match:    { t: 'المباريات والبطولات', add: 'إضافة المباريات والبطولات', n: 1 },
     game:     { t: 'الألعاب', add: 'إضافة الألعاب', n: 1 },
     stream:   { t: 'أبرز البثوث', add: 'إضافة بث', n: 1 },
-    content:  { t: 'أبرز المحتوى', add: 'إضافة محتوى', n: 1 },
+    content:  { t: 'أبرز المحتوى', add: 'إضافة محتوى بارز', n: 1 },
     platform: { t: 'المنصات', add: 'إضافة منصة', n: 2 },
     social:   { t: 'حسابات التواصل', add: 'حسابات التواصل', n: 2 },
   };
@@ -394,7 +394,7 @@
     game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: GSEL('x_name', 'اسم اللعبة', 1) + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
     match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + GSEL('x_game', 'اسم اللعبة') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
     stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
-    content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
+    content: { sub: 'أضف فيديو لعرضه في قسم أبرز المحتوى على ملفك الشخصي.', html: '<label class="xf xfull"><span>اسم الفيديو</span><input id="x_title" required maxlength="120" placeholder="أفضل إعدادات EA SPORTS FC للمبتدئين"></label>' + '<label class="xf"><span>عدد المشاهدات</span><input id="x_views" inputmode="numeric" maxlength="20" placeholder="120000"></label>' + '<label class="xf"><span>اسم المنصة</span>' + PSEL() + '</label>' + '<label class="xf xfull"><span>الرابط</span><input id="x_url" type="url" dir="ltr" maxlength="300" placeholder="https://www.youtube.com/watch?v=K7m2X9p4QnA"></label>' },
     platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
     social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
