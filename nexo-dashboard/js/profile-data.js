@@ -582,7 +582,7 @@
     if (!p.user_id || p.user_id === nexoDB.uid) { btn.disabled = true; btn.title = p.user_id ? 'هذا ملفك' : 'هذا الملف ما له حساب في نيكسو'; return; }
     var list = await nexoDB.listFollowing();
     var on = Array.isArray(list) && list.indexOf(p.user_id) >= 0;
-    var paint = function () { btn.innerHTML = (on ? ICD + ' متواصل' : ICA + ' تواصل'); btn.classList.toggle('o', on); btn.setAttribute('aria-pressed', on); };
+    var paint = function () { btn.innerHTML = (on ? ICD + ' تم التواصل' : ICA + ' تواصل'); btn.classList.toggle('o', on); btn.setAttribute('aria-pressed', on); };
     paint();
     btn.onclick = async function () {
       if (btn.disabled) return;
