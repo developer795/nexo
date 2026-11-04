@@ -490,3 +490,4 @@ section.oplock .xall{pointer-events:none;opacity:.5}
 .psell button{display:flex;align-items:center;justify-content:space-between;gap:10px;height:44px;padding:0 14px;border:0;background:none;font:inherit;font-size:13px;color:#000;cursor:pointer;text-align:right}
 .psell button:hover,.psell button:focus-visible{background:#F6F6FA;outline:0}
 .pseli{width:24px;height:24px;display:grid;place-items:center;flex:none}.pseli svg{width:100%;height:100%}
+.xsec>.xnone{margin:auto 0;padding:18px 0 24px;text-align:center;font-size:13px;color:#9A9AAE}

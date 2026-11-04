@@ -263,7 +263,7 @@
     var one = function (k) {
       var S = SEC[k], all = itemsOf(k).filter(function (x) { return x.type !== 'الموقع الإلكتروني'; }); // الموقع يطلع تحت اسم الجهة
       var pen = OWN ? '<button type="button" class="xpen" data-add="' + k + '" aria-label="' + S.add + '">' + PEN + '</button>' : '';
-      return '<section class="card pad xsec' + (k === 'platform' && PROFILE.role === 'صانع محتوى' ? ' xcplat' : '') + '">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '') +
+      return '<section class="card pad xsec' + (k === 'platform' && PROFILE.role === 'صانع محتوى' ? ' xcplat' : '') + '">' + pen + '<h2 class="sec">' + S.t + '</h2>' + (all.length ? preview(k, all.slice(0, S.n)) : '<p class="xnone">' + (OWN ? 'أضف ' + S.t + ' من القلم' : 'لا يوجد ' + S.t + ' بعد') + '</p>') +
         (all.length ? '<button type="button" class="xall" data-all="' + k + '">عرض الكل ' + CHV + '</button>' : '') + '</section>';
     };
     if (PROFILE.kind === 'team') {
