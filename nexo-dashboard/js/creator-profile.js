@@ -1,18 +1,52 @@
 // ===== البيانات (لاحقاً تجيبينها من FastAPI / Supabase) =====
 const profiles = {
   khaled: {
-    name: "خالد العتيبي", role: "صانع محتوى", tags: ["YouTube"], avatar: "assets/creator-profile/khaled.jpg", cover: "",
+    name: "خالد العتيبي", role: "صانع محتوى", tags: ["YouTube"], avatar: "/assets/creator-profile/khaled.jpg", cover: "",
     status: ["منضم لفريق", ""], views: 1000,
     bio: "صانع محتوى مهتم بالرياضات الإلكترونية والألعاب، أقدم محتوى متنوع يركز على تجارب الألعاب، التحديثات وأخبار مجتمع الـEsports. أسعى لتقديم محتوى مفيد وممتع وبناء مجتمع مهتم بالألعاب والرياضات الإلكترونية.",
     posts: ["كنت أبحث عن فكرة مختلفة للمحتوى، وقررت أجرب مجموعة من الألعاب الجديدة وأشارك تجربتي معكم. أول تجربة نزلت اليوم، والباقي قريب.",
             "نزلت اليوم فيديو جديد عن آخر تحديث للعبة، وتكلمت فيه عن أبرز التغييرات وتأثيرها على أسلوب اللعب.",
             "بدأت سلسلة جديدة أتكلم فيها عن تجارب اللاعبين في الرياضات الإلكترونية، وكيف يطورون مستواهم ويتعاملون مع المنافسات. الحلقة الأولى متاحة الآن."],
     leftTitle: "أبرز المحتوى",
-    left: [{ thumb: "assets/creator-profile/khaled.jpg", t: "فيديو أفضل إعدادات EA SPORTS FC للمبتدئين", lines: ["مشاهدة 120K"], chip: "YouTube" }],
+    left: [{ thumb: "/assets/creator-profile/khaled.jpg", t: "فيديو أفضل إعدادات EA SPORTS FC للمبتدئين", lines: ["مشاهدة 120K"], chip: "YouTube" }],
     rightTitle: "المنصات",
     right: [{ icon: "yt", t: "اسم المنصة", chip: "متابع 80K" }]
   }
 };
+
+
+// ===== بياناتي الحقيقية من قاعدة البيانات =====
+const initialAvatar = (name) => "data:image/svg+xml;utf8," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" fill="#201F49"/>' +
+  '<text x="48" y="62" font-size="42" font-family="sans-serif" font-weight="700" fill="#fff" text-anchor="middle">' +
+  (String(name || "?").trim().charAt(0).toUpperCase() || "?").replace(/[<>&]/g, "") + "</text></svg>");
+function waitDB(ms) {
+  return new Promise((res) => {
+    const t = Date.now();
+    (function chk() {
+      if (window.nexoDB) return res(window.nexoDB);
+      if (Date.now() - t > ms) return res(null);
+      setTimeout(chk, 100);
+    })();
+  });
+}
+async function loadMine() {
+  const db = await waitDB(8000);
+  if (!db) return;
+  try {
+    const me = await db.getMe();
+    let posts = [];
+    try { posts = (await db.listPosts(db.uid)).map((x) => x.t).filter(Boolean); } catch (_) {}
+    const name = me.n || "عضو نيكسو";
+    profiles.me = {
+      name, role: me.role || "صانع محتوى", tags: me.g ? [me.g] : [],
+      avatar: me.ph || initialAvatar(name), cover: me.cv || "",
+      status: [me.s || "", ""], views: 0, bio: me.bio || "",
+      city: me.city || "", posts,
+      leftTitle: "أبرز المحتوى", left: [], rightTitle: "المنصات", right: []
+    };
+  } catch (e) { console.error("تعذر تحميل ملفي:", e); }
+}
 
 // ===== الأيقونات =====
 const I = {
@@ -44,6 +78,7 @@ function postCard(p, text, img) {
     <p>${text}</p>${img ? `<div class="ph">${I.img}</div>` : ""}</article>`;
 }
 function items(list) {
+  if (!list.length) return `<small>لا يوجد بعد</small>`;
   return list.map(i => `<div class="item ${i.thumb || i.icon ? "row" : ""}">
     ${i.thumb ? `<img src="${i.thumb}" alt="">` : ""}${i.icon ? `<div class="ic">${I[i.icon]}</div>` : ""}
     <div class="tx"><strong>${i.t}</strong>${(i.lines || []).map(l => `<small>${l}</small>`).join("")}</div>
@@ -52,7 +87,7 @@ function items(list) {
 
 function render() {
   const p = profiles[state.p], o = state.owner;
-  document.getElementById("me").src = o ? p.avatar : "assets/creator-profile/twis.jpg";
+  document.getElementById("me").src = profiles.me ? profiles.me.avatar : (o ? p.avatar : "/assets/creator-profile/twis.jpg");
   document.getElementById("tabTalents").classList.toggle("on", !o);   // في ملفي ما في تبويب نشط (مثل التصميم)
   const stats = o
     ? `<div><span class="ring">70%</span>اكتمال الملف</div><div>${I.eye}<b>${p.views}</b>${p.role === "لاعب" ? "المشاهدات" : "المشاهدات"}</div><div>${I.users}<b>200</b>شبكة التواصل</div>`
@@ -65,15 +100,15 @@ function render() {
       <img class="avatar" src="${p.avatar}" alt="">
       <div class="name">${p.name}</div>
       <div class="role"><span>${p.role}</span>${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}${p.live ? `<span class="tag live">${p.live}</span>` : ""}</div>
-      <div class="city">${I.pin}الرياض</div>
-      <span class="status ${p.status[1]}">${p.status[0]}</span>
+      <div class="city">${I.pin}${p.city || "الرياض"}</div>
+      ${p.status[0] ? `<span class="status ${p.status[1]}">${p.status[0]}</span>` : ""}
     </div>
     <div class="stats">${stats}</div>
   </section>
-  <section class="card pad">${pen(o)}<h2>نبذة</h2><p class="bio">${p.bio}</p></section>
+  <section class="card pad">${pen(o)}<h2>نبذة</h2><p class="bio">${p.bio || "ما أضفتِ نبذة بعد"}</p></section>
   <section class="card">
     <div class="pad" style="padding-bottom:0">${pen(o)}
-      <div class="ptop"><div><h2>منشورات</h2><small>5 منشورات</small></div>
+      <div class="ptop"><div><h2>منشورات</h2><small>${p.posts.length} منشورات</small></div>
         ${o ? `<button class="btn ghost" id="newPost">${I.pen} انشاء منشور</button>` : ""}</div>
       <div class="posts" id="posts">${p.posts.map((t, i) => postCard(p, t, i === 1)).join("")}</div>
     </div>${more}
@@ -96,11 +131,12 @@ function render() {
 //   #own-modal  شاشة 22  نافذة انشاء منشور
 function show(h) {
   state.owner = h === "own" || h === "own-modal";
+  state.p = state.owner && profiles.me ? "me" : "khaled";
   render();
   modal.hidden = h !== "own-modal";
   window.scrollTo(0, 0);
 }
-function fromHash() { show(location.hash.slice(1)); }
+function fromHash() { show(location.hash.slice(1) || "own"); }
 // قائمة "الصفحات": تبدل الصفحة مباشرة بدون ما نعتمد على تغير الرابط
 document.querySelector(".pages").addEventListener("click", (e) => {
   const a = e.target.closest("a"); if (!a) return;
@@ -120,8 +156,9 @@ publish.onclick = () => {
   if (!canPost()) { modal.hidden = true; return; }   // ممنوع على الزائر
   const p = profiles[state.p], v = text.value.trim().slice(0, 500);
   if (!v) return;
+  if (state.p === "me" && window.nexoDB) window.nexoDB.addPost({ t: v }).catch((e) => console.error(e));
   p.posts.unshift(v);
   document.getElementById("posts").insertAdjacentHTML("afterbegin", postCard(p, v, false));
   text.value = ""; publish.disabled = true; modal.hidden = true;
 };
-fromHash();
+loadMine().finally(fromHash);
