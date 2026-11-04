@@ -34,6 +34,21 @@ var CSS=
 '.nxcm .nxck{width:56px;height:56px;border-radius:50%;background:#E0FAE0;display:grid;place-items:center;margin:16px auto 22px;box-shadow:0 0 0 10px #F2FCF2}'+
 '.nxcm .nxck svg{width:24px;height:24px;stroke:#03BB43;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}'+
 '.nxcm .nxdone p{max-width:440px;margin:0 auto}'+
+'.nxpt{position:fixed;left:50%;translate:-50% 0;z-index:65;display:flex;align-items:center;background:#F7F7FB;border:1px solid #CFCDE6;border-radius:12px;box-shadow:0 8px 24px rgba(32,31,73,.14);font-family:inherit;direction:rtl;font-size:12.5px;color:#201F49;opacity:0;transition:opacity .2s,transform .2s;transform:translateY(-6px);white-space:nowrap}'+
+'.nxpt.on{opacity:1;transform:none}'+
+'.nxpt span{padding:10px 18px}'+
+'.nxpt button{border:0;border-inline-start:1px solid #CFCDE6;background:none;font:inherit;font-size:12.5px;font-weight:700;color:#201F49;padding:10px 18px;cursor:pointer}'+
+'.nxpt button:hover{text-decoration:underline}'+
+'.nxpv{position:fixed;inset:0;z-index:70;background:rgba(32,31,73,.45);display:none;align-items:center;justify-content:center;padding:16px;font-family:inherit;direction:rtl}'+
+'.nxpv.on{display:flex}'+
+'.nxpv .nxpb{position:relative;background:#fff;border-radius:8px;width:min(580px,100%);max-height:88vh;overflow:auto;padding:20px 20px 24px;box-shadow:0 20px 60px rgba(32,31,73,.25);color:#000}'+
+'.nxpv .nxx{position:absolute;left:18px;top:18px;width:32px;height:32px;border:0;background:none;border-radius:50%;cursor:pointer;display:grid;place-items:center}.nxpv .nxx:hover{background:#F4F4F6}'+
+'.nxpv .nxx svg{width:18px;height:18px;stroke:#201F49;stroke-width:2;fill:none}'+
+'.nxpv .nxph{display:flex;align-items:center;gap:12px;padding-inline-end:44px}'+
+'.nxpv .nxph img,.nxpv .nxph .nxi{width:60px;height:56px;border-radius:8px;object-fit:cover;flex:none;background:#201F49;color:#fff;display:grid;place-items:center;font-size:22px}'+
+'.nxpv .nxph b{display:block;font-size:17px;font-weight:700}.nxpv .nxph small{font-size:11.5px;color:#4A4A5E}'+
+'.nxpv .nxpt2{margin:16px 0 0;font-size:13px;line-height:1.75;white-space:pre-wrap;word-break:break-word}'+
+'.nxpv .nxpi{display:block;margin:14px auto 0;max-width:min(100%,260px);border-radius:8px}'+
 '#mew.nxun,.nav-av.nxun{position:relative;overflow:visible}'+
 '#mew.nxun::after,.nav-av.nxun::after{content:"";position:absolute;top:-5px;left:-5px;width:14px;height:14px;border-radius:50%;background:#E5243B;border:2px solid #fff;box-sizing:border-box;pointer-events:none}'+
 '.nxam .nxcnt{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:#E5243B;color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center;flex:none}';
@@ -83,6 +98,26 @@ function modal(html){
 }
 function closeModal(){var m=document.getElementById('nxcm');if(m)m.classList.remove('on')}
 window.nexoModal=modal;window.nexoCloseModal=closeModal;
+// بعد نشر منشور: شريط صغير فوق "تم نشر منشورك بنجاح | عرض المنشور"، و"عرض المنشور" يفتح المنشور في نافذة
+window.nexoPostView=function(p){
+ var m=document.getElementById('nxpv');
+ if(!m){m=document.createElement('div');m.id='nxpv';m.className='nxpv';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m||e.target.closest('.nxx'))m.classList.remove('on')});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')m.classList.remove('on')})}
+ var av=U(p.a)?'<img src="'+E(p.a)+'" alt="">':'<span class="nxi">'+E(String(p.n||'؟').trim()[0]||'؟')+'</span>';
+ m.innerHTML='<div class="nxpb">'+XS+'<div class="nxph">'+av+'<span><b>'+E(p.n||'')+'</b><small>'+E(p.r||'')+'</small></span></div><p class="nxpt2">'+E(p.t||'')+'</p>'+(U(p.im)?'<img class="nxpi" src="'+E(p.im)+'" alt="">':'')+'</div>';
+ m.classList.add('on');var x=m.querySelector('.nxx');if(x)x.focus();
+};
+var PT_T=null;
+window.nexoPostToast=function(p){
+ var t=document.getElementById('nxpt');
+ if(!t){t=document.createElement('div');t.id='nxpt';t.className='nxpt';t.setAttribute('role','status');document.body.appendChild(t)}
+ t.innerHTML='<span>تم نشر منشورك بنجاح</span>'+(p?'<button type="button">عرض المنشور</button>':'');
+ var hd=document.querySelector('.hd,nav.top'),b=hd?hd.getBoundingClientRect().bottom:0;t.style.top=Math.max(12,b+20)+'px';
+ var btn=t.querySelector('button');if(btn)btn.onclick=function(){t.classList.remove('on');nexoPostView(p)};
+ requestAnimationFrame(function(){t.classList.add('on')});
+ clearTimeout(PT_T);PT_T=setTimeout(function(){t.classList.remove('on')},7000);
+};
 // نافذة نجاح (علامة صح + عنوان + نص + زرين): تستخدم بعد التقديم على فرصة وبعد نشر فرصة
 // closeHref: وين يروح لما يقفل النافذة (زر الإغلاق أو X أو برا النافذة)، closeBtnHref: زر الإغلاق بس، goHref/onGo: الزر الأساسي
 window.nexoDone=function(o){

@@ -608,16 +608,7 @@
       closeM();
       renderPosts(await nexoDB.listPosts(nexoDB.uid));
       b.disabled = false;
-      if (window.nexoDone) {
-        nexoDone({ title: 'تم نشر المنشور', text: 'منشورك أصبح متاحًا الآن على ملفك الشخصي وفي مجتمع نيكسو. شكرًا لمشاركتك!',
-          close: 'العودة للرئيسية', closeBtnHref: 'dash-home.html', go: 'عرض المنشور',
-          onGo: function () {
-            var el = q('#postGrid .post');
-            if (!el) return;
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('pnew'); setTimeout(function () { el.classList.remove('pnew'); }, 2200);
-          } });
-      } else toast('تم النشر');
+      if (window.nexoPostToast) nexoPostToast(POSTS[0]); else toast('تم النشر');
     } catch (e) {
       toast(e.message || 'تعذر النشر');
       b.disabled = false;

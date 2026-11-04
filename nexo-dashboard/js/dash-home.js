@@ -16,17 +16,8 @@ start();
 onReady(()=>{const t=setInterval(()=>{if(LOADED){clearInterval(t);if(location.hash==='#edit'){history.replaceState(null,'',location.pathname);F_('me')}}},50)});
 
 
-/* نافذة "تم نشر المنشور" بعد ما ينشر من الرئيسية */
-function POSTOK(){let m=document.getElementById('pok');
- if(!m){m=document.createElement('div');m.id='pok';m.className='pok';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);
-  m.addEventListener('click',e=>{if(e.target===m||e.target.closest('.pkx,.pkh'))m.classList.remove('on')})}
- m.innerHTML=`<div class="pkb"><button type="button" class="pkx" aria-label="إغلاق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>
- <div class="pkc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
- <h3>تم نشر المنشور</h3><p>منشورك أصبح متاحًا الآن على ملفك الشخصي وفي مجتمع نيكسو. شكرًا لمشاركتك!</p>
- <div class="pkbt"><button type="button" class="pkh">العودة للرئيسية</button><button type="button" class="pkv">عرض المنشور</button></div></div>`;
- m.querySelector('.pkv').onclick=()=>{m.classList.remove('on');const a=[...document.querySelectorAll('.feed .post')].find(x=>x.querySelector('a.ph2[href*="-profile.html"]'))||document.querySelector('.feed .post');if(a){a.scrollIntoView({behavior:'smooth',block:'center'});a.classList.add('pnew');setTimeout(()=>a.classList.remove('pnew'),2200)}};
- m.classList.add('on');m.querySelector('.pkv').focus()}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('pok');if(m)m.classList.remove('on')}});
+/* بعد ما ينشر من الرئيسية: شريط "تم نشر منشورك بنجاح | عرض المنشور" */
+function POSTOK(){const p=(D.posts||[]).find(x=>x.author_id===nexoDB.uid);if(window.nexoPostToast)nexoPostToast(p)}
 
 /* منشوراتك: زر ••• فيه "إزالة المنشور" ونافذة تأكيد */
 const IC_DEL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
