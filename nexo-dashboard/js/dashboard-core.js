@@ -67,6 +67,8 @@ function R(){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('
  if(!LOADED){$('#m').innerHTML='<p class="empty">جاري التحميل...</p>';return}
  $('#m').innerHTML=Q?SR():V[v]()}
 $('#q').oninput=e=>{Q=e.target.value.trim();R()};
+/* بحث جاي من صفحات الملفات: ?q=... */
+(function(){const q=new URLSearchParams(location.search).get('q');if(q&&$('#q')){$('#q').value=q;Q=q.trim()}})();
 /* صورتك فوق تفتح ملفك (auth-guard يحدد ملف اللاعب أو الجهة حسب نوع الحساب) */
 (function(){const w=$('#mew');if(w){w.onclick=null;w.setAttribute('data-profile','');w.title='ملفي'}const f=document.getElementById('fab');if(f)f.remove()})();
 /* البحث الشامل: المواهب والفرق والجهات والفرص والمنشورات */

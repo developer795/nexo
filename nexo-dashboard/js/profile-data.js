@@ -31,6 +31,17 @@
     }
   }, true);
 
+  // البحث فوق في صفحات الملفات: Enter يودّي للبحث الشامل في الرئيسية
+  (function () {
+    var inp = q('.top .search input'); if (!inp) return;
+    inp.setAttribute('enterkeyhint', 'search');
+    inp.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var v = inp.value.trim(); if (!v) return;
+      e.preventDefault(); location.href = 'dash-home.html?q=' + encodeURIComponent(v);
+    });
+  })();
+
   function navAvatar(me) {
     var a = q('.nav-av');
     if (a) a.innerHTML = U(me.ph)
@@ -210,14 +221,17 @@
   var pill = function (t) { return t ? '<span class="xpill">' + E(t) + '</span>' : ''; };
   var lines = function (arr) { return arr.filter(Boolean).map(function (x) { return '<p>' + E(x) + '</p>'; }).join(''); };
   var visit = function (u) { return U(u) ? '<a class="xvisit" href="' + E(U(u)) + '" target="_blank" rel="noopener">زيارة الحساب</a>' : ''; };
-  // صورة البث من الرابط نفسه (يوتيوب وتويتش) لو ما رفع صورة
+  // صورة الحساب من رابط البث أو المحتوى (عن طريق خدمة unavatar المجانية)
   function autoThumb(u) {
     u = U(u); if (!u) return '';
-    var m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|shorts\/|embed\/))([\w-]{11})/i);
-    if (m) return 'https://i.ytimg.com/vi/' + m[1] + '/hqdefault.jpg';
-    m = u.match(/^https:\/\/(?:www\.|m\.)?twitch\.tv\/([a-z0-9_]{3,25})\/?(?:[?#].*)?$/i);
-    if (m && !/^(videos|directory|p|downloads|jobs|turbo)$/i.test(m[1])) return 'https://static-cdn.jtvnw.net/previews-ttv/live_user_' + m[1].toLowerCase() + '-640x360.jpg';
-    return '';
+    var m, A = 'https://unavatar.io/';
+    if ((m = u.match(/youtube\.com\/@([\w.-]+)/i))) return A + 'youtube/' + m[1] + '?fallback=false';
+    if ((m = u.match(/youtube\.com\/(?:c|channel|user)\/([\w.-]+)/i))) return A + 'youtube/' + m[1] + '?fallback=false';
+    if ((m = u.match(/twitch\.tv\/([a-z0-9_]{3,25})/i)) && !/^(videos|directory|p)$/i.test(m[1])) return A + 'twitch/' + m[1] + '?fallback=false';
+    if ((m = u.match(/tiktok\.com\/@([\w.-]+)/i))) return A + 'tiktok/' + m[1] + '?fallback=false';
+    if ((m = u.match(/(?:x|twitter)\.com\/(\w{1,15})(?:[/?#]|$)/i))) return A + 'x/' + m[1] + '?fallback=false';
+    if ((m = u.match(/instagram\.com\/([\w.]+)/i))) return A + 'instagram/' + m[1] + '?fallback=false';
+    return A + 'microlink/' + encodeURIComponent(u) + '?fallback=false';
   }
   var thumb = function (it) {
     var src = U(it.img) || autoThumb(it.url);
