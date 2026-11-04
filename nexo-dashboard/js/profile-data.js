@@ -355,6 +355,23 @@
   }
 
   // ---------- نماذج الإضافة (لصاحب الملف) ----------
+  // قائمة "اختار المنصة" بالشعارات (مثل التصميم)
+  var PSEL_LIST = [['يوتيوب', 'اليوتيوب'], ['كيك', 'الكيك'], ['تويتش', 'تويتش'], ['تيك توك', 'تيك توك'], ['سناب شات', 'سناب شات']];
+  function PSEL() {
+    return '<span class="psel"><input type="hidden" id="x_platform" value=""><button type="button" class="pselb" aria-haspopup="listbox" aria-expanded="false"><span class="pselv">اختار المنصة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
+      '<span class="psell" role="listbox" hidden>' + PSEL_LIST.map(function (x) { return '<button type="button" role="option" data-v="' + E(x[0]) + '"><span>' + E(x[1]) + '</span><span class="pseli">' + (ICO[x[0]] || '') + '</span></button>'; }).join('') + '</span></span>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.pselb'), o = e.target.closest('.psell [data-v]');
+    document.querySelectorAll('.psel.on').forEach(function (x) { if (!x.contains(e.target)) { x.classList.remove('on'); x.querySelector('.psell').hidden = true; x.querySelector('.pselb').setAttribute('aria-expanded', 'false'); } });
+    if (b) { var w = b.closest('.psel'), l = w.querySelector('.psell'), on = l.hidden; l.hidden = !on; w.classList.toggle('on', on); b.setAttribute('aria-expanded', on); return; }
+    if (o) {
+      var w2 = o.closest('.psel');
+      w2.querySelector('input').value = o.dataset.v;
+      w2.querySelector('.pselv').textContent = o.querySelector('span').textContent;
+      w2.classList.add('has'); w2.classList.remove('on'); w2.querySelector('.psell').hidden = true; w2.querySelector('.pselb').setAttribute('aria-expanded', 'false');
+    }
+  });
   var opts = function (a) { return a.map(function (x) { return '<option>' + E(x) + '</option>'; }).join(''); };
   var F = function (id, label, ph, extra) { return '<label class="xf"><span>' + label + '</span><input id="' + id + '" ' + (extra || '') + '></label>'; };
   var GAMES = ['EA SPORTS FC', 'Rocket League', 'Valorant', 'Fortnite', 'Call of Duty', 'Overwatch 2', 'League of Legends', 'Apex Legends', 'Counter-Strike 2', 'PUBG', 'Dota 2'];
@@ -362,9 +379,9 @@
   var FORMS = {
     game: { sub: 'أضف ألعابك ووضّح مستوى احترافك ودورك في الفريق.', html: GSEL('x_name', 'اسم اللعبة', 1) + F('x_level', 'مستوى الاحتراف', 'لاعب محترف') + F('x_role', 'دورك في اللعبة أو الفريق', 'لاعب أساسي') + F('x_device', 'الجهاز المستخدم', 'PC') },
     match: { sub: 'أضف مشاركاتك ونتائجك لعرضها على ملفك الشخصي.', html: F('x_title', 'اسم المباراة أو البطولة', 'كأس العالم للرياضات الإلكترونية', 'required').replace('class="xf"', 'class="xf xfull"') + F('x_team', 'اسم الفريق', 'فريق فالكونز') + GSEL('x_game', 'اسم اللعبة') + F('x_place', 'المركز', 'المركز الثاني') + F('x_device', 'اسم الجهاز', 'PC') },
-    stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['Twitch', 'Kick', 'YouTube', 'TikTok']) + '</select></label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
-    content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(['YouTube', 'TikTok', 'Instagram', 'Snapchat', 'X']) + '</select></label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
-    platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span><select id="x_platform">' + opts(PLATFORMS) + '</select></label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
+    stream: { sub: 'أضف أبرز بثوثك مع رابطها.', html: F('x_title', 'عنوان البث', 'تحدي الوصول إلى أعلى رانك في Valorant', 'required') + F('x_views', 'عدد المشاهدات', '120K') + F('x_duration', 'مدة البث', 'ساعتين') + '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_url', 'رابط البث', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة البث (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
+    content: { sub: 'أضف أبرز محتواك مع رابطه.', html: F('x_title', 'عنوان المحتوى', 'فيديو أفضل إعدادات EA SPORTS FC للمبتدئين', 'required') + F('x_views', 'عدد المشاهدات', '120K') + '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_url', 'رابط المحتوى', 'https://', 'type="url" dir="ltr"') + '<label class="xf"><span>صورة المحتوى (اختياري)</span><input id="x_img" type="file" accept="image/*"></label>' },
+    platform: { sub: 'أضف منصاتك وعدد متابعينك.', html: '<label class="xf"><span>المنصة</span>' + PSEL() + '</label>' + F('x_followers', 'عدد المتابعين', '80K') + F('x_url', 'رابط الحساب', 'https://', 'type="url" dir="ltr"') },
     social: { sub: 'أضف روابط حساباتك ليسهل على مجتمع نيكسو التواصل معك.', multi: 1, html: '<label class="xf"><span>الحساب</span><select id="x_type">' + opts(SOCIALS) + '</select></label>' + F('x_value', 'الرابط أو الرقم أو البريد', 'https://example.com/username', 'required dir="ltr"') },
   };
   var CROPPED = null;
@@ -500,6 +517,7 @@
       form.querySelectorAll('input:not([type=file]),select').forEach(function (x) { if (x.value.trim()) data[x.id.replace('x_', '')] = x.value.trim(); });
       var req = form.querySelector('[required]');
       if (req && !(req.value || '').trim()) { err.textContent = (req.tagName === 'SELECT' ? 'اختر ' : 'اكتب ') + req.closest('label').querySelector('span').textContent; req.focus(); return; }
+      if (k === 'platform' && !data.platform) { err.textContent = 'اختار المنصة'; return; }
       if (data.url && !/^https?:\/\//i.test(data.url)) data.url = 'https://' + data.url.replace(/^\/+/, '');
       if (data.url) data.url = data.url.replace(/^http:\/\//i, 'https://');
       if (data.url && !/^https:\/\/[^\s"'()<>]+\.[^\s"'()<>]+$/.test(data.url)) { err.textContent = 'الرابط غير صحيح'; return; }
