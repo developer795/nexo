@@ -34,6 +34,8 @@ var CSS=
 '.nxcm .nxck{width:56px;height:56px;border-radius:50%;background:#E0FAE0;display:grid;place-items:center;margin:16px auto 22px;box-shadow:0 0 0 10px #F2FCF2}'+
 '.nxcm .nxck svg{width:24px;height:24px;stroke:#03BB43;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}'+
 '.nxcm .nxdone p{max-width:440px;margin:0 auto}'+
+'.nxcm .nxck.nxred{background:#FDE8E8;box-shadow:none;width:64px;height:64px}.nxcm .nxck.nxred svg{stroke:#E53535;stroke-width:1.8}'+
+'.nxcm .nxf.nxdanger{background:#E53535;border-color:#E53535}.nxcm .nxf.nxdanger:hover{background:#D12C2C}'+
 '.nxpt{position:fixed;left:50%;translate:-50% 0;z-index:65;display:flex;align-items:center;background:#F7F7FB;border:1px solid #CFCDE6;border-radius:12px;box-shadow:0 8px 24px rgba(32,31,73,.14);font-family:inherit;direction:rtl;font-size:12.5px;color:#201F49;opacity:0;transition:opacity .2s,transform .2s;transform:translateY(-6px);white-space:nowrap}'+
 '.nxpt.on{opacity:1;transform:none}'+
 '.nxpt span{padding:10px 18px}'+
@@ -128,7 +130,7 @@ window.nexoDone=function(o){
  m.querySelector('.nxf').focus();return m;
 };
 function confirmOut(){
- var m=modal('<h3>تأكيد تسجيل الخروج</h3><p>هل أنت متأكد من رغبتك في تسجيل الخروج من حسابك في نيكسو؟</p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">تسجيل الخروج</button></div>');
+ var m=modal('<div class="nxlo"><div class="nxck nxred"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></div><h3>تأكيد تسجيل الخروج</h3><p>هل أنت متأكد من رغبتك في تسجيل الخروج من حسابك في نيكسو؟</p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf nxdanger">تسجيل الخروج</button></div></div>');
  m.querySelector('.nxf').onclick=function(){
   var b=this;b.disabled=true;b.textContent='جاري تسجيل الخروج...';
   ready(function(){

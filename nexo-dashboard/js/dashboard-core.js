@@ -44,7 +44,7 @@ const V={};
 function OPPOK(id){nexoDone({title:'تم نشر الفرصة',text:'تم نشر الفرصة بنجاح، وأصبحت متاحة للمواهب للتقديم عليها عبر نيكسو.',close:'العودة لملف الجهة',closeHref:'dash-entity-profile.html',go:'عرض الفرصة',goHref:'dash-opportunity-details.html?id='+encodeURIComponent(id)})}
 async function AP(id){const o=D.opps.find(x=>x.id===id);if(!o||o.ap||o.created_by===nexoDB.uid||(o.due&&o.due<new Date().toISOString().slice(0,10)))return;o.ap=1;o.n++;R();
  try{await nexoDB.apply(id);await load()}catch(e){o.ap=0;o.n--;R();alert(e.message);return}R();
- if(window.nexoDone)nexoDone({title:'تم التقديم على الفرصة',text:'تم إرسال طلبك بنجاح إلى الجهة، وهو الآن قيد المراجعة. يمكنك متابعة حالته من صفحة طلباتك.',close:'إغلاق',go:'عرض الفرص التي تم التقديم عليها',goHref:'dash-applications.html'})}
+ if(window.nexoDone)nexoDone({title:'تم التقديم على الفرصة',text:'تم إرسال طلبك بنجاح إلى الجهة، وهو الآن قيد المراجعة. يمكنك متابعة حالته من صفحة متابعة الفرص.',close:'إغلاق',go:'متابعة الفرص',goHref:'dash-applications.html'})}
 const FM={
  me:['ملفك الشخصي','حفظ',[['n','text','الاسم'],['ph','file','صورتك الشخصية',0,1],['cv','file','صورة الغلاف',0,1],['role','select','أنت',ROLES],['g','text','اللعبة أو المنصة',0,1],['city','city','المدينة'],['s','select','الحالة',STS],['bio','textarea','نبذة عنك',0,1]],o=>nexoDB.saveMe(o)],
  meTeam:['ملف الجهة','حفظ',[['n','text','اسم الجهة'],['ph','file','الشعار',0,1],['cv','file','صورة الغلاف',0,1],['type','select','النوع',['نادي','جهة','مقدم خدمة']],['sub','text','وصف قصير',0,1],['city','city','المدينة'],['bio','textarea','نبذة عن الجهة',0,1]],o=>nexoDB.saveMe(o)],
