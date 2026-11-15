@@ -344,7 +344,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') pmClose(); });
   function delPost(id) {
     if (!window.nexoModal) return;
-    var m = nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">إزالة المنشور</button></div>');
+    var m = nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf nxdanger">إزالة المنشور</button></div>');
     m.querySelector('.nxf').onclick = function () {
       var btn = this; btn.disabled = true; btn.textContent = 'جاري الإزالة...';
       nexoDB.deletePost(id).then(function () {

@@ -32,7 +32,7 @@ document.addEventListener('click',e=>{
 },true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')PMCLOSE()});
 function PDEL(id){if(!window.nexoModal)return;
- const m=nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf">إزالة المنشور</button></div>');
+ const m=nexoModal('<h3>إزالة المنشور</h3><p>هل أنت متأكد من رغبتك في إزالة المنشور ؟</p><p class="nxe" style="text-align:center;color:#BB0327"></p><div class="nxbt"><button type="button" class="nxo">إلغاء</button><button type="button" class="nxf nxdanger">إزالة المنشور</button></div>');
  m.querySelector('.nxf').onclick=async function(){this.disabled=true;this.textContent='جاري الإزالة...';
   try{await nexoDB.deletePost(id);D.posts=D.posts.filter(p=>String(p.id)!==String(id));nexoCloseModal();R()}
   catch(er){this.disabled=false;this.textContent='إزالة المنشور';m.querySelector('.nxe').textContent=er.message||'تعذر إزالة المنشور'}}}
