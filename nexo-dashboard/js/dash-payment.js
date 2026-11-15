@@ -19,9 +19,10 @@ function sum(){const p=PLANS[PL],vat=Math.round(p.base*VAT),tot=p.base+vat,end=d
  ${t?'':`<h4>ما تحصل عليه بالباقة</h4><ul class="ben"><li>${CHK}وصول كامل للفرص الحصرية والموجهة</li><li>${CHK}استقطاب مباشر من الأندية والجهات</li><li>${CHK}فعاليات وبطولات خاصة بالمشتركين</li></ul>`}`}
 function setPL(x){PL=x;$('#sum').innerHTML=sum()}
 const agree=()=>{const p=PLANS[PL];return`أوافق على بدء التجربة المجانية لمدة 7 أيام، وعلى خصم ${p.base+Math.round(p.base*VAT)} ر.س في ${day(trialEnd())} ما لم ألغِ قبل ذلك.`};
-function done(){const s=SUB();return`<div class="big okp"><div class="crn">👑</div><h2>تم تفعيل تجربتك المجانية</h2><p>استمتع بـ${E(PNAME(s.plan==='m'?'m':'y'))} حتى ${day(new Date(s.trialEnd))}. تقدر تلغي في أي وقت قبل هذا التاريخ.</p><button class="ap" onclick="location.href='dash-opportunities.html'">تصفّح الفرص</button></div>`}
+const REALSUB=()=>{const s=D.sub;return s&&(s.status==='active'||(s.status==='trialing'&&s.trialEnd>Date.now()))?s:null};
+function done(){const s=REALSUB();return`<div class="big okp"><div class="crn">👑</div><h2>تم تفعيل تجربتك المجانية</h2><p>استمتع بـ${E(PNAME(s.plan==='m'?'m':'y'))} حتى ${day(new Date(s.trialEnd))}. تقدر تلغي في أي وقت قبل هذا التاريخ.</p><button class="ap" onclick="location.href='dash-opportunities.html'">تصفّح الفرص</button></div>`}
 V.pay=function(){const bc=`<a class="pback" href="dash-opportunities.html" onclick="if(history.length>1&&document.referrer.indexOf(location.host)>-1){history.back();return false}"><svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 1l5 5-5 5"/></svg>العودة</a>`;
- if(SUB()&&!CHANGE)return bc+done();
+ if(REALSUB()&&!CHANGE)return bc+done();
  return bc+`<div class="pay"><form class="card pf2" id="pfm" novalidate><h2>بيانات الدفع والفوترة</h2><p class="msub">أدخل بياناتك لإتمام تفعيل التجربة</p>
  <div class="pm"><b>طرق الدفع المدعومة</b><span class="mada" aria-label="مدى"><span class="mdt"><b>مدى</b><b>mada</b></span><span class="mdb"><i></i><i></i></span></span></div>
  <div class="cbox"><label for="cn">رقم البطاقة</label><div class="fi">${ICO.card}<input id="cn" inputmode="numeric" autocomplete="cc-number" dir="ltr" placeholder="0000  0000  0000  0000" maxlength="23"></div>

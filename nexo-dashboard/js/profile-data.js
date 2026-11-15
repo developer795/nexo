@@ -109,7 +109,7 @@
     if (!sec || !VISITOR) return;
     var old = sec.querySelector('.oplk'); if (old) old.remove();
     sec.classList.remove('oplock');
-    if (!n || !nexoDB.getSubscription) return;
+    if (!n || !nexoDB.getSubscription || nexoDB.kind === 'team') return;
     var s = null; try { s = await nexoDB.getSubscription(); } catch (e) { s = null; }
     if (subActive(s)) return;
     sec.classList.add('oplock');
